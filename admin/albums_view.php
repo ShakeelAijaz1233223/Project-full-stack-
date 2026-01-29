@@ -26,6 +26,7 @@ $albums = mysqli_query($conn, "SELECT * FROM albums ORDER BY created_at DESC");
 ?>
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -88,7 +89,11 @@ $albums = mysqli_query($conn, "SELECT * FROM albums ORDER BY created_at DESC");
             font-weight: 500;
         }
 
-        .sidebar a i { margin-right: 12px; width: 20px; text-align: center; }
+        .sidebar a i {
+            margin-right: 12px;
+            width: 20px;
+            text-align: center;
+        }
 
         .sidebar a:hover {
             background: rgba(59, 130, 246, 0.1);
@@ -163,7 +168,9 @@ $albums = mysqli_query($conn, "SELECT * FROM albums ORDER BY created_at DESC");
             display: block;
         }
 
-        .info { padding: 18px; }
+        .info {
+            padding: 18px;
+        }
 
         .title {
             font-size: 16px;
@@ -200,7 +207,9 @@ $albums = mysqli_query($conn, "SELECT * FROM albums ORDER BY created_at DESC");
             -webkit-appearance: none;
         }
 
-        .card:hover .delete-btn { opacity: 1; }
+        .card:hover .delete-btn {
+            opacity: 1;
+        }
 
         .delete-btn:hover {
             background: #ef4444;
@@ -209,124 +218,153 @@ $albums = mysqli_query($conn, "SELECT * FROM albums ORDER BY created_at DESC");
 
         /* ===== ANIMATION ===== */
         @keyframes fadeUp {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         /* ===== RESPONSIVE ===== */
         @media (max-width: 992px) {
-            .sidebar { width: 80px; padding: 20px 10px; }
-            .sidebar h2, .sidebar a span { display: none; }
-            .container-fluid-custom { margin-left: 80px; }
+            .sidebar {
+                width: 80px;
+                padding: 20px 10px;
+            }
+
+            .sidebar h2,
+            .sidebar a span {
+                display: none;
+            }
+
+            .container-fluid-custom {
+                margin-left: 80px;
+            }
         }
 
         @media (max-width: 600px) {
-            .sidebar { display: none; }
-            .container-fluid-custom { margin-left: 0; padding: 20px; }
-            .grid { grid-template-columns: 1fr; }
+            .sidebar {
+                display: none;
+            }
+
+            .container-fluid-custom {
+                margin-left: 0;
+                padding: 20px;
+            }
+
+            .grid {
+                grid-template-columns: 1fr;
+            }
         }
     </style>
 </head>
+
 <body>
 
-<aside class="sidebar">
-   
-    <a href="dashboard.php"><i class="fa-solid fa-house"></i> <span>Dashboard</span></a>
-    <a href="add_albums.php"><i class="fa-solid fa-cloud-arrow-up"></i> <span>Upload</span></a>
-    <a href="logout.php"><i class="fa-solid fa-right-from-bracket"></i> <span>Logout</span></a>
-</aside>
+    <aside class="sidebar">
 
-<main class="container-fluid-custom">
-    <?php if(isset($deleted)): ?>
-        <div class="alert alert-primary border-0 shadow-sm mb-4" style="background: var(--accent-color); color: white;">
-            <i class="fa-solid fa-check-circle me-2"></i> Video removed from library.
-        </div>
-    <?php endif; ?>
+        <a href="dashboard.php"><i class="fa-solid fa-house"></i> <span>Dashboard</span></a>
+        <a href="add_albums.php"><i class="fa-solid fa-cloud-arrow-up"></i> <span>Upload</span></a>
+        <a href="logout.php"><i class="fa-solid fa-right-from-bracket"></i> <span>Logout</span></a>
+    </aside>
 
-    <div class="d-flex flex-wrap justify-content-between align-items-center mb-2">
-        <div>
-            <h1 class="fw-bold mb-1" style="font-size: 2rem;">Video Library</h1>
-            <p class="text-secondary small mb-4">Manage your studio collection</p>
-        </div>
-        <input type="text" id="search" class="search-box" placeholder="🔍 Search by title or artist...">
-    </div>
-
-    <div class="grid" id="videoGrid">
-        <?php if(mysqli_num_rows($albums) > 0):
-            while ($row = mysqli_fetch_assoc($albums)):
-                $title = htmlspecialchars($row['title']);
-                $artist = htmlspecialchars($row['artist']);
-                $video = $row['video'];
-                $id    = $row['id'];
-        ?>
-        <div class="card" data-search="<?php echo strtolower($title . ' ' . $artist); ?>">
-            <form method="POST" onsubmit="return confirm('Permanently delete this video?');">
-                <input type="hidden" name="delete" value="<?php echo $id; ?>">
-                <button type="submit" class="delete-btn">DELETE</button>
-            </form>
-
-            <div class="thumbnail">
-                <?php if(!empty($video)): ?>
-                    <video controls preload="metadata">
-                        <source src="uploads/albums/<?php echo $video; ?>" type="video/mp4">
-                    </video>
-                <?php else: ?>
-                    <div class="h-100 d-flex align-items-center justify-content-center bg-dark text-muted">
-                        <i class="fa-solid fa-video-slash me-2"></i> No Media
-                    </div>
-                <?php endif; ?>
-            </div>
-
-            <div class="info">
-                <span class="title"><?php echo $title; ?></span>
-                <span class="meta"><?php echo $artist; ?></span>
-            </div>
-        </div>
-        <?php endwhile; else: ?>
-            <div class="text-center py-5 w-100" style="grid-column: 1 / -1;">
-                <h4 class="text-secondary">Library is empty</h4>
-                <a href="add_albums.php" class="btn btn-primary mt-3 px-4">Upload First Video</a>
+    <main class="container-fluid-custom">
+        <?php if (isset($deleted)): ?>
+            <div class="alert alert-primary border-0 shadow-sm mb-4" style="background: var(--accent-color); color: white;">
+                <i class="fa-solid fa-check-circle me-2"></i> Video removed from library.
             </div>
         <?php endif; ?>
-    </div>
 
-    <div id="noResults" class="text-center py-5 w-100 d-none">
-        <p class="text-secondary">No videos match your search.</p>
-    </div>
-</main>
+        <div class="d-flex flex-wrap justify-content-between align-items-center mb-2">
+            <div>
+                <h1 class="fw-bold mb-1" style="font-size: 2rem;">Video Library</h1>
+                <p class="text-secondary small mb-4">Manage your studio collection</p>
+            </div>
+            <input type="text" id="search" class="search-box" placeholder="🔍 Search by title or artist...">
+        </div>
 
-<script>
-// Search logic
-const searchInput = document.getElementById("search");
-const cards = document.querySelectorAll(".card");
-const noResults = document.getElementById("noResults");
+        <div class="grid" id="videoGrid">
+            <?php if (mysqli_num_rows($albums) > 0):
+                while ($row = mysqli_fetch_assoc($albums)):
+                    $title = htmlspecialchars($row['title']);
+                    $artist = htmlspecialchars($row['artist']);
+                    $video = $row['video'];
+                    $id    = $row['id'];
+            ?>
+                    <div class="card" data-search="<?php echo strtolower($title . ' ' . $artist); ?>">
+                        <form method="POST" onsubmit="return confirm('Permanently delete this video?');">
+                            <input type="hidden" name="delete" value="<?php echo $id; ?>">
+                            <button type="submit" class="delete-btn">DELETE</button>
+                        </form>
 
-searchInput.addEventListener("input", function() {
-    let val = this.value.toLowerCase().trim();
-    let visibleCount = 0;
+                        <div class="thumbnail">
+                            <?php if (!empty($video)): ?>
+                                <video controls preload="metadata">
+                                    <source src="uploads/albums/<?php echo $video; ?>" type="video/mp4">
+                                </video>
+                            <?php else: ?>
+                                <div class="h-100 d-flex align-items-center justify-content-center bg-dark text-muted">
+                                    <i class="fa-solid fa-video-slash me-2"></i> No Media
+                                </div>
+                            <?php endif; ?>
+                        </div>
 
-    cards.forEach(card => {
-        const searchText = card.getAttribute('data-search');
-        if (searchText.includes(val)) {
-            card.style.display = "block";
-            visibleCount++;
-        } else {
-            card.style.display = "none";
-        }
-    });
+                        <div class="info">
+                            <span class="title"><?php echo $title; ?></span>
+                            <span class="meta"><?php echo $artist; ?></span>
+                        </div>
+                    </div>
+                <?php endwhile;
+            else: ?>
+                <div class="text-center py-5 w-100" style="grid-column: 1 / -1;">
+                    <h4 class="text-secondary">Library is empty</h4>
+                    <a href="add_albums.php" class="btn btn-primary mt-3 px-4">Upload First Video</a>
+                </div>
+            <?php endif; ?>
+        </div>
 
-    noResults.classList.toggle('d-none', visibleCount > 0 || val === "");
-});
+        <div id="noResults" class="text-center py-5 w-100 d-none">
+            <p class="text-secondary">No videos match your search.</p>
+        </div>
+    </main>
 
-// Single Play Logic
-document.querySelectorAll('video').forEach(vid => {
-    vid.addEventListener('play', () => {
-        document.querySelectorAll('video').forEach(otherVid => {
-            if (otherVid !== vid) otherVid.pause();
+    <script>
+        // Search logic
+        const searchInput = document.getElementById("search");
+        const cards = document.querySelectorAll(".card");
+        const noResults = document.getElementById("noResults");
+
+        searchInput.addEventListener("input", function() {
+            let val = this.value.toLowerCase().trim();
+            let visibleCount = 0;
+
+            cards.forEach(card => {
+                const searchText = card.getAttribute('data-search');
+                if (searchText.includes(val)) {
+                    card.style.display = "block";
+                    visibleCount++;
+                } else {
+                    card.style.display = "none";
+                }
+            });
+
+            noResults.classList.toggle('d-none', visibleCount > 0 || val === "");
         });
-    });
-});
-</script>
+
+        // Single Play Logic
+        document.querySelectorAll('video').forEach(vid => {
+            vid.addEventListener('play', () => {
+                document.querySelectorAll('video').forEach(otherVid => {
+                    if (otherVid !== vid) otherVid.pause();
+                });
+            });
+        });
+    </script>
 
 </body>
+
 </html>

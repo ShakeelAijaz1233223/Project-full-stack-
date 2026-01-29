@@ -251,7 +251,7 @@ if (isset($_GET['delete'])) {
     <div class="sidebar">
         <a href="dashboard.php">🏠 <span>Dashboard</span></a>
         <a href="add_video.php">⬆ <span>Upload Video</span></a>
-        <a href="logout.php"><i class="fa fa-sign-out-alt"></i> <span>Logout</span></a> 
+        <a href="logout.php"><i class="fa fa-sign-out-alt"></i> <span>Logout</span></a>
     </div>
 
     <div class="container">
@@ -301,28 +301,27 @@ if (isset($_GET['delete'])) {
 
         const videoCards = document.querySelectorAll('.card');
 
-videoCards.forEach(card => {
-    const video = card.querySelector('video');
-    if(!video) return;
+        videoCards.forEach(card => {
+            const video = card.querySelector('video');
+            if (!video) return;
 
-    // Start with controls hidden
-    video.controls = false;
+            // Start with controls hidden
+            video.controls = false;
 
-    // Click anywhere on the video toggles play/pause and shows controls
-    video.addEventListener('click', (e) => {
-        e.stopPropagation();
+            // Click anywhere on the video toggles play/pause and shows controls
+            video.addEventListener('click', (e) => {
+                e.stopPropagation();
 
-        if(video.paused) {
-            video.play().catch(() => console.log("Playback blocked by browser"));
-        } else {
-            video.pause();
-        }
+                if (video.paused) {
+                    video.play().catch(() => console.log("Playback blocked by browser"));
+                } else {
+                    video.pause();
+                }
 
-        // Toggle controls visibility
-        video.controls = !video.controls;
-    });
-});
-
+                // Toggle controls visibility
+                video.controls = !video.controls;
+            });
+        });
     </script>
 </body>
 
