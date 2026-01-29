@@ -1,5 +1,7 @@
 <?php
-include 'db.php'; // Include database connection
+include '../config/db.php'; // Include database connection
+
+$success = $error = "";
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     // Collect form data
@@ -9,14 +11,22 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $email = $_POST['email'];
     $password = password_hash($_POST['password'], PASSWORD_DEFAULT);
 
-    // Insert user data into the database
-    $query = "INSERT INTO users (name, address, phone_number, email, password) VALUES ('$name', '$address', '$phone', '$email', '$password')";
-    
-    if (mysqli_query($conn, $query)) {
+    // Use prepared statement to prevent SQL injection
+    $stmt = $conn->prepare("INSERT INTO users (name, address, phone, email, password) VALUES (?, ?, ?, ?, ?)");
+    $stmt->bind_param("sssss", $name, $address, $phone, $email, $password);
+
+    if ($stmt->execute()) {
         $success = "Registration successful!";
     } else {
-        $error = "Error: " . mysqli_error($conn);
+        // Check if email already exists
+        if (strpos($stmt->error, 'Duplicate entry') !== false) {
+            $error = "Email already registered!";
+        } else {
+            $error = "Error: " . $stmt->error;
+        }
     }
+
+    $stmt->close();
 }
 ?>
 
@@ -143,8 +153,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <div class="register-card animate__animated animate__fadeInUp" data-tilt>
         <h2>Join Us</h2>
         
-        <?php if(isset($success)) echo "<div class='msg success'>$success</div>"; ?>
-        <?php if(isset($error)) echo "<div class='msg error'>$error</div>"; ?>
+        <?php if($success) echo "<div class='msg success'>$success</div>"; ?>
+        <?php if($error) echo "<div class='msg error'>$error</div>"; ?>
 
         <form method="POST" action="register.php">
             <div class="input-group">

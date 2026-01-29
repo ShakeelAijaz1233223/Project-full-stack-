@@ -1,6 +1,5 @@
 <?php
-
-include "db.php";
+include "../config/db.php";
 
 /* ---- LOGIN CHECK ---- */
 if(!isset($_SESSION['email'])){
@@ -13,130 +12,257 @@ $email = $_SESSION['email'];
 $user_query = mysqli_query($conn,"SELECT * FROM users WHERE email='$email'");
 $user = mysqli_fetch_assoc($user_query);
 
-/* ---- HANDLE PROFILE UPDATE ---- */
-$msg = "";
+/* ---- HANDLE MESSAGES ---- */
+$success = "";
+$error = "";
 
 if(isset($_POST['update_profile'])){
     $name = mysqli_real_escape_string($conn,$_POST['name'] ?? '');
     $phone = mysqli_real_escape_string($conn,$_POST['phone'] ?? '');
     $address = mysqli_real_escape_string($conn,$_POST['address'] ?? '');
 
-    /* ---- Handle avatar upload ---- */
     $avatar_name = $user['avatar'] ?? 'default.png';
     if(isset($_FILES['avatar']) && $_FILES['avatar']['name'] != ''){
         $ext = pathinfo($_FILES['avatar']['name'], PATHINFO_EXTENSION);
-        $avatar_name = 'avatar_'.$user['id'].'.'.$ext;
+        $avatar_name = 'avatar_'.$user['id'].'_'.time().'.'.$ext;
         if(!is_dir('uploads')) mkdir('uploads', 0777, true);
         move_uploaded_file($_FILES['avatar']['tmp_name'], 'uploads/'.$avatar_name);
     }
 
-    mysqli_query($conn,"UPDATE users SET name='$name', phone='$phone', address='$address', avatar='$avatar_name' WHERE id=".$user['id']);
-    $msg = "Profile updated successfully!";
-    $user = mysqli_fetch_assoc(mysqli_query($conn,"SELECT * FROM users WHERE email='$email'"));
+    if(mysqli_query($conn,"UPDATE users SET name='$name', phone='$phone', address='$address', avatar='$avatar_name' WHERE id=".$user['id'])){
+        $success = "Profile updated successfully!";
+        $user = mysqli_fetch_assoc(mysqli_query($conn,"SELECT * FROM users WHERE email='$email'"));
+    } else {
+        $error = "Update failed: " . mysqli_error($conn);
+    }
 }
 
-/* ---- HANDLE PASSWORD CHANGE ---- */
 if(isset($_POST['change_password'])){
     $current = $_POST['current_password'] ?? '';
     $new = $_POST['new_password'] ?? '';
     $confirm = $_POST['confirm_password'] ?? '';
 
-    // Plain text password check (matches current DB)
     if($current === $user['password']){
         if($new === $confirm){
             mysqli_query($conn,"UPDATE users SET password='$new' WHERE id=".$user['id']);
-            $msg = "Password changed successfully!";
-            $user = mysqli_fetch_assoc(mysqli_query($conn,"SELECT * FROM users WHERE email='$email'"));
+            $success = "Password changed successfully!";
         } else {
-            $msg = "New password and confirm password do not match!";
+            $error = "Passwords do not match!";
         }
     } else {
-        $msg = "Current password is incorrect!";
+        $error = "Current password is incorrect!";
     }
 }
 ?>
 
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>User Profile</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VIP Account Settings | Obsidian</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600&display=swap" rel="stylesheet">
+
     <style>
-        .avatar-preview { width: 120px; height: 120px; object-fit: cover; border-radius: 50%; border:2px solid #ddd; }
+        :root {
+            /* VIP THEME: Royal Amethyst & Obsidian */
+            --accent-color: #a363ff; 
+            --accent-gradient: linear-gradient(135deg, #a363ff 0%, #6030ff 100%);
+            --glass-white: rgba(255, 255, 255, 0.02);
+            --glass-border: rgba(255, 255, 255, 0.07);
+            --bg-dark: #050508;
+            --card-bg: rgba(10, 10, 15, 0.7);
+        }
+
+        body {
+            margin: 0;
+            font-family: 'Outfit', sans-serif;
+            background: var(--bg-dark);
+            background-image: 
+                radial-gradient(circle at 0% 0%, rgba(163, 99, 255, 0.08) 0%, transparent 35%),
+                radial-gradient(circle at 100% 100%, rgba(96, 48, 255, 0.08) 0%, transparent 35%);
+            min-height: 100vh;
+            color: #d1d1d1;
+            padding: 80px 0;
+        }
+
+        /* --- LOADER --- */
+        #pageLoader {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: var(--bg-dark); display: flex; justify-content: center; align-items: center;
+            z-index: 9999;
+        }
+        .loader-bar { width: 120px; height: 1px; background: rgba(255,255,255,0.05); position: relative; overflow: hidden; }
+        .loader-bar::after { content: ''; position: absolute; left: -100%; width: 100%; height: 100%; background: var(--accent-color); animation: slide 1.2s cubic-bezier(0.4, 0, 0.2, 1) infinite; }
+        @keyframes slide { to { left: 100%; } }
+
+        /* --- BACK LINK --- */
+        .back-nav { position: fixed; top: 30px; left: 30px; z-index: 100; }
+        .back-link { 
+            color: #666; text-decoration: none; font-size: 12px; font-weight: 600;
+            background: var(--glass-white); padding: 12px 24px; border-radius: 12px;
+            border: 1px solid var(--glass-border); transition: 0.4s; text-transform: uppercase; letter-spacing: 2px;
+        }
+        .back-link:hover { color: var(--accent-color); border-color: var(--accent-color); box-shadow: 0 0 20px rgba(163, 99, 255, 0.15); }
+
+        /* --- LAYOUT --- */
+        .settings-grid {
+            max-width: 1100px; width: 95%; margin: auto;
+            display: grid; grid-template-columns: 340px 1fr; gap: 40px;
+        }
+
+        /* --- PROFILE CARD --- */
+        .profile-side {
+            background: var(--card-bg); backdrop-filter: blur(40px);
+            border: 1px solid var(--glass-border); border-radius: 40px;
+            padding: 50px 30px; text-align: center; height: fit-content;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+        }
+        .avatar-box { position: relative; width: 150px; height: 150px; margin: 0 auto 30px; }
+        .avatar-box img {
+            width: 100%; height: 100%; object-fit: cover; border-radius: 50px; 
+            border: 1px solid var(--glass-border); padding: 5px;
+        }
+        .upload-overlay {
+            position: absolute; bottom: 5px; right: 5px;
+            background: var(--accent-gradient); width: 40px; height: 40px;
+            border-radius: 15px; display: flex; align-items: center; justify-content: center;
+            cursor: pointer; border: 4px solid #0a0a0f; color: #fff; box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+
+        /* --- FORM CARD --- */
+        .form-side {
+            background: var(--card-bg); border-radius: 40px;
+            border: 1px solid var(--glass-border); padding: 50px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+        }
+
+        .section-title { font-size: 14px; font-weight: 600; margin-bottom: 35px; display: flex; align-items: center; text-transform: uppercase; letter-spacing: 3px; color: #666; }
+        .section-title i { color: var(--accent-color); margin-right: 15px; text-shadow: 0 0 10px rgba(163, 99, 255, 0.5); }
+
+        .input-group-custom { margin-bottom: 30px; }
+        .input-group-custom label { display: block; font-size: 10px; color: #444; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 12px; font-weight: 700; }
+        .input-group-custom input, .input-group-custom textarea {
+            width: 100%; background: rgba(255,255,255,0.01); border: 1px solid #15151a;
+            border-radius: 18px; padding: 16px 24px; color: #fff; transition: 0.4s; font-size: 15px;
+        }
+        .input-group-custom input:focus { border-color: var(--accent-color); outline: none; background: rgba(163, 99, 255, 0.03); box-shadow: inset 0 0 10px rgba(0,0,0,0.5); }
+
+        .btn-update {
+            background: var(--accent-gradient);
+            border: none; color: #fff; padding: 16px 40px; border-radius: 20px;
+            font-weight: 600; width: 100%; transition: 0.4s; font-size: 13px; text-transform: uppercase; letter-spacing: 2px;
+        }
+        .btn-update:hover { transform: scale(1.02); box-shadow: 0 20px 40px rgba(96, 48, 255, 0.3); }
+
+        .alert-custom {
+            background: rgba(163, 99, 255, 0.05); border: 1px solid rgba(163, 99, 255, 0.1);
+            color: var(--accent-color); padding: 20px; border-radius: 20px; margin-bottom: 35px; font-size: 14px; text-align: center;
+        }
+
+        hr { border-color: rgba(255,255,255,0.03); margin: 50px 0; }
+
+        @media (max-width: 992px) {
+            .settings-grid { grid-template-columns: 1fr; }
+            .back-nav { position: static; margin-bottom: 40px; padding-left: 2.5%; }
+        }
     </style>
 </head>
-<body class="bg-light">
+<body>
 
-<div class="container mt-5">
-    <div class="card shadow-lg">
-        <div class="card-header bg-dark text-white">
-            <h3 class="mb-0">👤 My Profile</h3>
-        </div>
+<div id="pageLoader">
+    <div class="loader-bar"></div>
+</div>
 
-        <div class="card-body">
-            <?php if($msg != ""): ?>
-                <div class="alert alert-success"><?= $msg ?></div>
-            <?php endif; ?>
+<nav class="back-nav">
+    <a href="dashboard.php" class="back-link"><i class="fa fa-arrow-left-long me-2"></i> Exit Settings</a>
+</nav>
 
+<div class="settings-grid">
+    
+    <div class="profile-side">
+        <form method="post" enctype="multipart/form-data">
+            <div class="avatar-box">
+                <img src="uploads/<?= !empty($user['avatar']) ? $user['avatar'] : 'default.png' ?>" id="preview">
+                <label for="avatar_upload" class="upload-overlay">
+                    <i class="fa fa-plus"></i>
+                </label>
+                <input type="file" id="avatar_upload" name="avatar" hidden onchange="document.getElementById('preview').src = window.URL.createObjectURL(this.files[0])">
+            </div>
+            <h3 class="mb-1" style="font-weight: 600; color: #fff;"><?= $user['name'] ?></h3>
+            <div class="mb-4"><span style="background: rgba(163, 99, 255, 0.1); color: var(--accent-color); padding: 5px 15px; border-radius: 30px; font-size: 10px; font-weight: 700; letter-spacing: 1px;">ELITE ACCESS</span></div>
+            
+            <button type="submit" name="update_profile" class="btn btn-update">Save Profile Image</button>
+        </form>
+
+        <hr>
+        <div class="small text-muted mb-1 text-uppercase" style="font-size: 9px; letter-spacing: 2px;">Account ID</div>
+        <div class="small text-white opacity-50 mb-4"><?= $user['email'] ?></div>
+        <a href="logout.php" class="text-danger text-decoration-none small fw-bold" style="letter-spacing: 1px;">TERMINATE SESSION</a>
+    </div>
+
+    <div class="form-side">
+        <?php if($success): ?>
+            <div class="alert-custom"><i class="fa fa-check-double me-2"></i> Access Granted: <?= $success ?></div>
+        <?php endif; ?>
+
+        <form method="post">
+            <div class="section-title"><i class="fa fa-sliders"></i> Master Identity</div>
             <div class="row">
-                <!-- Avatar & Upload -->
-                <div class="col-md-4 text-center">
-                    <img src="uploads/<?= !empty($user['avatar']) ? $user['avatar'] : 'default.png' ?>" class="avatar-preview mb-3">
-                    <form method="post" enctype="multipart/form-data">
-                        <input type="file" name="avatar" class="form-control mb-2">
-                        <button type="submit" name="update_profile" class="btn btn-primary w-100">Update Avatar</button>
-                    </form>
+                <div class="col-md-6 input-group-custom">
+                    <label>Full Name</label>
+                    <input type="text" name="name" value="<?= $user['name'] ?>" required>
                 </div>
-
-                <!-- Profile Info & Password -->
-                <div class="col-md-8">
-                    <form method="post" enctype="multipart/form-data">
-                        <div class="mb-3">
-                            <label>Full Name</label>
-                            <input type="text" name="name" class="form-control" value="<?= $user['name'] ?? '' ?>" required>
-                        </div>
-                        <div class="mb-3">
-                            <label>Email</label>
-                            <input type="email" class="form-control" value="<?= $user['email'] ?? '' ?>" disabled>
-                        </div>
-                        <div class="mb-3">
-                            <label>Phone</label>
-                            <input type="text" name="phone" class="form-control" value="<?= $user['phone'] ?? '' ?>">
-                        </div>
-                        <div class="mb-3">
-                            <label>Address</label>
-                            <textarea name="address" class="form-control"><?= $user['address'] ?? '' ?></textarea>
-                        </div>
-                        <button type="submit" name="update_profile" class="btn btn-success">Update Profile</button>
-                    </form>
-
-                    <hr>
-                    <h5>Change Password</h5>
-                    <form method="post">
-                        <div class="mb-3">
-                            <label>Current Password</label>
-                            <input type="password" name="current_password" class="form-control" required>
-                        </div>
-                        <div class="mb-3">
-                            <label>New Password</label>
-                            <input type="password" name="new_password" class="form-control" required>
-                        </div>
-                        <div class="mb-3">
-                            <label>Confirm New Password</label>
-                            <input type="password" name="confirm_password" class="form-control" required>
-                        </div>
-                        <button type="submit" name="change_password" class="btn btn-warning">Change Password</button>
-                    </form>
+                <div class="col-md-6 input-group-custom">
+                    <label>Encrypted Phone</label>
+                    <input type="text" name="phone" value="<?= $user['phone'] ?>">
                 </div>
             </div>
-        </div>
+            <div class="input-group-custom">
+                <label>Operational HQ Address</label>
+                <textarea name="address" rows="2" style="resize: none;"><?= $user['address'] ?></textarea>
+            </div>
+            <div class="text-end">
+                <button type="submit" name="update_profile" class="btn btn-update w-auto px-5">Sync Account</button>
+            </div>
+        </form>
 
-        <div class="card-footer text-end">
-            <a href="dashboard.php" class="btn btn-secondary me-2">⬅ Back</a>
-            <a href="logout.php" class="btn btn-outline-dark">Logout</a>
-        </div>
+        <hr>
+
+        <form method="post">
+            <div class="section-title"><i class="fa fa-vault"></i> Security Protocol</div>
+            <div class="input-group-custom">
+                <label>Master Password</label>
+                <input type="password" name="current_password" placeholder="Confirm current key" required>
+            </div>
+            <div class="row">
+                <div class="col-md-6 input-group-custom">
+                    <label>New Secret Key</label>
+                    <input type="password" name="new_password" placeholder="Min 8 characters" required>
+                </div>
+                <div class="col-md-6 input-group-custom">
+                    <label>Repeat Key</label>
+                    <input type="password" name="confirm_password" placeholder="Confirm new key" required>
+                </div>
+            </div>
+            <button type="submit" name="change_password" class="btn btn-update" style="background: transparent; border: 1px solid #222; color: #444;">
+                Recalibrate Security
+            </button>
+        </form>
     </div>
 </div>
+
+<script>
+    window.addEventListener('load', () => {
+        const loader = document.getElementById('pageLoader');
+        setTimeout(() => { 
+            loader.style.opacity = '0';
+            setTimeout(() => { loader.style.display = 'none'; }, 600);
+        }, 400);
+    });
+</script>
 
 </body>
 </html>

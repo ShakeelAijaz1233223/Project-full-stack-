@@ -1,5 +1,5 @@
 <?php
-include 'db.php'; // Ensure this file connects to your MySQL database 
+include '../config/db.php'; // Ensure this file connects to your MySQL database 
 
 ?>
 
@@ -38,8 +38,9 @@ include 'db.php'; // Ensure this file connects to your MySQL database
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
                     <li class="nav-item"><a class="nav-link" href="#home">Home</a></li>
-                    <li class="nav-item"><a class="nav-link" href="music.php">Music</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#videos">Videos</a></li>
+                    <li class="nav-item"><a class="nav-link" href="user_music_view.php">Music</a></li>
+                    <li class="nav-item"><a class="nav-link" href="user_albums_view.php">Albums</a></li>
+                    <li class="nav-item"><a class="nav-link" href="user_video_view.php">Videos</a></li>
                     <li class="nav-item"><a class="nav-link" href="#about">About</a></li>
                     <?php if(isset($_SESSION['user_id'])): ?>
                         <li class="nav-item"><a class="btn btn-outline-light ms-lg-3" href="logout.php">Logout</a></li>
