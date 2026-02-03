@@ -269,8 +269,3 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_id'])) {
 </body>
 </html> 
 
-
-
-<!-- aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa -->
-
-
