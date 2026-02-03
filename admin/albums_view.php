@@ -354,20 +354,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_id'])) {
                                 <img src="<?= $coverFile ?>" alt="cover">
                             <?php endif; ?>
                         </div>
-
-                       <div class="info">
-    <span class="title text-truncate" title="Song Title">Song Title</span>
-    <span class="artist">Artist Name</span>
+<div class="info">
+    <span class="title text-truncate" title="<?= $title ?>"><?= $title ?></span>
+    <span class="artist"><?= $artist ?></span>
 
     <div class="badge-group">
         <span class="badge-info">
-            <i class="fa-regular fa-calendar"></i> 2025
+            <i class="fa-regular fa-calendar"></i> <?= $row['year'] ?></span>
         </span>
-        <span class="badge-info">Pop</span>
-        <span class="badge-info">English</span>
+        <span class="badge-info"><?= $row['genre'] ?></span>
+        <span class="badge-info"><?= $row['language'] ?></span>
     </div>
 </div>
 
+                       
                     </div>
             <?php
                 endwhile;
