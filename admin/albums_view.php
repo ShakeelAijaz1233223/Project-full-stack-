@@ -197,6 +197,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_id'])) {
                             <?php endif; ?>
                         </div>  
                         
+                        
                         <div class="info">
                             <span class="title text-truncate" title="<?= $title ?>"><?= $title ?></span>
                             <div class="meta">
