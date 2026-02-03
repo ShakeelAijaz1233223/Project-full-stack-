@@ -254,53 +254,65 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_id'])) {
             }
         }
 
-      .info {
-    padding: 18px;
-    border-radius: 16px;
-    background: linear-gradient(145deg, #111, #1a1a1a);
-    border: 1px solid rgba(255,255,255,0.08);
-    max-width: 320px;
-}
+        .info {
+            padding: 18px 20px;
+            background: linear-gradient(180deg,
+                    rgba(255, 255, 255, 0.03),
+                    rgba(255, 255, 255, 0.01));
+            border-radius: 14px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
 
-.title {
-    font-size: 17px;
-    font-weight: 700;
-    color: #fff;
-    display: block;
-    margin-bottom: 4px;
-}
+        .title {
+            font-size: 16.5px;
+            font-weight: 700;
+            color: #ffffff;
+            display: block;
+            margin-bottom: 4px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
 
-.artist {
-    font-size: 14px;
-    font-weight: 600;
-    color: #ff3d81;
-    margin-bottom: 12px;
-    display: block;
-}
+        .artist {
+            font-size: 13.5px;
+            font-weight: 600;
+            color: var(--accent-color);
+            display: block;
+            margin-bottom: 12px;
+        }
 
-.badge-group {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-}
+        .badge-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 7px;
+        }
 
-.badge {
-    padding: 6px 12px;
-    font-size: 11px;
-    border-radius: 999px;
-    background: rgba(255,255,255,0.08);
-    color: #ccc;
-    border: 1px solid rgba(255,255,255,0.15);
-    cursor: pointer;
-    transition: all 0.25s ease;
-}
+        .badge-info {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 5px 11px;
+            font-size: 11px;
+            font-weight: 500;
+            color: var(--text-secondary);
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 999px;
+            backdrop-filter: blur(6px);
+            transition: all 0.25s ease;
+        }
 
-.badge:hover {
-    background: #ff3d81;
-    color: #fff;
-    transform: scale(1.08);
-}
+        .badge-info i {
+            font-size: 11px;
+            opacity: 0.85;
+        }
 
+        .badge-info:hover {
+            background: rgba(255, 255, 255, 0.12);
+            color: #fff;
+            transform: translateY(-1px);
+        }
     </style>
 </head>
 
@@ -426,23 +438,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_id'])) {
                 }
             });
         });
-       
-const musicData = {
-    year: "2025",
-    genre: "Pop",
-    language: "English"
-};
-
-const badgeContainer = document.getElementById("badges");
-
-Object.values(musicData).forEach(text => {
-    const badge = document.createElement("span");
-    badge.className = "badge";
-    badge.textContent = text;
-    badgeContainer.appendChild(badge);
-});
-
-
     </script>
 </body>
 
