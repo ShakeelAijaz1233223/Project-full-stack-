@@ -71,6 +71,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_id'])) {
             --transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
+        /* --- APPLY 105% ZOOM --- */
+        html {
+            zoom: 1.05; /* For Chrome, Safari, Edge */
+            -moz-transform: scale(1.05); /* For Firefox */
+            -moz-transform-origin: 0 0;
+        }
+
         body {
             background: var(--bg-color);
             background-image: radial-gradient(at 0% 0%, rgba(59, 130, 246, 0.15) 0px, transparent 50%);
@@ -160,7 +167,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_id'])) {
             flex-direction: column;
         }
 
-        /* Hover Effect: Lift + Glow */
         .card:hover {
             transform: translateY(-10px);
             border-color: rgba(59, 130, 246, 0.5);
@@ -175,7 +181,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_id'])) {
             overflow: hidden;
         }
 
-        .thumbnail video {
+        .thumbnail video, .thumbnail img {
             width: 100%;
             height: 100%;
             object-fit: cover;
@@ -185,73 +191,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_id'])) {
 
         .card:hover .thumbnail video {
             filter: brightness(1.1);
-        }
-
-        .info {
-            padding: 20px;
-        }
-
-        .title {
-            font-size: 17px;
-            font-weight: 700;
-            color: white;
-            margin-bottom: 5px;
-            display: block;
-        }
-
-        .meta {
-            font-size: 13px;
-            color: var(--text-secondary);
-            line-height: 1.6;
-        }
-
-        .meta i {
-            color: var(--accent-color);
-            width: 18px;
-        }
-
-        /* --- Delete Button (Side Slide Animation) --- */
-        .delete-btn {
-            position: absolute;
-            top: 15px;
-            right: -100px;
-            z-index: 30;
-            background: linear-gradient(135deg, #ef4444, #b91c1c);
-            color: #fff;
-            border: none;
-            padding: 6px 15px;
-            border-radius: 10px;
-            cursor: pointer;
-            font-size: 11px;
-            font-weight: 800;
-            opacity: 0;
-            transition: var(--transition);
-        }
-
-        .card:hover .delete-btn {
-            right: 15px;
-            opacity: 1;
-        }
-
-        .delete-btn:hover {
-            transform: scale(1.1);
-            box-shadow: 0 0 15px rgba(239, 68, 68, 0.5);
-        }
-
-        @media (max-width: 992px) {
-            .sidebar {
-                width: 80px;
-            }
-
-            .sidebar a span,
-            .sidebar h4 span {
-                display: none;
-            }
-
-            .main-content {
-                margin-left: 80px;
-                padding: 20px;
-            }
         }
 
         .info {
@@ -287,6 +226,34 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_id'])) {
             border-radius: 8px;
             font-size: 11px;
             border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .delete-btn {
+            position: absolute;
+            top: 15px;
+            right: -100px;
+            z-index: 30;
+            background: linear-gradient(135deg, #ef4444, #b91c1c);
+            color: #fff;
+            border: none;
+            padding: 6px 15px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 11px;
+            font-weight: 800;
+            opacity: 0;
+            transition: var(--transition);
+        }
+
+        .card:hover .delete-btn {
+            right: 15px;
+            opacity: 1;
+        }
+
+        @media (max-width: 992px) {
+            .sidebar { width: 80px; }
+            .sidebar a span, .sidebar h4 span { display: none; }
+            .main-content { margin-left: 80px; padding: 20px; }
         }
     </style>
 </head>
@@ -390,7 +357,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_id'])) {
             });
         });
 
-        // 4. Video Play/Pause Logic (Same as Gallery)
+        // 4. Video Play/Pause Logic
         const videos = document.querySelectorAll('.card video');
         videos.forEach(video => {
             video.addEventListener('click', function() {
@@ -413,7 +380,3 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_id'])) {
 </body>
 
 </html>
-
-
-
-<!-- aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa -->
