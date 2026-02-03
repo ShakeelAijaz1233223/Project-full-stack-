@@ -64,17 +64,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_id'])) {
             --bg-color: #0f172a;
             --sidebar-color: #1e293b;
             --accent-color: #3b82f6;
-            --secondary-accent: #00f2ff;
             --card-bg: rgba(30, 41, 59, 0.7);
             --text-primary: #f8fafc;
             --text-secondary: #94a3b8;
             --transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        /* --- APPLY 105% ZOOM --- */
+        /* --- REDUCED SCALE (SMALLER LOOK) --- */
         html {
-            zoom: 1.05; /* For Chrome, Safari, Edge */
-            -moz-transform: scale(1.05); /* For Firefox */
+            zoom: 0.95; /* Makes everything 5% smaller */
+            -moz-transform: scale(0.95);
             -moz-transform-origin: 0 0;
         }
 
@@ -91,27 +90,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_id'])) {
         /* --- Sidebar --- */
         .sidebar {
             position: fixed;
-            left: 0;
-            top: 0;
-            width: 240px;
-            height: 100vh;
+            left: 0; top: 0; width: 240px; height: 100vh;
             background: var(--sidebar-color);
             border-right: 1px solid rgba(255, 255, 255, 0.1);
-            padding: 30px 15px;
-            box-sizing: border-box;
-            z-index: 1000;
+            padding: 30px 15px; z-index: 1000;
         }
 
         .sidebar a {
-            display: flex;
-            align-items: center;
-            color: var(--text-secondary);
-            padding: 12px 16px;
-            margin-bottom: 8px;
-            border-radius: 12px;
-            text-decoration: none;
-            transition: var(--transition);
-            font-weight: 500;
+            display: flex; align-items: center; color: var(--text-secondary);
+            padding: 12px 16px; margin-bottom: 8px; border-radius: 12px;
+            text-decoration: none; transition: var(--transition); font-weight: 500;
         }
 
         .sidebar a:hover {
@@ -128,127 +116,57 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_id'])) {
 
         /* --- Search Box --- */
         .search-box {
-            width: 100%;
-            max-width: 550px;
-            padding: 12px 25px;
-            border-radius: 100px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            background: rgba(255, 255, 255, 0.05);
-            color: white;
-            font-size: 15px;
-            margin-bottom: 30px;
-            outline: none;
-            transition: var(--transition);
+            width: 100%; max-width: 500px; padding: 10px 20px;
+            border-radius: 100px; border: 1px solid rgba(255, 255, 255, 0.1);
+            background: rgba(255, 255, 255, 0.05); color: white;
+            font-size: 14px; margin-bottom: 30px; outline: none; transition: var(--transition);
         }
 
-        .search-box:focus {
-            border-color: var(--accent-color);
-            background: rgba(255, 255, 255, 0.08);
-            box-shadow: 0 0 20px rgba(59, 130, 246, 0.2);
-        }
+        .search-box:focus { border-color: var(--accent-color); background: rgba(255, 255, 255, 0.08); }
 
-        /* --- Grid & Card Design --- */
+        /* --- Grid --- */
         .grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 25px;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
             width: 100%;
         }
 
         .card {
-            background: var(--card-bg);
-            backdrop-filter: blur(20px);
-            border-radius: 24px;
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            overflow: hidden;
-            position: relative;
-            transition: var(--transition);
-            display: flex;
-            flex-direction: column;
+            background: var(--card-bg); backdrop-filter: blur(20px);
+            border-radius: 20px; border: 1px solid rgba(255, 255, 255, 0.05);
+            overflow: hidden; position: relative; transition: var(--transition);
+            display: flex; flex-direction: column;
         }
 
         .card:hover {
-            transform: translateY(-10px);
-            border-color: rgba(59, 130, 246, 0.5);
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4), 0 0 20px rgba(59, 130, 246, 0.2);
+            transform: translateY(-8px);
+            border-color: rgba(59, 130, 246, 0.4);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
         }
 
-        .thumbnail {
-            width: 100%;
-            aspect-ratio: 16 / 9;
-            background: #000;
-            position: relative;
-            overflow: hidden;
-        }
+        .thumbnail { width: 100%; aspect-ratio: 16 / 9; background: #000; overflow: hidden; }
+        .thumbnail video, .thumbnail img { width: 100%; height: 100%; object-fit: cover; }
 
-        .thumbnail video, .thumbnail img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            cursor: pointer;
-            transition: 0.3s;
-        }
+        .info { padding: 18px; }
+        .title { font-size: 16px; font-weight: 700; color: white; margin-bottom: 4px; display: block; }
+        .artist { color: var(--accent-color); font-size: 13px; font-weight: 600; display: block; margin-bottom: 12px; }
 
-        .card:hover .thumbnail video {
-            filter: brightness(1.1);
-        }
-
-        .info {
-            padding: 20px;
-        }
-
-        .title {
-            font-size: 17px;
-            font-weight: 700;
-            color: white;
-            margin-bottom: 5px;
-            display: block;
-        }
-
-        .artist {
-            color: var(--accent-color);
-            font-size: 14px;
-            font-weight: 600;
-            display: block;
-            margin-bottom: 10px;
-        }
-
-        .badge-group {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 6px;
-        }
-
+        .badge-group { display: flex; flex-wrap: wrap; gap: 5px; }
         .badge-info {
-            background: rgba(255, 255, 255, 0.05);
-            color: var(--text-secondary);
-            padding: 4px 10px;
-            border-radius: 8px;
-            font-size: 11px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: rgba(255, 255, 255, 0.04); color: var(--text-secondary);
+            padding: 3px 9px; border-radius: 6px; font-size: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
         }
 
         .delete-btn {
-            position: absolute;
-            top: 15px;
-            right: -100px;
-            z-index: 30;
+            position: absolute; top: 12px; right: -100px; z-index: 30;
             background: linear-gradient(135deg, #ef4444, #b91c1c);
-            color: #fff;
-            border: none;
-            padding: 6px 15px;
-            border-radius: 10px;
-            cursor: pointer;
-            font-size: 11px;
-            font-weight: 800;
-            opacity: 0;
-            transition: var(--transition);
+            color: #fff; border: none; padding: 5px 12px; border-radius: 8px;
+            cursor: pointer; font-size: 10px; font-weight: 800; opacity: 0; transition: var(--transition);
         }
 
-        .card:hover .delete-btn {
-            right: 15px;
-            opacity: 1;
-        }
+        .card:hover .delete-btn { right: 12px; opacity: 1; }
 
         @media (max-width: 992px) {
             .sidebar { width: 80px; }
@@ -269,7 +187,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_id'])) {
     </aside>
 
     <main class="main-content">
-        <input type="text" id="search" class="search-box" placeholder="🔍 Search albums or artists...">
+        <input type="text" id="search" class="search-box" placeholder="🔍 Search library...">
 
         <div class="grid" id="albumGrid">
             <?php
@@ -305,51 +223,29 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_id'])) {
                             </div>
                         </div>
                     </div>
-            <?php
-                endwhile;
-            endif; ?>
+            <?php endwhile; endif; ?>
         </div>
     </main>
 
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
-        // 1. Success Message Alert
-        const urlParams = new URLSearchParams(window.location.search);
-        if (urlParams.has('deleted')) {
-            Swal.fire({
-                title: 'Deleted!',
-                text: 'Album and files removed successfully.',
-                icon: 'success',
-                background: '#1e293b',
-                color: '#f8fafc',
-                confirmButtonColor: '#3b82f6',
-                timer: 2000
-            }).then(() => {
-                window.history.replaceState({}, document.title, window.location.pathname);
-            });
-        }
-
-        // 2. Confirm Delete Alert
+        // Delete Confirmation & Search Logic remains the same
         document.querySelectorAll('.btn-confirm-delete').forEach(button => {
             button.addEventListener('click', function() {
                 const form = this.closest('form');
                 Swal.fire({
                     title: 'Are you sure?',
-                    text: "The album files will be permanently deleted!",
+                    text: "Delete this permanently?",
                     icon: 'warning',
                     showCancelButton: true,
                     background: '#1e293b',
                     color: '#f8fafc',
                     confirmButtonColor: '#ef4444',
-                    cancelButtonColor: '#334155',
                     confirmButtonText: 'Yes, delete it!'
-                }).then((result) => {
-                    if (result.isConfirmed) form.submit();
-                });
+                }).then((result) => { if (result.isConfirmed) form.submit(); });
             });
         });
 
-        // 3. Live Search
         document.getElementById("search").addEventListener("input", function() {
             const val = this.value.toLowerCase().trim();
             document.querySelectorAll(".card").forEach(card => {
@@ -357,26 +253,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_id'])) {
             });
         });
 
-        // 4. Video Play/Pause Logic
         const videos = document.querySelectorAll('.card video');
         videos.forEach(video => {
             video.addEventListener('click', function() {
-                videos.forEach(v => {
-                    if (v !== this) {
-                        v.pause();
-                        v.controls = false;
-                    }
-                });
-                if (this.paused) {
-                    this.play();
-                    this.controls = true;
-                } else {
-                    this.pause();
-                    this.controls = false;
-                }
+                videos.forEach(v => { if (v !== this) { v.pause(); v.controls = false; } });
+                if (this.paused) { this.play(); this.controls = true; } 
+                else { this.pause(); this.controls = false; }
             });
         });
     </script>
 </body>
-
 </html>
