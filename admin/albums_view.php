@@ -426,7 +426,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_id'])) {
                 }
             });
         });
-        <script>
+       
 const musicData = {
     year: "2025",
     genre: "Pop",
@@ -441,7 +441,7 @@ Object.values(musicData).forEach(text => {
     badge.textContent = text;
     badgeContainer.appendChild(badge);
 });
-</script>
+
 
     </script>
 </body>
