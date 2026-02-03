@@ -237,13 +237,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_id'])) {
             });
         });
 
-        // Live Search
-        document.getElementById("search").addEventListener("input", function() {
-            const val = this.value.toLowerCase().trim();
-            document.querySelectorAll(".card").forEach(card => {
-                card.style.display = card.dataset.search.includes(val) ? "block" : "none";
-            });
-        });
+       
 
         // Hover Video Playback Logic
         document.querySelectorAll('.card').forEach(card => {
