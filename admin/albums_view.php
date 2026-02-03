@@ -355,15 +355,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_id'])) {
                             <?php endif; ?>
                         </div>
 
-                        <div class="info">
-                            <span class="title text-truncate" title="<?= $title ?>"><?= $title ?></span>
-                            <span class="artist"><?= $artist ?></span>
-                            <div class="badge-group">
-                                <span class="badge-info"><i class="fa-regular fa-calendar me-1"></i> <?= $row['year'] ?></span>
-                                <span class="badge-info"><?= $row['genre'] ?></span>
-                                <span class="badge-info"><?= $row['language'] ?></span>
-                            </div>
-                        </div>
+                       <div class="info">
+    <span class="title text-truncate" title="Song Title">Song Title</span>
+    <span class="artist">Artist Name</span>
+
+    <div class="badge-group">
+        <span class="badge-info">
+            <i class="fa-regular fa-calendar"></i> 2025
+        </span>
+        <span class="badge-info">Pop</span>
+        <span class="badge-info">English</span>
+    </div>
+</div>
+
                     </div>
             <?php
                 endwhile;
