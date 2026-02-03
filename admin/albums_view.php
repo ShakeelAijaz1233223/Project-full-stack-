@@ -71,9 +71,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_id'])) {
                 --transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
             }
 
-        /* --- APPLY 105% ZOOM --- */
-        
-
         body {
             background: var(--bg-color);
             background-image: radial-gradient(at 0% 0%, rgba(59, 130, 246, 0.15) 0px, transparent 50%);
@@ -82,6 +79,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_id'])) {
             font-family: 'Inter', sans-serif;
             margin: 0;
             overflow-x: hidden;
+        }
+          #pageLoader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #1e1e2f;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            transition: opacity 0.5s ease;
         }
 
         /* --- Sidebar --- */
