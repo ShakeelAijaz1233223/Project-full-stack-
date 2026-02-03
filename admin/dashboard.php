@@ -274,6 +274,25 @@ $userName = !empty($userData['name']) ? $userData['name'] : 'Admin';
                 height: 180px;
             }
         }
+
+        .dropdown-menu .btn-close:focus {
+    box-shadow: none;
+    outline: none;
+}
+
+.dropdown-item:active {
+    background-color: var(--accent-color);
+}
+
+/* Ensure dropdown works smoothly with the button toggle */
+.dropdown-menu.show {
+    animation: fadeInDown 0.3s ease-out;
+}
+
+@keyframes fadeInDown {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
     </style>
 </head>
 
@@ -312,16 +331,32 @@ $userName = !empty($userData['name']) ? $userData['name'] : 'Admin';
         </div>
 
         <div class="dropdown">
-            <div class="d-flex align-items-center" data-bs-toggle="dropdown" style="cursor: pointer;">
+            <div class="d-flex align-items-center" data-bs-toggle="dropdown" aria-expanded="false" style="cursor: pointer;">
                 <div class="text-end me-3 d-none d-md-block">
                     <p class="mb-0 fw-bold small"><?php echo htmlspecialchars($userName); ?></p>
                     <span class="badge rounded-pill" style="font-size: 9px; background: rgba(53,127,250,0.1); color: var(--secondary-accent);">Verified Admin</span>
                 </div>
                 <img src="<?php echo $profileImg; ?>" class="rounded-circle border border-2 border-white shadow-sm" width="45" height="45" style="object-fit: cover;">
             </div>
-            <ul class="dropdown-menu dropdown-menu-end shadow border-0 p-2 mt-2" style="border-radius: 12px; min-width: 200px;">
+
+            <ul class="dropdown-menu dropdown-menu-end shadow border-0 p-2 mt-2" style="border-radius: 15px; min-width: 220px;">
+                <li class="d-flex justify-content-between align-items-center px-3 py-2 mb-1 border-bottom d-md-none">
+                    <span class="fw-bold small text-muted">Account Menu</span>
+                    <button type="button" class="btn-close" style="font-size: 0.7rem;" data-bs-toggle="dropdown" aria-label="Close"></button>
+                </li>
+
                 <li><a class="dropdown-item rounded-3 py-2" href="profile.php"><i class="fa-regular fa-user me-2"></i> Account</a></li>
                 <li><a class="dropdown-item rounded-3 py-2" href="settings.php"><i class="fa-solid fa-gear me-2"></i> Preferences</a></li>
+
+                <li class="d-none d-md-block">
+                    <hr class="dropdown-divider">
+                </li>
+                <li class="d-none d-md-block">
+                    <a class="dropdown-item rounded-3 py-2 text-center small text-muted" href="#" data-bs-toggle="dropdown">
+                        <i class="fa-solid fa-chevron-up me-1"></i> Close Menu
+                    </a>
+                </li>
+
                 <li>
                     <hr class="dropdown-divider">
                 </li>
