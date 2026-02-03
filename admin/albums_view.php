@@ -426,6 +426,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_id'])) {
                 }
             });
         });
+        <script>
+const musicData = {
+    year: "2025",
+    genre: "Pop",
+    language: "English"
+};
+
+const badgeContainer = document.getElementById("badges");
+
+Object.values(musicData).forEach(text => {
+    const badge = document.createElement("span");
+    badge.className = "badge";
+    badge.textContent = text;
+    badgeContainer.appendChild(badge);
+});
+</script>
+
     </script>
 </body>
 
