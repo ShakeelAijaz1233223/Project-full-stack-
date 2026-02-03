@@ -253,41 +253,68 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_id'])) {
                 padding: 20px;
             }
         }
+.info {
+    padding: 18px 20px;
+    background: linear-gradient(
+        180deg,
+        rgba(255,255,255,0.03),
+        rgba(255,255,255,0.01)
+    );
+    border-radius: 14px;
+    border: 1px solid rgba(255,255,255,0.08);
+}
 
-            .info {
-                padding: 20px;
-            }
+.title {
+    font-size: 16.5px;
+    font-weight: 700;
+    color: #ffffff;
+    display: block;
+    margin-bottom: 4px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
 
-            .title {
-                font-size: 17px;
-                font-weight: 700;
-                color: white;
-                margin-bottom: 5px;
-                display: block;
-            }
+.artist {
+    font-size: 13.5px;
+    font-weight: 600;
+    color: var(--accent-color);
+    display: block;
+    margin-bottom: 12px;
+}
 
-            .artist {
-                color: var(--accent-color);
-                font-size: 14px;
-                font-weight: 600;
-                display: block;
-                margin-bottom: 10px;
-            }
+.badge-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 7px;
+}
 
-            .badge-group {
-                display: flex;
-                flex-wrap: wrap;
-                gap: 6px;
-            }
+.badge-info {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 5px 11px;
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--text-secondary);
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 999px;
+    backdrop-filter: blur(6px);
+    transition: all 0.25s ease;
+}
 
-            .badge-info {
-                background: rgba(255, 255, 255, 0.05);
-                color: var(--text-secondary);
-                padding: 4px 10px;
-                border-radius: 8px;
-                font-size: 11px;
-                border: 1px solid rgba(255, 255, 255, 0.1);
-            }
+.badge-info i {
+    font-size: 11px;
+    opacity: 0.85;
+}
+
+.badge-info:hover {
+    background: rgba(255,255,255,0.12);
+    color: #fff;
+    transform: translateY(-1px);
+}
+
     </style>
 </head>
 
