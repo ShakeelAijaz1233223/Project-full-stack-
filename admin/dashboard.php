@@ -1,36 +1,41 @@
 <?php
-// Define the getImagePath function
-function getImagePath($imageName, $defaultImage)
-{
-    $imagePath = 'uploads/' . $imageName;
-    return (file_exists($imagePath) && !empty($imageName)) ? $imagePath : 'uploads/' . $defaultImage;
-}
-
+session_start();
 include "../config/db.php";
 
+// Image helper - ensures we don't get broken images
+function getImagePath($imageName, $subfolder = '')
+{
+    $path = 'uploads/' . ($subfolder ? $subfolder . '/' : '') . $imageName;
+    if (!empty($imageName) && file_exists($path)) {
+        return $path;
+    }
+    return 'uploads/default.png';
+}
+
+// 1. Login check
 if (!isset($_SESSION['email'])) {
     header("Location: login.php");
     exit();
 }
 
-// Fetch counts
+// 2. Fetch stats
 $musicCount = mysqli_fetch_assoc(mysqli_query($conn, "SELECT COUNT(*) AS total FROM music"))['total'] ?? 0;
 $videoCount = mysqli_fetch_assoc(mysqli_query($conn, "SELECT COUNT(*) AS total FROM videos"))['total'] ?? 0;
 $albumCount = mysqli_fetch_assoc(mysqli_query($conn, "SELECT COUNT(*) AS total FROM albums"))['total'] ?? 0;
 $userCount  = mysqli_fetch_assoc(mysqli_query($conn, "SELECT COUNT(*) AS total FROM users"))['total'] ?? 0;
 
-// Fetch user info
+// 3. Fetch Latest Uploads
+$musicList = mysqli_query($conn, "SELECT cover_image FROM music ORDER BY id DESC LIMIT 12");
+$videoList = mysqli_query($conn, "SELECT thumbnail FROM videos ORDER BY id DESC LIMIT 12");
+$albumList = mysqli_query($conn, "SELECT cover FROM albums ORDER BY id DESC LIMIT 12");
+
+// 4. Fetch Logged-in Admin Info
 $userEmail = $_SESSION['email'];
-$userQuery = mysqli_query($conn, "SELECT * FROM users WHERE email='$userEmail'");
+$userQuery = mysqli_query($conn, "SELECT * FROM admin_users WHERE email='$userEmail'");
 $userData  = mysqli_fetch_assoc($userQuery);
 
-$profileImg = !empty($userData['avatar']) && file_exists('uploads/' . $userData['avatar']) ? $userData['avatar'] : 'default.png';
+$profileImg = getImagePath($userData['avatar'] ?? 'default.png');
 $userName = !empty($userData['name']) ? $userData['name'] : 'Admin';
-
-// Fetch images for sliders
-$musicImages = mysqli_query($conn, "SELECT cover_image FROM music ORDER BY id DESC LIMIT 5");
-$videoImages = mysqli_query($conn, "SELECT thumbnail FROM videos ORDER BY id DESC LIMIT 5");
-$albumImages = mysqli_query($conn, "SELECT cover_image FROM albums ORDER BY id DESC LIMIT 5");
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -38,27 +43,30 @@ $albumImages = mysqli_query($conn, "SELECT cover_image FROM albums ORDER BY id D
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Music Admin Dashboard</title>
+    <title>Music Sound Admin Dashboard</title>
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.css" />
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
 
     <style>
         :root {
-            --sidebar-bg: #1e1e2f;
+            --sidebar-bg: #0f111a;
             --accent-color: #e14eca;
-            --body-bg: #f8f9fe;
+            --secondary-accent: #357ffa;
+            --body-bg: #f4f7fe;
+            --glass-white: rgba(255, 255, 255, 0.9);
         }
 
         body {
-            font-family: 'Poppins', sans-serif;
+            font-family: 'Outfit', sans-serif;
             background: var(--body-bg);
+            color: #2d3748;
             overflow-x: hidden;
         }
 
-        /* --- PAGE LOADER --- */
+        /* Premium Loader */
         #pageLoader {
             position: fixed;
             top: 0;
@@ -67,19 +75,19 @@ $albumImages = mysqli_query($conn, "SELECT cover_image FROM albums ORDER BY id D
             height: 100%;
             background: #fff;
             display: flex;
+            flex-direction: column;
             justify-content: center;
             align-items: center;
-            z-index: 9999;
-            transition: opacity 0.5s ease;
+            z-index: 99999;
         }
 
-        .loader {
-            width: 50px;
-            height: 50px;
+        .loader-ring {
+            width: 60px;
+            height: 60px;
             border: 5px solid #f3f3f3;
             border-top: 5px solid var(--accent-color);
             border-radius: 50%;
-            animation: spin 1s linear infinite;
+            animation: spin 1s cubic-bezier(0.68, -0.55, 0.27, 1.55) infinite;
         }
 
         @keyframes spin {
@@ -92,123 +100,131 @@ $albumImages = mysqli_query($conn, "SELECT cover_image FROM albums ORDER BY id D
             }
         }
 
-        /* --- SIDEBAR --- */
+        /* Sidebar Responsive */
         .sidebar {
             position: fixed;
-            width: 260px;
+            width: 280px;
             height: 100vh;
             background: var(--sidebar-bg);
-            padding: 20px;
-            transition: 0.4s;
-            z-index: 1000;
+            padding: 30px 20px;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 1050;
+            left: 0;
         }
 
         .sidebar h2 {
             color: #fff;
-            font-weight: 600;
+            font-weight: 700;
             font-size: 22px;
             margin-bottom: 30px;
+            display: flex;
+            align-items: center;
         }
 
         .sidebar h2 i {
             color: var(--accent-color);
-            animation: beatPulse 1.2s infinite;
+            margin-right: 12px;
         }
 
         .sidebar a {
-            padding: 12px 15px;
+            padding: 12px 18px;
             display: flex;
             align-items: center;
-            color: rgba(255, 255, 255, 0.7);
+            color: rgba(255, 255, 255, 0.6);
             text-decoration: none;
-            border-radius: 10px;
-            margin-bottom: 8px;
+            border-radius: 12px;
+            margin-bottom: 5px;
             transition: 0.3s;
+            font-size: 0.95rem;
         }
 
         .sidebar a:hover,
         .sidebar a.active {
-            background: rgba(255, 255, 255, 0.1);
+            background: linear-gradient(45deg, var(--accent-color), var(--secondary-accent));
             color: #fff;
-            transform: translateX(5px);
+            box-shadow: 0 8px 15px rgba(225, 78, 202, 0.2);
         }
 
         .sidebar a i {
-            margin-right: 15px;
+            margin-right: 12px;
             width: 20px;
+            text-align: center;
         }
 
-        /* --- TOP NAV --- */
+        /* Top Navbar */
         .top-navbar {
             position: fixed;
-            left: 260px;
+            left: 280px;
             right: 0;
             height: 70px;
-            background: rgba(255, 255, 255, 0.8);
+            background: var(--glass-white);
             backdrop-filter: blur(10px);
             display: flex;
-            justify-content: flex-end;
+            justify-content: space-between;
             align-items: center;
-            padding: 0 40px;
-            z-index: 999;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            padding: 0 30px;
+            z-index: 1000;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+            transition: all 0.4s;
         }
 
-        /* --- MAIN CONTENT --- */
         .main-content {
-            margin-left: 260px;
-            padding: 100px 40px 40px;
-            animation: fadeInUp 0.8s ease;
+            margin-left: 280px;
+            padding: 100px 30px 40px;
+            transition: all 0.4s;
         }
 
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+        /* Mobile Overlay */
+        .sidebar-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1040;
+            display: none;
         }
 
-        /* --- STAT CARDS --- */
+        /* Modern Cards */
         .card-stats {
             background: #fff;
             border: none;
-            border-radius: 15px;
+            border-radius: 20px;
             padding: 25px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.02);
             transition: 0.3s;
             position: relative;
             overflow: hidden;
+            height: 100%;
         }
 
         .card-stats:hover {
             transform: translateY(-5px);
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.07);
         }
 
-        .card-stats::after {
-            content: "";
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 4px;
-            height: 100%;
-            background: var(--accent-color);
+        .card-stats h2 {
+            font-size: 28px;
+            font-weight: 700;
+            margin: 10px 0 0;
         }
 
-        /* --- SWIPER SLIDER --- */
-        .swiper {
-            padding: 20px 0 50px;
+        .card-stats p {
+            margin: 0;
+            font-size: 13px;
+            color: #8898aa;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
+        /* Swiper Fixes */
         .swiper-slide {
-            border-radius: 15px;
+            border-radius: 18px;
             overflow: hidden;
-            height: 200px;
+            height: 240px;
+            background: #000;
+            border: 3px solid #fff;
         }
 
         .swiper-slide img {
@@ -217,29 +233,45 @@ $albumImages = mysqli_query($conn, "SELECT cover_image FROM albums ORDER BY id D
             object-fit: cover;
         }
 
-        @keyframes beatPulse {
-
-            0%,
-            100% {
-                transform: scale(1);
-            }
-
-            50% {
-                transform: scale(1.2);
-            }
-        }
-
-        @media (max-width: 768px) {
+        /* Tablet & Mobile Adjustments */
+        @media (max-width: 992px) {
             .sidebar {
-                left: -260px;
+                left: -280px;
+            }
+
+            .sidebar.active {
+                left: 0;
+            }
+
+            .sidebar.active+.sidebar-overlay {
+                display: block;
             }
 
             .main-content {
                 margin-left: 0;
+                padding: 90px 20px 40px;
             }
 
             .top-navbar {
                 left: 0;
+                padding: 0 20px;
+            }
+
+            .mobile-toggle {
+                display: block;
+                cursor: pointer;
+                font-size: 1.5rem;
+                margin-right: 15px;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .card-stats {
+                padding: 20px;
+            }
+
+            .swiper-slide {
+                height: 180px;
             }
         }
     </style>
@@ -248,160 +280,165 @@ $albumImages = mysqli_query($conn, "SELECT cover_image FROM albums ORDER BY id D
 <body>
 
     <div id="pageLoader">
-        <div class="text-center">
-            <div class="loader mb-3"></div>
-            <p class="text-muted fw-bold">Loading Dashboard...</p>
-        </div>
+        <div class="loader-ring"></div>
+        <p class="mt-3 fw-bold text-muted text-uppercase" style="letter-spacing: 2px; font-size: 12px;">Harmonix Loading</p>
     </div>
 
-    <div class="sidebar">
+    <div class="sidebar-overlay" onclick="toggleSidebar()"></div>
 
-        <h2><i class="fa-solid fa-music"></i> Music Admin</h2>
-
-        <a href="dashboard.php"><i class="fa fa-house"></i> Dashboard</a>
-
-        <a href="profile.php"><i class="fa fa-user-circle"></i> Profile</a>
-
-        <a href="user.php"><i class="fa fa-users"></i> Users</a>
-
-        <a href="Music_View.php"><i class="fa fa-music"></i> Musics</a>
-
-        <a href="Video_View.php"><i class="fa fa-video"></i> Videos</a>
-
-        <a href="albums_View.php"><i class="fa fa-compact-disc"></i> Albums</a>
-
-        <a href="settings.php"><i class="fa fa-cogs"></i> Settings</a>
-
-
-
-        <hr style=" border-color: rgba(255,255,255,0.2); margin: 15px 0;">
-
-        <a href="add_albums.php"><i class="fa fa-compact-disc"></i> Albums</a>
-
-
-
-        <a href="add_music.php"><i class="fa fa-upload"></i> Upload Music</a>
-
-        <a href="add_video.php"><i class="fa fa-video"></i> Upload Video</a>
-
-        <hr style="border-color: rgba(255,255,255,0.2); margin: 15px 0;">
-
-        <a href="logout.php" class="text-danger"><i class="fa fa-right-from-bracket"></i> Logout</a>
-
+    <div class="sidebar" id="sidebar">
+        <h2><i class="fa-solid fa-compact-disc fa-spin"></i> Sound Music</h2>
+        <nav>
+            <a href="dashboard.php" class="active"><i class="fa-solid fa-grip"></i> Dashboard</a>
+            <a href="profile.php"><i class="fa-regular fa-user-circle"></i> Profile</a>
+            <a href="user.php"><i class="fa-solid fa-users-viewfinder"></i> Users</a>
+            <a href="Music_View.php"><i class="fa-solid fa-music"></i> Musics</a>
+            <a href="Video_View.php"><i class="fa-solid fa-play-circle"></i> Videos</a>
+            <a href="albums_View.php"><i class="fa-solid fa-record-vinyl"></i> Albums</a>
+            <a href="settings.php"><i class="fa-solid fa-sliders"></i> Settings</a>
+            <hr style="border-color: rgba(255,255,255,0.1); margin: 15px 0;">
+            <a href="add_albums.php"><i class="fa-solid fa-folder-plus"></i> Add Album</a>
+            <a href="add_music.php"><i class="fa-solid fa-cloud-arrow-up"></i> Add Music</a>
+            <a href="add_video.php"><i class="fa-solid fa-file-video"></i> Add Video</a>
+            <a href="admin_messages.php"><i class="fa-solid fa-envelope-open-text"></i> Messages</a>
+            <a href="logout.php" class="text-danger mt-3"><i class="fa-solid fa-power-off"></i> Sign Out</a>
+        </nav>
     </div>
 
     <div class="top-navbar">
+        <div class="d-flex align-items-center">
+            <div class="mobile-toggle d-lg-none" onclick="toggleSidebar()"><i class="fa-solid fa-bars-staggered"></i></div>
+            <h5 class="mb-0 fw-bold d-none d-sm-block">System Overview</h5>
+        </div>
+
         <div class="dropdown">
-            <div class="d-flex align-items-center cursor-pointer" data-bs-toggle="dropdown" style="cursor: pointer;">
+            <div class="d-flex align-items-center" data-bs-toggle="dropdown" style="cursor: pointer;">
                 <div class="text-end me-3 d-none d-md-block">
-                    <p class="mb-0 fw-bold"><?php echo htmlspecialchars($userName); ?></p>
-                    <small class="text-muted">Administrator</small>
+                    <p class="mb-0 fw-bold small"><?php echo htmlspecialchars($userName); ?></p>
+                    <span class="badge rounded-pill" style="font-size: 9px; background: rgba(53,127,250,0.1); color: var(--secondary-accent);">Verified Admin</span>
                 </div>
-                <img src="uploads/<?php echo $profileImg; ?>" class="rounded-circle border" width="45" height="45">
+                <img src="<?php echo $profileImg; ?>" class="rounded-circle border border-2 border-white shadow-sm" width="45" height="45" style="object-fit: cover;">
             </div>
-            <ul class="dropdown-menu dropdown-menu-end shadow border-0">
-                <li><a class="dropdown-item" href="profile.php"><i class="fa fa-user me-2"></i> Profile</a></li>
-                <li><a class="dropdown-item" href="settings.php"><i class="fa fa-cog me-2"></i> Settings</a></li>
+            <ul class="dropdown-menu dropdown-menu-end shadow border-0 p-2 mt-2" style="border-radius: 12px; min-width: 200px;">
+                <li><a class="dropdown-item rounded-3 py-2" href="profile.php"><i class="fa-regular fa-user me-2"></i> Account</a></li>
+                <li><a class="dropdown-item rounded-3 py-2" href="settings.php"><i class="fa-solid fa-gear me-2"></i> Preferences</a></li>
                 <li>
                     <hr class="dropdown-divider">
                 </li>
-                <li><a class="dropdown-item text-danger" href="logout.php"><i class="fa fa-power-off me-2"></i> Logout</a></li>
+                <li><a class="dropdown-item rounded-3 py-2 text-danger" href="logout.php"><i class="fa-solid fa-arrow-right-from-bracket me-2"></i> Logout</a></li>
             </ul>
         </div>
     </div>
 
     <div class="main-content">
-        <h1 class="fw-bold mb-4">Dashboard Overview</h1>
+        <div class="container-fluid p-0">
+            <div class="row mb-4 gs-anim">
+                <div class="col-12">
+                    <h2 class="fw-bold mb-1">Performance Data</h2>
+                    <p class="text-muted small">Real-time statistics of your music platform.</p>
+                </div>
+            </div>
 
-        <div class="row g-4 mb-5">
-            <div class="col-md-3">
-                <div class="card-stats">
-                    <p class="text-muted text-uppercase small fw-bold">Total Music</p>
-                    <h2 class="counter fw-bold mb-0"><?php echo $musicCount; ?></h2>
-                </div>
-            </div>
-            <div class="col-md-3">
-                <div class="card-stats">
-                    <p class="text-muted text-uppercase small fw-bold">Total Videos</p>
-                    <h2 class="counter fw-bold mb-0"><?php echo $videoCount; ?></h2>
-                </div>
-            </div>
-            <div class="col-md-3">
-                <div class="card-stats">
-                    <p class="text-muted text-uppercase small fw-bold">Total Albums</p>
-                    <h2 class="counter fw-bold mb-0"><?php echo $albumCount; ?></h2>
-                </div>
-            </div>
-            <div class="col-md-3">
-                <div class="card-stats">
-                    <p class="text-muted text-uppercase small fw-bold">Total Users</p>
-                    <h2 class="counter fw-bold mb-0"><?php echo $userCount; ?></h2>
-                </div>
-            </div>
-        </div>
-
-        <h3 class="fw-bold mb-3"><i class="fa fa-clock me-2 text-primary"></i> Recently Added Music</h3>
-        <div class="swiper mySwiperMusic">
-            <div class="swiper-wrapper">
-                <?php while ($row = mysqli_fetch_assoc($musicImages)): ?>
-                    <div class="swiper-slide shadow-sm">
-                        <img src="uploads/<?php echo $row['cover_image']; ?>" alt="Music">
+            <div class="row g-3 mb-5">
+                <div class="col-6 col-lg-3 gs-anim">
+                    <div class="card-stats">
+                        <p>Musics</p>
+                        <h2 class="counter"><?php echo $musicCount; ?></h2>
                     </div>
-                <?php endwhile; ?>
+                </div>
+                <div class="col-6 col-lg-3 gs-anim">
+                    <div class="card-stats">
+                        <p>Videos</p>
+                        <h2 class="counter"><?php echo $videoCount; ?></h2>
+                    </div>
+                </div>
+                <div class="col-6 col-lg-3 gs-anim">
+                    <div class="card-stats">
+                        <p>Albums</p>
+                        <h2 class="counter"><?php echo $albumCount; ?></h2>
+                    </div>
+                </div>
+                <div class="col-6 col-lg-3 gs-anim">
+                    <div class="card-stats">
+                        <p>Users</p>
+                        <h2 class="counter"><?php echo $userCount; ?></h2>
+                    </div>
+                </div>
             </div>
-            <div class="swiper-pagination"></div>
+
+            <?php
+            $sections = [
+                ['title' => 'Recent Music Releases', 'icon' => 'fa-bolt text-warning', 'query' => $musicList, 'folder' => 'music_covers', 'key' => 'cover_image'],
+                ['title' => 'Latest Video Premieres', 'icon' => 'fa-fire text-danger', 'query' => $videoList, 'folder' => 'video_thumbnails', 'key' => 'thumbnail'],
+                ['title' => 'New Album Entries', 'icon' => 'fa-layer-group text-success', 'query' => $albumList, 'folder' => 'albums', 'key' => 'cover']
+            ];
+
+            foreach ($sections as $sec): ?>
+                <h5 class="fw-bold mb-3 gs-anim mt-4"><i class="fa <?php echo $sec['icon']; ?> me-2"></i> <?php echo $sec['title']; ?></h5>
+                <div class="swiper mySwiper gs-anim mb-5">
+                    <div class="swiper-wrapper">
+                        <?php mysqli_data_seek($sec['query'], 0);
+                        while ($row = mysqli_fetch_assoc($sec['query'])) { ?>
+                            <div class="swiper-slide">
+                                <img src="<?php echo getImagePath($row[$sec['key']], $sec['folder']); ?>" alt="Media">
+                            </div>
+                        <?php } ?>
+                    </div>
+                    <div class="swiper-pagination mt-3"></div>
+                </div>
+            <?php endforeach; ?>
         </div>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
 
     <script>
-        // Smooth Page Loader
+        // Page Loader
         window.addEventListener('load', () => {
-            const loader = document.getElementById('pageLoader');
-            loader.style.opacity = '0';
-            setTimeout(() => loader.style.display = 'none', 500);
-        });
-
-        // Enhanced Counter Animation
-        document.querySelectorAll('.counter').forEach(counter => {
-            const target = +counter.innerText;
-            const duration = 1500; // 1.5 seconds
-            let start = 0;
-            const increment = target / (duration / 16);
-
-            const updateCount = () => {
-                start += increment;
-                if (start < target) {
-                    counter.innerText = Math.ceil(start);
-                    requestAnimationFrame(updateCount);
-                } else {
-                    counter.innerText = target;
+            gsap.to("#pageLoader", {
+                opacity: 0,
+                duration: 0.5,
+                onComplete: () => {
+                    document.getElementById('pageLoader').style.display = 'none';
+                    gsap.from(".gs-anim", {
+                        y: 30,
+                        opacity: 0,
+                        duration: 0.6,
+                        stagger: 0.1
+                    });
                 }
-            };
-            updateCount();
+            });
         });
 
-        // Swiper Initialization
-        new Swiper(".mySwiperMusic", {
-            slidesPerView: 1,
-            spaceBetween: 20,
-            loop: true,
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('active');
+        }
+
+        // Swiper Config
+        new Swiper(".mySwiper", {
+            slidesPerView: 1.2,
+            spaceBetween: 15,
             autoplay: {
-                delay: 2500,
-                disableOnInteraction: false
+                delay: 3000
             },
             pagination: {
                 el: ".swiper-pagination",
                 clickable: true
             },
             breakpoints: {
-                640: {
-                    slidesPerView: 2
+                480: {
+                    slidesPerView: 2.2
+                },
+                768: {
+                    slidesPerView: 3.2
                 },
                 1024: {
-                    slidesPerView: 4
+                    slidesPerView: 4.5
+                },
+                1400: {
+                    slidesPerView: 5.5
                 }
             }
         });
