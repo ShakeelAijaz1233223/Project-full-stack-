@@ -50,7 +50,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_id'])) {
 ?>
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -59,17 +58,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_id'])) {
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
 
-        <style>
-            :root {
-                --bg-color: #0f172a;
-                --sidebar-color: #1e293b;
-                --accent-color: #3b82f6;
-                --secondary-accent: #00f2ff;
-                --card-bg: rgba(30, 41, 59, 0.7);
-                --text-primary: #f8fafc;
-                --text-secondary: #94a3b8;
-                --transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            }
+    <style>
+        :root {
+            --bg-color: #0f172a;
+            --sidebar-color: #1e293b;
+            --accent-color: #3b82f6;
+            --secondary-accent: #00f2ff;
+            --card-bg: rgba(30, 41, 59, 0.7);
+            --text-primary: #f8fafc;
+            --text-secondary: #94a3b8;
+            --transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
 
         body {
             background: var(--bg-color);
@@ -80,71 +79,29 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_id'])) {
             margin: 0;
             overflow-x: hidden;
         }
-          #pageLoader {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: #1e1e2f;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 9999;
-            transition: opacity 0.5s ease;
-        }
 
         /* --- Sidebar --- */
         .sidebar {
-            position: fixed;
-            left: 0;
-            top: 0;
-            width: 240px;
-            height: 100vh;
-            background: var(--sidebar-color);
-            border-right: 1px solid rgba(255, 255, 255, 0.1);
-            padding: 30px 15px;
-            box-sizing: border-box;
-            z-index: 1000;
+            position: fixed; left: 0; top: 0; width: 240px; height: 100vh;
+            background: var(--sidebar-color); border-right: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 30px 15px; box-sizing: border-box; z-index: 1000;
         }
 
         .sidebar a {
-            display: flex;
-            align-items: center;
-            color: var(--text-secondary);
-            padding: 12px 16px;
-            margin-bottom: 8px;
-            border-radius: 12px;
-            text-decoration: none;
-            transition: var(--transition);
-            font-weight: 500;
+            display: flex; align-items: center; color: var(--text-secondary);
+            padding: 12px 16px; margin-bottom: 8px; border-radius: 12px;
+            text-decoration: none; transition: var(--transition); font-weight: 500;
         }
 
-        .sidebar a:hover {
-            background: rgba(59, 130, 246, 0.1);
-            color: var(--text-primary);
-            transform: translateX(5px);
-        }
+        .sidebar a:hover { background: rgba(59, 130, 246, 0.1); color: var(--text-primary); transform: translateX(5px); }
 
-        .main-content {
-            padding: 40px;
-            margin-left: 240px;
-            transition: margin-left var(--transition);
-        }
+        .main-content { padding: 40px; margin-left: 240px; transition: margin-left var(--transition); }
 
         /* --- Search Box --- */
         .search-box {
-            width: 100%;
-            max-width: 550px;
-            padding: 12px 25px;
-            border-radius: 100px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            background: rgba(255, 255, 255, 0.05);
-            color: white;
-            font-size: 15px;
-            margin-bottom: 30px;
-            outline: none;
-            transition: var(--transition);
+            width: 100%; max-width: 550px; padding: 12px 25px; border-radius: 100px;
+            border: 1px solid rgba(255, 255, 255, 0.1); background: rgba(255, 255, 255, 0.05);
+            color: white; font-size: 15px; margin-bottom: 30px; outline: none; transition: var(--transition);
         }
 
         .search-box:focus {
@@ -154,123 +111,48 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_id'])) {
         }
 
         /* --- Grid & Card Design --- */
-        .grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 25px;
-            width: 100%;
-        }
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 25px; width: 100%; }
 
         .card {
-            background: var(--card-bg);
-            backdrop-filter: blur(20px);
-            border-radius: 24px;
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            overflow: hidden;
-            position: relative;
-            transition: var(--transition);
-            display: flex;
-            flex-direction: column;
+            background: var(--card-bg); backdrop-filter: blur(20px); border-radius: 24px;
+            border: 1px solid rgba(255, 255, 255, 0.05); overflow: hidden;
+            position: relative; transition: var(--transition);
+            display: flex; flex-direction: column;
         }
 
-        .card:hover {
-            transform: translateY(-10px);
-            border-color: rgba(59, 130, 246, 0.5);
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4), 0 0 20px rgba(59, 130, 246, 0.2);
+        /* Hover Effect: Lift + Glow */
+        .card:hover { 
+            transform: translateY(-10px); 
+            border-color: rgba(59, 130, 246, 0.5); 
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4), 0 0 20px rgba(59, 130, 246, 0.2); 
         }
 
-        .thumbnail {
-            width: 100%;
-            aspect-ratio: 16 / 9;
-            background: #000;
-            position: relative;
-            overflow: hidden;
-        }
+        .thumbnail { width: 100%; aspect-ratio: 16 / 9; background: #000; position: relative; overflow: hidden; }
+        .thumbnail video { width: 100%; height: 100%; object-fit: cover; cursor: pointer; transition: 0.3s; }
+        .card:hover .thumbnail video { filter: brightness(1.1); }
 
-        .thumbnail video,
-        .thumbnail img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            cursor: pointer;
-            transition: 0.3s;
-        }
+        .info { padding: 20px; }
+        .title { font-size: 17px; font-weight: 700; color: white; margin-bottom: 5px; display: block; }
+        .meta { font-size: 13px; color: var(--text-secondary); line-height: 1.6; }
+        .meta i { color: var(--accent-color); width: 18px; }
 
-        .card:hover .thumbnail video {
-            filter: brightness(1.1);
-        }
-
-        .info {
-            padding: 20px;
-        }
-
-        .title {
-            font-size: 17px;
-            font-weight: 700;
-            color: white;
-            margin-bottom: 5px;
-            display: block;
-        }
-
-        .artist {
-            color: var(--accent-color);
-            font-size: 14px;
-            font-weight: 600;
-            display: block;
-            margin-bottom: 10px;
-        }
-
-        .badge-group {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 6px;
-        }
-
-        .badge-info {
-            background: rgba(255, 255, 255, 0.05);
-            color: var(--text-secondary);
-            padding: 4px 10px;
-            border-radius: 8px;
-            font-size: 11px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
+        /* --- Delete Button (Side Slide Animation) --- */
         .delete-btn {
-            position: absolute;
-            top: 15px;
-            right: -100px;
+            position: absolute; top: 15px; right: -100px;
             z-index: 30;
-            background: linear-gradient(135deg, #ef4444, #b91c1c);
-            color: #fff;
-            border: none;
-            padding: 6px 15px;
-            border-radius: 10px;
-            cursor: pointer;
-            font-size: 11px;
-            font-weight: 800;
-            opacity: 0;
-            transition: var(--transition);
+            background: linear-gradient(135deg, #ef4444, #b91c1c); color: #fff;
+            border: none; padding: 6px 15px; border-radius: 10px;
+            cursor: pointer; font-size: 11px; font-weight: 800;
+            opacity: 0; transition: var(--transition);
         }
 
-        .card:hover .delete-btn {
-            right: 15px;
-            opacity: 1;
-        }
+        .card:hover .delete-btn { right: 15px; opacity: 1; }
+        .delete-btn:hover { transform: scale(1.1); box-shadow: 0 0 15px rgba(239, 68, 68, 0.5); }
 
         @media (max-width: 992px) {
-            .sidebar {
-                width: 80px;
-            }
-
-            .sidebar a span,
-            .sidebar h4 span {
-                display: none;
-            }
-
-            .main-content {
-                margin-left: 80px;
-                padding: 20px;
-            }
+            .sidebar { width: 80px; }
+            .sidebar a span, .sidebar h4 span { display: none; }
+            .main-content { margin-left: 80px; padding: 20px; }
         }
     </style>
 </head>
@@ -296,33 +178,33 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_id'])) {
                     $title = htmlspecialchars($row['title']);
                     $artist = htmlspecialchars($row['artist']);
                     $videoFile = "uploads/albums/" . $row['video'];
-                    $coverFile = "uploads/albums/" . $row['cover'];
             ?>
-                    <div class="card" data-search="<?= strtolower("$title $artist {$row['genre']} {$row['language']}") ?>">
+                    <div class="card" data-search="<?= strtolower($title . ' ' . $artist) ?>">
                         <form method="POST">
                             <input type="hidden" name="delete_id" value="<?= (int)$row['id'] ?>">
                             <button type="button" class="delete-btn btn-confirm-delete">DELETE</button>
                         </form>
-
+                        
                         <div class="thumbnail">
                             <?php if (!empty($row['video']) && file_exists($videoFile)): ?>
-                                <video src="<?= $videoFile ?>" preload="metadata" muted playsinline loop></video>
+                                <video src="<?= $videoFile ?>" preload="metadata" playsinline></video>
                             <?php else: ?>
-                                <img src="<?= $coverFile ?>" alt="cover">
+                                <div class="h-100 d-flex flex-column align-items-center justify-content-center text-muted">
+                                    <i class="fa fa-video-slash mb-2 fs-4"></i>
+                                    <small>No Video</small>
+                                </div>
                             <?php endif; ?>
-                        </div>
-
+                        </div>  
+                        
                         <div class="info">
                             <span class="title text-truncate" title="<?= $title ?>"><?= $title ?></span>
-                            <span class="artist"><?= $artist ?></span>
-                            <div class="badge-group">
-                                <span class="badge-info"><i class="fa-regular fa-calendar me-1"></i> <?= $row['year'] ?></span>
-                                <span class="badge-info"><?= $row['genre'] ?></span>
-                                <span class="badge-info"><?= $row['language'] ?></span>
+                            <div class="meta">
+                                <i class="fa fa-user"></i> <?= $artist ?> <br>
+                                <i class="fa-regular fa-calendar-days"></i> <?= htmlspecialchars($row['album_year']) ?>
                             </div>
-                        </div>
+                        </div>  
                     </div>
-            <?php
+            <?php 
                 endwhile;
             endif; ?>
         </div>
@@ -374,26 +256,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_id'])) {
             });
         });
 
-        // 4. Video Play/Pause Logic
+        // 4. Video Play/Pause Logic (Same as Gallery)
         const videos = document.querySelectorAll('.card video');
         videos.forEach(video => {
             video.addEventListener('click', function() {
-                videos.forEach(v => {
-                    if (v !== this) {
-                        v.pause();
-                        v.controls = false;
-                    }
-                });
-                if (this.paused) {
-                    this.play();
-                    this.controls = true;
-                } else {
-                    this.pause();
-                    this.controls = false;
-                }
+                videos.forEach(v => { if (v !== this) { v.pause(); v.controls = false; } });
+                if (this.paused) { this.play(); this.controls = true; } 
+                else { this.pause(); this.controls = false; }
             });
         });
     </script>
 </body>
+</html> 
 
-</html>
+
+
+<!-- aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa -->
+
