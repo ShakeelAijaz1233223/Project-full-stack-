@@ -73,8 +73,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_id'])) {
 
         /* --- APPLY 105% ZOOM --- */
         html {
-            zoom: 1.05; /* For Chrome, Safari, Edge */
-            -moz-transform: scale(1.05); /* For Firefox */
+            zoom: 1.05;
+            /* For Chrome, Safari, Edge */
+            -moz-transform: scale(1.05);
+            /* For Firefox */
             -moz-transform-origin: 0 0;
         }
 
@@ -181,7 +183,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_id'])) {
             overflow: hidden;
         }
 
-        .thumbnail video, .thumbnail img {
+        .thumbnail video,
+        .thumbnail img {
             width: 100%;
             height: 100%;
             object-fit: cover;
@@ -251,9 +254,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_id'])) {
         }
 
         @media (max-width: 992px) {
-            .sidebar { width: 80px; }
-            .sidebar a span, .sidebar h4 span { display: none; }
-            .main-content { margin-left: 80px; padding: 20px; }
+            .sidebar {
+                width: 80px;
+            }
+
+            .sidebar a span,
+            .sidebar h4 span {
+                display: none;
+            }
+
+            .main-content {
+                margin-left: 80px;
+                padding: 20px;
+            }
         }
     </style>
 </head>

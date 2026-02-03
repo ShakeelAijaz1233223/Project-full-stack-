@@ -67,12 +67,11 @@ if (isset($_POST['upload'])) {
                 $query = "INSERT INTO videos (title, file, thumbnail) VALUES ('$title', '$newVideoName', '$newImageName')";
 
                 if (mysqli_query($conn, $query)) {
-    $adminName = $_SESSION['name'] ?? 'Admin'; // fallback if session name is not set
-    $success = "Video published successfully by Admin: " . $adminName;
-} else {
-    $error = "Database error: " . mysqli_error($conn);
-}
-
+                    $adminName = $_SESSION['name'] ?? 'Admin'; // fallback if session name is not set
+                    $success = "Video published successfully by Admin: " . $adminName;
+                } else {
+                    $error = "Database error: " . mysqli_error($conn);
+                }
             } else {
                 $error = "Upload failed. Check 'upload_max_filesize' in PHP settings or folder permissions.";
             }
