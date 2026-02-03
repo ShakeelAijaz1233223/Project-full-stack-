@@ -154,7 +154,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_id'])) {
             .sidebar a span, .sidebar h4 span { display: none; }
             .main-content { margin-left: 80px; padding: 20px; }
         }
-        
     </style>
 </head>
 
@@ -179,32 +178,32 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_id'])) {
                     $title = htmlspecialchars($row['title']);
                     $artist = htmlspecialchars($row['artist']);
                     $videoFile = "uploads/albums/" . $row['video'];
-                    $coverFile = "uploads/albums/" . $row['cover'];
             ?>
-                <div class="card" data-search="<?= strtolower("$title $artist {$row['genre']} {$row['language']}") ?>">
-                    <form method="POST">
-                        <input type="hidden" name="delete_id" value="<?= (int)$row['id'] ?>">
-                        <button type="button" class="delete-btn btn-confirm-delete">DELETE</button>
-                    </form>
-                    
-                    <div class="thumbnail">
-                        <?php if (!empty($row['video']) && file_exists($videoFile)): ?>
-                            <video src="<?= $videoFile ?>" preload="metadata" muted playsinline loop></video>
-                        <?php else: ?>
-                            <img src="<?= $coverFile ?>" alt="cover">
-                        <?php endif; ?>
-                    </div>  
-                    
-                    <div class="info">
-                        <span class="title text-truncate" title="<?= $title ?>"><?= $title ?></span>
-                        <span class="artist"><?= $artist ?></span>
-                        <div class="badge-group">
-                            <span class="badge-info"><i class="fa-regular fa-calendar me-1"></i> <?= $row['year'] ?></span>
-                            <span class="badge-info"><?= $row['genre'] ?></span>
-                            <span class="badge-info"><?= $row['language'] ?></span>
-                        </div>
-                    </div>  
-                </div>
+                    <div class="card" data-search="<?= strtolower($title . ' ' . $artist) ?>">
+                        <form method="POST">
+                            <input type="hidden" name="delete_id" value="<?= (int)$row['id'] ?>">
+                            <button type="button" class="delete-btn btn-confirm-delete">DELETE</button>
+                        </form>
+                        
+                        <div class="thumbnail">
+                            <?php if (!empty($row['video']) && file_exists($videoFile)): ?>
+                                <video src="<?= $videoFile ?>" preload="metadata" playsinline></video>
+                            <?php else: ?>
+                                <div class="h-100 d-flex flex-column align-items-center justify-content-center text-muted">
+                                    <i class="fa fa-video-slash mb-2 fs-4"></i>
+                                    <small>No Video</small>
+                                </div>
+                            <?php endif; ?>
+                        </div>  
+                        
+                        <div class="info">
+                            <span class="title text-truncate" title="<?= $title ?>"><?= $title ?></span>
+                            <div class="meta">
+                                <i class="fa fa-user"></i> <?= $artist ?> <br>
+                                <i class="fa-regular fa-calendar-days"></i> <?= htmlspecialchars($row['album_year']) ?>
+                            </div>
+                        </div>  
+                    </div>
             <?php 
                 endwhile;
             endif; ?>
