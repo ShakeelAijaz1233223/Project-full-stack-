@@ -170,7 +170,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_id'])) {
     <main class="main-content">
         <input type="text" id="search" class="search-box" placeholder="🔍 Search albums or artists...">
 
-        <div class="grid" id="albumGrid">
+       <div class="grid" id="albumGrid">
             <?php
             $result = $conn->query("SELECT * FROM albums ORDER BY id DESC");
             if ($result->num_rows > 0):
@@ -180,33 +180,31 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_id'])) {
                     $videoFile = "uploads/albums/" . $row['video'];
                     $coverFile = "uploads/albums/" . $row['cover'];
             ?>
-                    <div class="card" data-search="<?= strtolower($title . ' ' . $artist) ?>">
+                    <div class="card" data-search="<?= strtolower("$title $artist {$row['genre']} {$row['language']}") ?>">
                         <form method="POST">
                             <input type="hidden" name="delete_id" value="<?= (int)$row['id'] ?>">
                             <button type="button" class="delete-btn btn-confirm-delete">DELETE</button>
                         </form>
-                        
+
                         <div class="thumbnail">
                             <?php if (!empty($row['video']) && file_exists($videoFile)): ?>
                                 <video src="<?= $videoFile ?>" preload="metadata" playsinline></video>
                             <?php else: ?>
-                                <div class="h-100 d-flex flex-column align-items-center justify-content-center text-muted">
-                                    <i class="fa fa-video-slash mb-2 fs-4"></i>
-                                    <small>No Video</small>
-                                </div>
+                                <img src="<?= $coverFile ?>" alt="cover">
                             <?php endif; ?>
-                        </div>  
-                        
-                        
+                        </div>
+
                         <div class="info">
                             <span class="title text-truncate" title="<?= $title ?>"><?= $title ?></span>
-                            <div class="meta">
-                                <i class="fa fa-user"></i> <?= $artist ?> <br>
-                                <i class="fa-regular fa-calendar-days"></i> <?= htmlspecialchars($row['album_year']) ?>
+                            <span class="artist"><?= $artist ?></span>
+                            <div class="badge-group">
+                                <span class="badge-info"><i class="fa-regular fa-calendar me-1"></i> <?= $row['year'] ?></span>
+                                <span class="badge-info"><?= $row['genre'] ?></span>
+                                <span class="badge-info"><?= $row['language'] ?></span>
                             </div>
-                        </div>  
+                        </div>
                     </div>
-            <?php 
+            <?php
                 endwhile;
             endif; ?>
         </div>
