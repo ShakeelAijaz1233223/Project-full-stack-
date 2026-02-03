@@ -19,31 +19,23 @@ $stmt->bind_param("i", $admin_id);
 $stmt->execute();
 
 /* ===============================
-    3. DELETE ALBUM & FILES (POST)
+    3. DELETE ALBUM & FILES
 ================================ */
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_id'])) {
     $id = (int)$_POST['delete_id'];
-
     $stmt = $conn->prepare("SELECT video, cover, audio FROM albums WHERE id = ?");
     $stmt->bind_param("i", $id);
     $stmt->execute();
     $res = $stmt->get_result();
 
     if ($row = $res->fetch_assoc()) {
-        $videoPath = "../uploads/albums/" . $row['video'];
-        if (!empty($row['video']) && file_exists($videoPath)) unlink($videoPath);
-
-        $coverPath = "../uploads/covers/" . $row['cover'];
-        if (!empty($row['cover']) && file_exists($coverPath)) unlink($coverPath);
-
-        $audioPath = "../uploads/audio/" . $row['audio'];
-        if (!empty($row['audio']) && file_exists($audioPath)) unlink($audioPath);
-
+        foreach(['video' => '../uploads/albums/', 'cover' => '../uploads/covers/', 'audio' => '../uploads/audio/'] as $key => $path) {
+            if (!empty($row[$key]) && file_exists($path . $row[$key])) unlink($path . $row[$key]);
+        }
         $del = $conn->prepare("DELETE FROM albums WHERE id = ?");
         $del->bind_param("i", $id);
         $del->execute();
     }
-
     header("Location: " . $_SERVER['PHP_SELF'] . "?deleted=1");
     exit();
 }
@@ -53,219 +45,221 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_id'])) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Albums Library | Admin</title>
+    <title>Media Library Manager | Admin</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
-
     <style>
         :root {
             --bg-color: #0f172a;
             --sidebar-color: #1e293b;
             --accent-color: #3b82f6;
-            --secondary-accent: #00f2ff;
             --card-bg: rgba(30, 41, 59, 0.7);
             --text-primary: #f8fafc;
             --text-secondary: #94a3b8;
-            --transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         body {
             background: var(--bg-color);
-            background-image: radial-gradient(at 0% 0%, rgba(59, 130, 246, 0.15) 0px, transparent 50%);
             color: var(--text-primary);
-            min-height: 100vh;
             font-family: 'Inter', sans-serif;
             margin: 0;
-            overflow-x: hidden;
+            padding-bottom: 80px; /* Space for Mobile Nav */
         }
 
-        /* --- Sidebar --- */
+        /* --- Sidebar & Desktop Nav --- */
         .sidebar {
-            position: fixed; left: 0; top: 0; width: 240px; height: 100vh;
+            position: fixed; left: 0; top: 0; width: 260px; height: 100vh;
             background: var(--sidebar-color); border-right: 1px solid rgba(255, 255, 255, 0.1);
-            padding: 30px 15px; box-sizing: border-box; z-index: 1000;
+            padding: 30px 15px; z-index: 1000; overflow-y: auto;
         }
 
-        .sidebar a {
+        .sidebar a, .nav-link-mobile {
             display: flex; align-items: center; color: var(--text-secondary);
-            padding: 12px 16px; margin-bottom: 8px; border-radius: 12px;
-            text-decoration: none; transition: var(--transition); font-weight: 500;
+            padding: 12px 16px; margin-bottom: 5px; border-radius: 12px;
+            text-decoration: none; transition: 0.3s; font-weight: 500;
         }
 
-        .sidebar a:hover { background: rgba(59, 130, 246, 0.1); color: var(--text-primary); transform: translateX(5px); }
+        .sidebar a:hover, .sidebar a.active { background: rgba(59, 130, 246, 0.1); color: var(--text-primary); }
 
-        .main-content { padding: 40px; margin-left: 240px; transition: margin-left var(--transition); }
+        /* --- Filter Group --- */
+        .filter-section { margin-top: 25px; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.1); }
+        .filter-label { font-size: 11px; text-transform: uppercase; color: var(--accent-color); letter-spacing: 1px; font-weight: 800; margin-bottom: 10px; display: block; }
+        .filter-select { background: #0f172a; border: 1px solid #334155; color: white; border-radius: 8px; font-size: 13px; width: 100%; padding: 8px; margin-bottom: 15px; }
 
-        /* --- Search Box --- */
-        .search-box {
-            width: 100%; max-width: 550px; padding: 12px 25px; border-radius: 100px;
-            border: 1px solid rgba(255, 255, 255, 0.1); background: rgba(255, 255, 255, 0.05);
-            color: white; font-size: 15px; margin-bottom: 30px; outline: none; transition: var(--transition);
+        /* --- Mobile Navigation --- */
+        .mobile-nav {
+            display: none; position: fixed; bottom: 0; left: 0; width: 100%;
+            background: var(--sidebar-color); border-top: 1px solid rgba(255,255,255,0.1);
+            z-index: 2000; padding: 10px 0; justify-content: space-around;
         }
+        .mobile-nav a { color: var(--text-secondary); text-align: center; font-size: 20px; text-decoration: none; }
+        .mobile-nav a span { display: block; font-size: 10px; }
+        .mobile-nav a.active { color: var(--accent-color); }
 
-        .search-box:focus {
-            border-color: var(--accent-color);
-            background: rgba(255, 255, 255, 0.08);
-            box-shadow: 0 0 20px rgba(59, 130, 246, 0.2);
-        }
+        /* --- Main Content --- */
+        .main-content { padding: 30px; margin-left: 260px; }
 
-        /* --- Grid & Card Design --- */
-        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 25px; width: 100%; }
+        .search-container { position: sticky; top: 0; z-index: 900; background: var(--bg-color); padding: 10px 0 20px 0; }
+        .search-box { width: 100%; max-width: 600px; padding: 12px 25px; border-radius: 50px; border: 1px solid #334155; background: #1e293b; color: white; outline: none; }
+
+        /* --- Responsive Grid --- */
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; }
 
         .card {
-            background: var(--card-bg); backdrop-filter: blur(20px); border-radius: 24px;
-            border: 1px solid rgba(255, 255, 255, 0.05); overflow: hidden;
-            position: relative; transition: var(--transition);
-            display: flex; flex-direction: column;
+            background: var(--card-bg); border-radius: 20px; border: 1px solid rgba(255,255,255,0.05);
+            overflow: hidden; transition: 0.3s; position: relative;
         }
+        .card:hover { transform: translateY(-5px); border-color: var(--accent-color); }
 
-        /* Hover Effect: Lift + Glow */
-        .card:hover { 
-            transform: translateY(-10px); 
-            border-color: rgba(59, 130, 246, 0.5); 
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4), 0 0 20px rgba(59, 130, 246, 0.2); 
-        }
+        .thumbnail { width: 100%; aspect-ratio: 16/9; background: #000; }
+        .thumbnail video { width: 100%; height: 100%; object-fit: cover; }
 
-        .thumbnail { width: 100%; aspect-ratio: 16 / 9; background: #000; position: relative; overflow: hidden; }
-        .thumbnail video { width: 100%; height: 100%; object-fit: cover; cursor: pointer; transition: 0.3s; }
-        .card:hover .thumbnail video { filter: brightness(1.1); }
+        .info { padding: 15px; }
+        .title { font-size: 16px; font-weight: 700; color: white; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .meta-tags { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 8px; }
+        .tag { font-size: 10px; background: rgba(59, 130, 246, 0.2); color: #60a5fa; padding: 2px 8px; border-radius: 4px; }
 
-        .info { padding: 20px; }
-        .title { font-size: 17px; font-weight: 700; color: white; margin-bottom: 5px; display: block; }
-        .meta { font-size: 13px; color: var(--text-secondary); line-height: 1.6; }
-        .meta i { color: var(--accent-color); width: 18px; }
-
-        /* --- Delete Button (Side Slide Animation) --- */
-        .delete-btn {
-            position: absolute; top: 15px; right: -100px;
-            z-index: 30;
-            background: linear-gradient(135deg, #ef4444, #b91c1c); color: #fff;
-            border: none; padding: 6px 15px; border-radius: 10px;
-            cursor: pointer; font-size: 11px; font-weight: 800;
-            opacity: 0; transition: var(--transition);
-        }
-
-        .card:hover .delete-btn { right: 15px; opacity: 1; }
-        .delete-btn:hover { transform: scale(1.1); box-shadow: 0 0 15px rgba(239, 68, 68, 0.5); }
+        .delete-btn { position: absolute; top: 10px; right: 10px; background: #ef4444; border: none; color: white; border-radius: 50%; width: 30px; height: 30px; cursor: pointer; display: none; }
+        .card:hover .delete-btn { display: block; }
 
         @media (max-width: 992px) {
-            .sidebar { width: 80px; }
-            .sidebar a span, .sidebar h4 span { display: none; }
-            .main-content { margin-left: 80px; padding: 20px; }
+            .sidebar { display: none; }
+            .mobile-nav { display: flex; }
+            .main-content { margin-left: 0; padding: 15px; }
+            .grid { grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 10px; }
+            .delete-btn { display: block; opacity: 0.8; }
         }
     </style>
 </head>
-
 <body>
+
     <aside class="sidebar">
-        <div class="mb-5 px-3">
-            <h4 class="fw-bold text-white"><i class="fa-solid fa-compact-disc text-primary me-2"></i><span>Admin</span></h4>
+        <h4 class="fw-bold mb-4 px-3"><i class="fa-solid fa-compact-disc me-2 text-primary"></i> Admin</h4>
+        <a href="dashboard.php"><i class="fa fa-home me-3"></i> Dashboard</a>
+        <a href="add_albums.php"><i class="fa fa-upload me-3"></i> Upload New</a>
+        <a href="albums_library.php" class="active"><i class="fa fa-music me-3"></i> Media Library</a>
+        
+        <div class="filter-section">
+            <span class="filter-label">Quick Filters</span>
+            
+            <label class="filter-label">Language</label>
+            <select class="filter-select js-filter" data-filter="language">
+                <option value="all">All Languages</option>
+                <option value="english">English</option>
+                <option value="hindi">Hindi</option>
+                <option value="spanish">Spanish</option>
+            </select>
+
+            <label class="filter-label">Genre</label>
+            <select class="filter-select js-filter" data-filter="genre">
+                <option value="all">All Genres</option>
+                <option value="pop">Pop</option>
+                <option value="rock">Rock</option>
+                <option value="hip-hop">Hip Hop</option>
+            </select>
         </div>
-        <a href="dashboard.php"><i class="fa-solid fa-house"></i> <span>Dashboard</span></a>
-        <a href="add_albums.php"><i class="fa-solid fa-cloud-arrow-up"></i> <span>Upload</span></a>
-        <a href="logout.php" class="text-danger mt-4"><i class="fa-solid fa-right-from-bracket"></i> <span>Logout</span></a>
+
+        <a href="logout.php" class="text-danger mt-5"><i class="fa fa-sign-out me-3"></i> Logout</a>
     </aside>
 
+    <nav class="mobile-nav">
+        <a href="dashboard.php"><i class="fa fa-home"></i><span>Home</span></a>
+        <a href="add_albums.php"><i class="fa fa-plus-circle"></i><span>Upload</span></a>
+        <a href="albums_library.php" class="active"><i class="fa fa-layer-group"></i><span>Library</span></a>
+        <a href="logout.php"><i class="fa fa-user"></i><span>Logout</span></a>
+    </nav>
+
     <main class="main-content">
-        <input type="text" id="search" class="search-box" placeholder="🔍 Search albums or artists...">
+        <div class="search-container">
+            <input type="text" id="search" class="search-box" placeholder="Search by Album, Artist, or Year...">
+        </div>
 
         <div class="grid" id="albumGrid">
             <?php
+            // Assuming columns: id, title, artist, album_year, genre, language, video
             $result = $conn->query("SELECT * FROM albums ORDER BY id DESC");
-            if ($result->num_rows > 0):
-                while ($row = $result->fetch_assoc()):
-                    $title = htmlspecialchars($row['title']);
-                    $artist = htmlspecialchars($row['artist']);
-                    $videoFile = "uploads/albums/" . $row['video'];
+            while ($row = $result->fetch_assoc()):
+                $searchStr = strtolower($row['title'].' '.$row['artist'].' '.$row['album_year'].' '.$row['genre'].' '.$row['language']);
             ?>
-                    <div class="card" data-search="<?= strtolower($title . ' ' . $artist) ?>">
-                        <form method="POST">
-                            <input type="hidden" name="delete_id" value="<?= (int)$row['id'] ?>">
-                            <button type="button" class="delete-btn btn-confirm-delete">DELETE</button>
-                        </form>
-                        
-                        <div class="thumbnail">
-                            <?php if (!empty($row['video']) && file_exists($videoFile)): ?>
-                                <video src="<?= $videoFile ?>" preload="metadata" playsinline></video>
-                            <?php else: ?>
-                                <div class="h-100 d-flex flex-column align-items-center justify-content-center text-muted">
-                                    <i class="fa fa-video-slash mb-2 fs-4"></i>
-                                    <small>No Video</small>
-                                </div>
-                            <?php endif; ?>
-                        </div>  
-                        
-                        <div class="info">
-                            <span class="title text-truncate" title="<?= $title ?>"><?= $title ?></span>
-                            <div class="meta">
-                                <i class="fa fa-user"></i> <?= $artist ?> <br>
-                                <i class="fa-regular fa-calendar-days"></i> <?= htmlspecialchars($row['album_year']) ?>
+                <div class="card" 
+                     data-search="<?= $searchStr ?>" 
+                     data-genre="<?= strtolower($row['genre']) ?>" 
+                     data-language="<?= strtolower($row['language']) ?>">
+                    
+                    <form method="POST">
+                        <input type="hidden" name="delete_id" value="<?= $row['id'] ?>">
+                        <button type="button" class="delete-btn btn-confirm-delete"><i class="fa fa-trash-can"></i></button>
+                    </form>
+
+                    <div class="thumbnail">
+                        <?php $v = "uploads/albums/".$row['video']; ?>
+                        <?php if(!empty($row['video']) && file_exists("../".$v)): ?>
+                            <video src="../<?= $v ?>" preload="metadata" muted loop onmouseover="this.play()" onmouseout="this.pause(); this.currentTime=0;"></video>
+                        <?php else: ?>
+                            <div class="h-100 d-flex flex-column align-items-center justify-content-center text-muted">
+                                <i class="fa fa-music mb-2 fs-2"></i>
+                                <small>No Preview</small>
                             </div>
-                        </div>  
+                        <?php endif; ?>
                     </div>
-            <?php 
-                endwhile;
-            endif; ?>
+
+                    <div class="info">
+                        <div class="title" title="<?= htmlspecialchars($row['title']) ?>"><?= htmlspecialchars($row['title']) ?></div>
+                        <small class="text-secondary d-block mt-1"><?= htmlspecialchars($row['artist']) ?></small>
+                        
+                        <div class="meta-tags">
+                            <span class="tag"><?= htmlspecialchars($row['album_year']) ?></span>
+                            <span class="tag"><?= htmlspecialchars($row['genre']) ?></span>
+                            <span class="tag"><?= htmlspecialchars($row['language']) ?></span>
+                        </div>
+                    </div>
+                </div>
+            <?php endwhile; ?>
         </div>
     </main>
 
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
-        // 1. Success Message Alert
-        const urlParams = new URLSearchParams(window.location.search);
-        if (urlParams.has('deleted')) {
-            Swal.fire({
-                title: 'Deleted!',
-                text: 'Album and files removed successfully.',
-                icon: 'success',
-                background: '#1e293b',
-                color: '#f8fafc',
-                confirmButtonColor: '#3b82f6',
-                timer: 2000
-            }).then(() => {
-                window.history.replaceState({}, document.title, window.location.pathname);
+        // Delete Confirmation
+        document.querySelectorAll('.btn-confirm-delete').forEach(btn => {
+            btn.onclick = function() {
+                Swal.fire({
+                    title: 'Delete this item?',
+                    text: "Files will be removed from server.",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#ef4444',
+                    background: '#1e293b',
+                    color: '#fff'
+                }).then((res) => { if(res.isConfirmed) this.closest('form').submit(); });
+            }
+        });
+
+        // Combined Search and Dynamic Filters
+        const searchInput = document.getElementById('search');
+        const filterDropdowns = document.querySelectorAll('.js-filter');
+        const cards = document.querySelectorAll('.card');
+
+        function applyFilters() {
+            const searchTerm = searchInput.value.toLowerCase();
+            const activeFilters = Array.from(filterDropdowns).map(f => ({
+                type: f.dataset.filter,
+                value: f.value.toLowerCase()
+            }));
+
+            cards.forEach(card => {
+                const matchesSearch = card.dataset.search.includes(searchTerm);
+                const matchesFilters = activeFilters.every(f => 
+                    f.value === 'all' || card.getAttribute(`data-${f.type}`) === f.value
+                );
+
+                card.style.display = (matchesSearch && matchesFilters) ? "block" : "none";
             });
         }
 
-        // 2. Confirm Delete Alert
-        document.querySelectorAll('.btn-confirm-delete').forEach(button => {
-            button.addEventListener('click', function() {
-                const form = this.closest('form');
-                Swal.fire({
-                    title: 'Are you sure?',
-                    text: "The album files will be permanently deleted!",
-                    icon: 'warning',
-                    showCancelButton: true,
-                    background: '#1e293b',
-                    color: '#f8fafc',
-                    confirmButtonColor: '#ef4444',
-                    cancelButtonColor: '#334155',
-                    confirmButtonText: 'Yes, delete it!'
-                }).then((result) => {
-                    if (result.isConfirmed) form.submit();
-                });
-            });
-        });
-
-        // 3. Live Search
-        document.getElementById("search").addEventListener("input", function() {
-            const val = this.value.toLowerCase().trim();
-            document.querySelectorAll(".card").forEach(card => {
-                card.style.display = card.dataset.search.includes(val) ? "flex" : "none";
-            });
-        });
-
-        // 4. Video Play/Pause Logic (Same as Gallery)
-        const videos = document.querySelectorAll('.card video');
-        videos.forEach(video => {
-            video.addEventListener('click', function() {
-                videos.forEach(v => { if (v !== this) { v.pause(); v.controls = false; } });
-                if (this.paused) { this.play(); this.controls = true; } 
-                else { this.pause(); this.controls = false; }
-            });
-        });
+        searchInput.oninput = applyFilters;
+        filterDropdowns.forEach(f => f.onchange = applyFilters);
     </script>
 </body>
-</html> 
-
+</html>
