@@ -18,6 +18,25 @@ if (isset($_GET['delete'])) {
     }
 }
 
+include "../config/db.php";
+
+if(isset($_POST['submit_review'])){
+    $album_id = (int)$_POST['album_id'];
+    $user_name = mysqli_real_escape_string($conn, $_POST['user_name']);
+    $rating = (int)$_POST['rating'];
+    $review_text = mysqli_real_escape_string($conn, $_POST['review_text']);
+
+    $query = "INSERT INTO album_reviews (album_id, user_name, rating, review_text) 
+              VALUES ('$album_id', '$user_name', '$rating', '$review_text')";
+    
+    if(mysqli_query($conn, $query)){
+        header("Location: " . $_SERVER['HTTP_REFERER']); // Wapas usi page par bhej dega
+    } else {
+        echo "Error: " . mysqli_error($conn);
+    }
+}
+
+
 // Fetch albums
 $albums = mysqli_query($conn, "SELECT * FROM albums ORDER BY created_at DESC");
 ?>
