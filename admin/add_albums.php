@@ -2,77 +2,56 @@
 session_start();
 include "../config/db.php";
 
-/* ===============================
-   ADMIN AUTH (SAME AS DASHBOARD)
-================================ */
 if (!isset($_SESSION['email']) || !isset($_SESSION['admin_id'])) {
     header("Location: login.php");
     exit();
 }
 
-include "../config/db.php";
-
 $error = '';
 $success = '';
 
-// Folder check logic
 $uploadDir = "uploads/albums/";
 if (!is_dir($uploadDir)) {
     mkdir($uploadDir, 0777, true);
 }
 
-// Upload helper function
 function uploadFile($file, $allowedExt) {
     global $uploadDir;
     if ($file && $file['error'] === 0) {
         $ext = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
         if (!in_array($ext, $allowedExt)) {
-            return ['error' => "Invalid file type: {$file['name']}"];
+            return ['error' => "Invalid file: {$file['name']}"];
         }
         $newName = time() . '_' . uniqid() . '.' . $ext;
         if (move_uploaded_file($file['tmp_name'], $uploadDir . $newName)) {
             return ['name' => $newName];
-        } else {
-            return ['error' => "Failed to upload: {$file['name']}"];
         }
     }
     return ['name' => null];
 }
 
 if (isset($_POST['upload'])) {
-    $title  = mysqli_real_escape_string($conn, $_POST['title']);
-    $artist = mysqli_real_escape_string($conn, $_POST['artist']);
+    $title    = mysqli_real_escape_string($conn, $_POST['title']);
+    $artist   = mysqli_real_escape_string($conn, $_POST['artist']);
+    $year     = mysqli_real_escape_string($conn, $_POST['year']);
+    $genre    = mysqli_real_escape_string($conn, $_POST['genre']);
+    $language = mysqli_real_escape_string($conn, $_POST['language']);
 
-    $coverFile = $_FILES['cover'] ?? null;
-    $audioFile = $_FILES['audio'] ?? null;
-    $videoFile = $_FILES['video'] ?? null;
+    $cover = uploadFile($_FILES['cover'] ?? null, ['jpg','jpeg','png','webp']);
+    $audio = uploadFile($_FILES['audio'] ?? null, ['mp3','wav','ogg']);
+    $video = uploadFile($_FILES['video'] ?? null, ['mp4','webm','ogv']);
 
-    // Process Uploads
-    $cover = uploadFile($coverFile, ['jpg','jpeg','png','webp']);
-    $audio = uploadFile($audioFile, ['mp3','wav','ogg']);
-    $video = uploadFile($videoFile, ['mp4','webm','ogv']);
-
-    // Validation & Database Entry
-    if (!empty($cover['error'])) {
-        $error = $cover['error'];
-    } elseif (!empty($audio['error'])) {
-        $error = $audio['error'];
-    } elseif (!empty($video['error'])) {
-        $error = $video['error'];
-    } elseif (empty($audio['name']) && empty($video['name'])) {
-        $error = "At least one media file (audio or video) is required.";
+    if (empty($audio['name']) && empty($video['name'])) {
+        $error = "Please upload at least one Audio or Video file.";
     } else {
-        // Query to insert data
-        $query = "INSERT INTO albums (title, artist, cover, audio, video) 
-                  VALUES ('$title', '$artist', '{$cover['name']}', '{$audio['name']}', '{$video['name']}')";
+        $query = "INSERT INTO albums (title, artist, year, genre, language, cover, audio, video) 
+                  VALUES ('$title', '$artist', '$year', '$genre', '$language', '{$cover['name']}', '{$audio['name']}', '{$video['name']}')";
 
         if (mysqli_query($conn, $query)) {
-    $adminName = $_SESSION['name'] ?? 'Admin'; // fallback if session name is not set
-    $success = "Album published successfully. " . $adminName;
-} else {
-    $error = "Database error: " . mysqli_error($conn);
-}
-
+            $success = "Album published successfully!";
+        } else {
+            $error = "Error: " . mysqli_error($conn);
+        }
     }
 }
 ?>
@@ -82,7 +61,7 @@ if (isset($_POST['upload'])) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Upload Album | Admin Studio</title>
+    <title>Add Album | Studio</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
@@ -151,7 +130,7 @@ if (isset($_POST['upload'])) {
             border-radius: 24px;
             box-shadow: 0 25px 50px rgba(0,0,0,0.5);
             width: 100%;
-            max-width: 550px;
+            max-width: 580px;
             border: 1px solid var(--glass-border);
             animation: fadeInUp 0.8s ease forwards;
         }
@@ -170,19 +149,23 @@ if (isset($_POST['upload'])) {
             margin-bottom: 8px; display: block; margin-left: 5px;
         }
 
-        .form-control {
+        .form-control, .form-select {
             background: rgba(255,255,255,0.07);
             border: 1px solid var(--glass-border);
             border-radius: 14px; color: #fff;
-            padding: 12px 16px; margin-bottom: 22px;
+            padding: 12px 16px; margin-bottom: 18px;
             transition: all 0.3s ease;
         }
-        .form-control:focus {
+        .form-control:focus, .form-select:focus {
             background: rgba(255,255,255,0.12);
             border-color: var(--accent-color);
             box-shadow: 0 0 15px rgba(225, 78, 202, 0.3);
             color: #fff;
+            outline: none;
         }
+
+        /* Styling for dropdown options */
+        .form-select option { background: #203a43; color: #fff; }
 
         .btn-upload {
             width: 100%; background: var(--accent-color);
@@ -196,7 +179,7 @@ if (isset($_POST['upload'])) {
             box-shadow: 0 15px 25px rgba(225, 78, 202, 0.5);
         }
 
-        .alert { border-radius: 14px; border: none; font-size: 14px; }
+        .alert { border-radius: 14px; border: none; font-size: 14px; background: rgba(255,255,255,0.1); color: #fff; }
     </style>
 </head>
 <body>
@@ -208,7 +191,7 @@ if (isset($_POST['upload'])) {
     <a href="dashboard.php" class="back-btn"><i class="fa fa-arrow-left me-2"></i>Dashboard</a>
 
     <div class="upload-card">
-        <h2><i class="fa fa-compact-disc me-2"></i>Add New Album</h2>
+        <h2><i class="fa fa-compact-disc me-2"></i>Publish New Content</h2>
 
         <?php if($error): ?>
             <div class="alert alert-danger mb-4"><i class="fa fa-exclamation-triangle me-2"></i><?= $error ?></div>
@@ -219,23 +202,53 @@ if (isset($_POST['upload'])) {
         <?php endif; ?>
 
         <form method="POST" enctype="multipart/form-data">
-            <label>Album Title</label>
-            <input type="text" name="title" class="form-control" placeholder="e.g. Midnight Melodies" required>
+            <div class="row">
+                <div class="col-md-8">
+                    <label>Album/Song Title</label>
+                    <input type="text" name="title" class="form-control" placeholder="Enter title" required>
+                </div>
+                <div class="col-md-4">
+                    <label>Year</label>
+                    <input type="number" name="year" class="form-control" value="<?= date('Y') ?>">
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <label>Artist</label>
+                    <input type="text" name="artist" class="form-control" placeholder="Artist name">
+                </div>
+                <div class="col-md-6">
+                    <label>Genre</label>
+                    <select name="genre" class="form-select">
+                        <option value="Pop">Pop</option>
+                        <option value="Hip Hop">Hip Hop</option>
+                        <option value="Rock">Rock</option>
+                        <option value="Lofi">Lofi</option>
+                        <option value="Classical">Classical</option>
+                    </select>
+                </div>
+            </div>
+
+            <label>Language</label>
+            <input type="text" name="language" class="form-control" placeholder="e.g. English, Hindi">
+
+            <label><i class="fa fa-image me-2 text-warning"></i>Album Artwork</label>
+            <input type="file" name="cover" class="form-control" accept="image/*" required>
             
-            <label>Artist Name</label>
-            <input type="text" name="artist" class="form-control" placeholder="e.g. John Doe">
-            
-            <label><i class="fa fa-image me-2 text-warning"></i>Album Cover</label>
-            <input type="file" name="cover" class="form-control" accept=".jpg,.jpeg,.png,.webp" required>
-            
-            <label><i class="fa fa-music me-2 text-info"></i>Audio Track (mp3, wav)</label>
-            <input type="file" name="audio" class="form-control" accept=".mp3,.wav,.ogg">
-            
-            <label><i class="fa fa-video me-2 text-danger"></i>Video Clip (mp4, webm)</label>
-            <input type="file" name="video" class="form-control" accept=".mp4,.webm,.ogv">
-            
+            <div class="row">
+                <div class="col-md-6">
+                    <label><i class="fa fa-music me-2 text-info"></i>Audio Track</label>
+                    <input type="file" name="audio" class="form-control" accept="audio/*">
+                </div>
+                <div class="col-md-6">
+                    <label><i class="fa fa-video me-2 text-danger"></i>Video File</label>
+                    <input type="file" name="video" class="form-control" accept="video/*">
+                </div>
+            </div>
+
             <button type="submit" name="upload" class="btn btn-upload">
-                <i class="fa fa-cloud-upload-alt me-2"></i> Publish Album
+                <i class="fa fa-cloud-upload-alt me-2"></i> Publish Now
             </button>
         </form>
     </div>
