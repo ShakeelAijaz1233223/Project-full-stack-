@@ -211,7 +211,7 @@ if (isset($_POST['upload'])) {
 
         imageInput.onchange = evt => {
             const [file] = imageInput.files;
-            if (file) {
+            if (file) { 
                 previewImg.src = URL.createObjectURL(file);
                 previewImg.style.display = 'block';
                 placeholderText.style.display = 'none';
