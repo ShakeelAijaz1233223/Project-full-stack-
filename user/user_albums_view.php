@@ -3,6 +3,25 @@ session_start();
 include "../config/db.php";
 
 // Handle Review Submission inside same page or separate (we'll use separate for cleanliness)
+// Is file ka naam submit_review.php hona chahiye
+
+if(isset($_POST['add_review'])){
+    $album_id = (int)$_POST['album_id'];
+    $user_name = mysqli_real_escape_string($conn, $_POST['user_name']);
+    $rating = (int)$_POST['rating'];
+    $review_text = mysqli_real_escape_string($conn, $_POST['review_text']);
+
+    $sql = "INSERT INTO album_reviews (album_id, user_name, rating, review_text) 
+            VALUES ('$album_id', '$user_name', '$rating', '$review_text')";
+    
+    if(mysqli_query($conn, $sql)){
+        // Success hone par wapas albums page par bhej dega
+        header("Location: " . $_SERVER['HTTP_REFERER']);
+        exit();
+    } else {
+        echo "Database Error: " . mysqli_error($conn);
+    }
+}
 // Handle Delete Album
 if (isset($_GET['delete'])) {
     $delete_id = (int)$_GET['delete'];
