@@ -246,9 +246,39 @@ footer {
                 <?php endif; ?>
             </div>
 
-            <div class="card-body">
+           <div class="card-body">
                 <div class="title"><?php echo $title; ?></div>
                 <div class="artist"><?php echo $artist; ?></div>
+                
+                <div class="rating-box my-2">
+                    <?php
+                    $rating_query = mysqli_query($conn, "SELECT AVG(rating) as avg_r, COUNT(id) as total FROM album_reviews WHERE album_id=$id");
+                    $rating_data = mysqli_fetch_assoc($rating_query);
+                    $avg = round($rating_data['avg_r'], 1);
+                    if($rating_data['total'] > 0){
+                        echo "<span style='color:#ffcc00;'>★ $avg</span> <small class='text-muted'>(".$rating_data['total'].")</small>";
+                    } else {
+                        echo "<small class='text-muted'>No reviews yet</small>";
+                    }
+                    ?>
+                </div>
+
+                <form action="submit_review.php" method="POST" class="px-2 pb-2">
+                    <input type="hidden" name="album_id" value="<?php echo $id; ?>">
+                    <div class="input-group input-group-sm mb-1">
+                        <select name="rating" class="form-select bg-dark text-white border-secondary" required>
+                            <option value="5">5 ★</option>
+                            <option value="4">4 ★</option>
+                            <option value="3">3 ★</option>
+                            <option value="2">2 ★</option>
+                            <option value="1">1 ★</option>
+                        </select>
+                        <input type="text" name="user_name" class="form-control bg-dark text-white border-secondary" placeholder="Name" required>
+                    </div>
+                    <textarea name="review_text" class="form-control form-control-sm bg-dark text-white border-secondary mb-1" placeholder="Write a review..." rows="1"></textarea>
+                    <button type="submit" name="submit_review" class="btn btn-sm w-100" style="background: var(--accent); color:white; font-size:0.7rem;">POST REVIEW</button>
+                </form>
+
                 <?php if(!empty($audio)): ?>
                     <audio id="aud-<?php echo $id; ?>" onplay="handleMediaPlay(this)" onpause="handleMediaPause(this)">
                         <source src="../admin/uploads/albums/<?php echo $audio; ?>" type="audio/mpeg">
