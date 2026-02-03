@@ -2,29 +2,57 @@
 session_start();
 include "../config/db.php";
 
-// Admin Check
 if (!isset($_SESSION['email']) || !isset($_SESSION['admin_id'])) {
     header("Location: login.php");
     exit();
 }
 
-// Delete Logic
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_id'])) {
-    $id = (int)$_POST['delete_id'];
-    $stmt = $conn->prepare("SELECT video, cover FROM albums WHERE id = ?");
-    $stmt->bind_param("i", $id);
-    $stmt->execute();
-    $res = $stmt->get_result();
+$success = "";
+$error = "";
 
-    if ($row = $res->fetch_assoc()) {
-        if (!empty($row['video'])) unlink("../uploads/albums/" . $row['video']);
-        if (!empty($row['cover'])) unlink("../uploads/covers/" . $row['cover']);
-        $del = $conn->prepare("DELETE FROM albums WHERE id = ?");
-        $del->bind_param("i", $id);
-        $del->execute();
+if (isset($_POST['upload'])) {
+    $title = mysqli_real_escape_string($conn, $_POST['title']);
+    $artist = mysqli_real_escape_string($conn, $_POST['artist']);
+    $album = mysqli_real_escape_string($conn, $_POST['album_name']);
+    $year = (int)$_POST['year'];
+    $genre = mysqli_real_escape_string($conn, $_POST['genre']);
+    $language = mysqli_real_escape_string($conn, $_POST['language']);
+
+    $musicFile = $_FILES['music']['name'];
+    $musicTmp  = $_FILES['music']['tmp_name'];
+    $imageFile = $_FILES['cover_image']['name'];
+    $imageTmp  = $_FILES['cover_image']['tmp_name'];
+
+    $musicFolder = "uploads/music/";
+    $imageFolder = "uploads/music_covers/";
+
+    if (!is_dir($musicFolder)) mkdir($musicFolder, 0777, true);
+    if (!is_dir($imageFolder)) mkdir($imageFolder, 0777, true);
+
+    $musicExt = strtolower(pathinfo($musicFile, PATHINFO_EXTENSION));
+    $imageExt = strtolower(pathinfo($imageFile, PATHINFO_EXTENSION));
+
+    if (!in_array($musicExt, ['mp3', 'wav', 'm4a'])) {
+        $error = "Invalid audio format.";
+    } elseif (!in_array($imageExt, ['jpg', 'jpeg', 'png', 'webp'])) {
+        $error = "Invalid image format.";
+    } else {
+        $newMusicName = time() . "_" . uniqid() . "." . $musicExt;
+        $newImageName = time() . "_" . uniqid() . "." . $imageExt;
+
+        if (move_uploaded_file($musicTmp, $musicFolder . $newMusicName) && move_uploaded_file($imageTmp, $imageFolder . $newImageName)) {
+            $query = "INSERT INTO music (title, artist, album_name, year, genre, language, file, cover_image) 
+                      VALUES ('$title', '$artist', '$album', '$year', '$genre', '$language', '$newMusicName', '$newImageName')";
+
+            if (mysqli_query($conn, $query)) {
+                $success = "Music published successfully!";
+            } else {
+                $error = "DB Error: " . mysqli_error($conn);
+            }
+        } else {
+            $error = "Upload failed.";
+        }
     }
-    header("Location: " . $_SERVER['PHP_SELF'] . "?deleted=1");
-    exit();
 }
 ?>
 
@@ -33,193 +61,162 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_id'])) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Library | Compact</title>
+    <title>Upload Music | Studio</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-    
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
     <style>
         :root {
-            --bg-color: #0f172a;
-            --sidebar-color: #1e293b;
             --accent-color: #3b82f6;
-            --card-bg: rgba(30, 41, 59, 0.7);
-            --text-primary: #f8fafc;
-            --text-secondary: #94a3b8;
-            --transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            --glass-bg: rgba(15, 23, 42, 0.8);
+            --glass-border: rgba(255, 255, 255, 0.1);
         }
 
-        /* --- 105% COMPACT LOOK --- */
+        /* --- ZOOM 95% (SMALL) --- */
         html {
-            zoom: 0.95; /* Effectively 105% smaller scale */
+            zoom: 0.95;
             -moz-transform: scale(0.95);
             -moz-transform-origin: 0 0;
         }
 
         body {
-            background: var(--bg-color);
-            background-image: radial-gradient(at 0% 0%, rgba(59, 130, 246, 0.15) 0px, transparent 50%);
-            color: var(--text-primary);
-            min-height: 100vh;
             font-family: 'Inter', sans-serif;
-            margin: 0;
-            overflow-x: hidden;
+            background: #0f172a;
+            background-image: radial-gradient(at 0% 0%, rgba(59, 130, 246, 0.15) 0px, transparent 50%);
+            color: #fff;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
         }
 
-        /* --- Sidebar --- */
-        .sidebar {
-            position: fixed;
-            left: 0; top: 0; width: 240px; height: 100vh;
-            background: var(--sidebar-color);
-            border-right: 1px solid rgba(255, 255, 255, 0.1);
-            padding: 30px 15px; z-index: 1000;
-            transition: var(--transition);
-        }
-
-        .sidebar a {
-            display: flex; align-items: center; color: var(--text-secondary);
-            padding: 12px 16px; margin-bottom: 8px; border-radius: 12px;
-            text-decoration: none; transition: var(--transition); font-weight: 500;
-        }
-
-        .sidebar a:hover, .sidebar a.active {
-            background: rgba(59, 130, 246, 0.1);
-            color: var(--text-primary);
-        }
-
-        /* --- Main Content --- */
-        .main-content {
-            padding: 30px;
-            margin-left: 240px;
-            transition: var(--transition);
-        }
-
-        /* --- Search --- */
-        .search-box {
-            width: 100%; max-width: 500px; padding: 12px 20px;
-            border-radius: 100px; border: 1px solid rgba(255, 255, 255, 0.1);
-            background: rgba(255, 255, 255, 0.05); color: white;
-            font-size: 14px; margin-bottom: 30px; outline: none; transition: var(--transition);
-        }
-        .search-box:focus { border-color: var(--accent-color); background: rgba(255, 255, 255, 0.08); }
-
-        /* --- Grid --- */
-        .grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-            gap: 20px;
+        .upload-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            padding: 25px;
+            border-radius: 24px;
             width: 100%;
+            max-width: 650px;
+            border: 1px solid var(--glass-border);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
         }
 
-        .card {
-            background: var(--card-bg); backdrop-filter: blur(20px);
-            border-radius: 20px; border: 1px solid rgba(255, 255, 255, 0.05);
-            overflow: hidden; position: relative; transition: var(--transition);
-            display: flex; flex-direction: column; height: 100%;
+        .back-btn {
+            position: fixed; top: 20px; left: 20px;
+            color: #94a3b8; text-decoration: none; font-size: 14px;
+            transition: 0.3s;
+        }
+        .back-btn:hover { color: #fff; transform: translateX(-3px); }
+
+        h2 { font-size: 20px; font-weight: 700; margin-bottom: 20px; text-align: center; }
+        
+        label { font-size: 12px; color: #94a3b8; margin-bottom: 5px; font-weight: 600; text-transform: uppercase; }
+
+        .form-control {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--glass-border);
+            color: #fff; border-radius: 10px; font-size: 14px; padding: 10px;
+            margin-bottom: 15px;
         }
 
-        .card:hover {
-            transform: translateY(-8px);
-            border-color: rgba(59, 130, 246, 0.4);
-            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+        .form-control:focus {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: var(--accent-color);
+            box-shadow: none; color: #fff;
         }
 
-        .thumbnail { width: 100%; aspect-ratio: 16 / 9; background: #000; overflow: hidden; position: relative; }
-        .thumbnail video, .thumbnail img { width: 100%; height: 100%; object-fit: cover; }
-
-        .info { padding: 15px; flex-grow: 1; }
-        .title { font-size: 15px; font-weight: 700; color: white; margin-bottom: 4px; display: block; }
-        .artist { color: var(--accent-color); font-size: 13px; font-weight: 600; display: block; margin-bottom: 10px; }
-
-        .badge-group { display: flex; flex-wrap: wrap; gap: 5px; }
-        .badge-info {
-            background: rgba(255, 255, 255, 0.04); color: var(--text-secondary);
-            padding: 3px 8px; border-radius: 6px; font-size: 10px;
-            border: 1px solid rgba(255, 255, 255, 0.08);
+        .btn-publish {
+            background: var(--accent-color);
+            border: none; width: 100%; padding: 12px; font-weight: 700;
+            border-radius: 12px; transition: 0.3s;
         }
+        .btn-publish:hover { opacity: 0.9; transform: translateY(-2px); }
 
-        /* --- Action Buttons --- */
-        .delete-btn {
-            position: absolute; top: 10px; right: -100px; z-index: 30;
-            background: #ef4444; color: #fff; border: none; padding: 5px 12px; 
-            border-radius: 8px; cursor: pointer; font-size: 10px; font-weight: 800; 
-            opacity: 0; transition: var(--transition);
+        #preview-container {
+            width: 120px; height: 120px; border-radius: 12px;
+            border: 2px dashed var(--glass-border);
+            margin-bottom: 15px; overflow: hidden;
+            display: flex; justify-content: center; align-items: center;
+            background: rgba(0,0,0,0.2);
         }
-        .card:hover .delete-btn { right: 10px; opacity: 1; }
-
-        /* --- Responsive Queries --- */
-        @media (max-width: 992px) {
-            .sidebar { width: 70px; padding: 20px 10px; }
-            .sidebar a span, .sidebar h4 span { display: none; }
-            .main-content { margin-left: 70px; padding: 20px; }
-        }
-
-        @media (max-width: 576px) {
-            .sidebar { left: -100%; } /* Hide on mobile */
-            .main-content { margin-left: 0; padding: 15px; }
-            .grid { grid-template-columns: 1fr; } /* Single column on very small screens */
-            .search-box { max-width: 100%; }
-        }
+        #preview-img { width: 100%; height: 100%; object-fit: cover; display: none; }
     </style>
 </head>
 <body>
 
-    <aside class="sidebar">
-        <div class="mb-5 text-center">
-            <h4 class="fw-bold text-white"><i class="fa-solid fa-compact-disc text-primary"></i> <span>Studio</span></h4>
-        </div>
-        <a href="dashboard.php"><i class="fa-solid fa-house"></i> <span>Home</span></a>
-        <a href="upload.php"><i class="fa-solid fa-upload"></i> <span>Upload</span></a>
-        <a href="logout.php" class="mt-auto text-danger"><i class="fa-solid fa-power-off"></i> <span>Logout</span></a>
-    </aside>
+    <a href="dashboard.php" class="back-btn"><i class="fa fa-arrow-left me-2"></i> Exit Studio</a>
 
-    <main class="main-content">
-        <div class="d-flex flex-wrap justify-content-between align-items-center mb-4">
-            <input type="text" id="search" class="search-box mb-0" placeholder="🔍 Search by Artist, Album, Genre...">
-        </div>
+    <div class="upload-card">
+        <h2><i class="fa-solid fa-compact-disc text-primary me-2"></i> Music Publisher</h2>
 
-        <div class="grid" id="albumGrid">
-            <?php
-            $result = $conn->query("SELECT * FROM albums ORDER BY id DESC");
-            while ($row = $result->fetch_assoc()):
-                $searchTag = strtolower($row['title']." ".$row['artist']." ".$row['genre']." ".$row['language']);
-            ?>
-                <div class="card" data-search="<?= $searchTag ?>">
-                    <form method="POST" onsubmit="return confirm('Delete this album?');">
-                        <input type="hidden" name="delete_id" value="<?= $row['id'] ?>">
-                        <button type="submit" class="delete-btn">DELETE</button>
-                    </form>
+        <?php if ($error) echo "<div class='alert alert-danger py-2 small'>$error</div>"; ?>
+        <?php if ($success) echo "<div class='alert alert-success py-2 small'>$success</div>"; ?>
 
-                    <div class="thumbnail">
-                        <?php if(!empty($row['video'])): ?>
-                            <video src="../uploads/albums/<?= $row['video'] ?>" muted loop onmouseover="this.play()" onmouseout="this.pause()"></video>
-                        <?php else: ?>
-                            <img src="../uploads/covers/<?= $row['cover'] ?>" alt="Cover">
-                        <?php endif; ?>
-                    </div>
-
-                    <div class="info">
-                        <span class="title text-truncate"><?= htmlspecialchars($row['title']) ?></span>
-                        <span class="artist"><?= htmlspecialchars($row['artist']) ?></span>
-                        <div class="badge-group">
-                            <span class="badge-info"><?= $row['year'] ?></span>
-                            <span class="badge-info"><?= htmlspecialchars($row['genre']) ?></span>
-                            <span class="badge-info"><?= htmlspecialchars($row['language']) ?></span>
-                        </div>
-                    </div>
+        <form method="POST" enctype="multipart/form-data">
+            <div class="row">
+                <div class="col-md-6">
+                    <label>Song Title</label>
+                    <input class="form-control" type="text" name="title" placeholder="Song Name" required>
                 </div>
-            <?php endwhile; ?>
-        </div>
-    </main>
+                <div class="col-md-6">
+                    <label>Artist Name</label>
+                    <input class="form-control" type="text" name="artist" placeholder="Singer / Band" required>
+                </div>
+                <div class="col-md-6">
+                    <label>Album Name</label>
+                    <input class="form-control" type="text" name="album_name" placeholder="Collection Name">
+                </div>
+                <div class="col-md-3">
+                    <label>Release Year</label>
+                    <input class="form-control" type="number" name="year" value="2024">
+                </div>
+                <div class="col-md-3">
+                    <label>Genre</label>
+                    <input class="form-control" type="text" name="genre" placeholder="Pop, Rock...">
+                </div>
+                <div class="col-md-6">
+                    <label>Language</label>
+                    <select class="form-control" name="language">
+                        <option value="English">English</option>
+                        <option value="Urdu/Hindi">Urdu/Hindi</option>
+                        <option value="Punjabi">Punjabi</option>
+                        <option value="Other">Other</option>
+                    </select>
+                </div>
+                <div class="col-md-6">
+                    <label>Audio File</label>
+                    <input class="form-control" type="file" name="music" accept="audio/*" required>
+                </div>
+            </div>
+
+            <label>Cover Art</label>
+            <div class="d-flex align-items-center gap-3">
+                <div id="preview-container">
+                    <span id="placeholder-text" class="text-muted small">No Preview</span>
+                    <img id="preview-img" src="" alt="Preview">
+                </div>
+                <input class="form-control" type="file" name="cover_image" id="imageInput" accept="image/*" required>
+            </div>
+
+            <button class="btn btn-publish text-white" name="upload">
+                <i class="fa fa-cloud-arrow-up me-2"></i> PUBLISH TO LIBRARY
+            </button>
+        </form>
+    </div>
 
     <script>
-        // Live Search Logic
-        document.getElementById('search').addEventListener('input', function(e) {
-            let val = e.target.value.toLowerCase();
-            document.querySelectorAll('.card').forEach(card => {
-                let text = card.getAttribute('data-search');
-                card.style.display = text.includes(val) ? "flex" : "none";
-            });
-        });
+        const imageInput = document.getElementById('imageInput');
+        const previewImg = document.getElementById('preview-img');
+        const placeholderText = document.getElementById('placeholder-text');
+
+        imageInput.onchange = evt => {
+            const [file] = imageInput.files;
+            if (file) { 
+                previewImg.src = URL.createObjectURL(file);
+                previewImg.style.display = 'block';
+                placeholderText.style.display = 'none';
+            }
+        }
     </script>
 </body>
 </html>
