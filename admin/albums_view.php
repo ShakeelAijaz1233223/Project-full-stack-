@@ -178,6 +178,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_id'])) {
                     $title = htmlspecialchars($row['title']);
                     $artist = htmlspecialchars($row['artist']);
                     $videoFile = "uploads/albums/" . $row['video'];
+                    $coverFile = "uploads/albums/" . $row['cover'];
             ?>
                     <div class="card" data-search="<?= strtolower($title . ' ' . $artist) ?>">
                         <form method="POST">
