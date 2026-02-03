@@ -59,26 +59,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_id'])) {
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
 
-    <style>
-        :root {
-            --bg-color: #0f172a;
-            --sidebar-color: #1e293b;
-            --accent-color: #3b82f6;
-            --secondary-accent: #00f2ff;
-            --card-bg: rgba(30, 41, 59, 0.7);
-            --text-primary: #f8fafc;
-            --text-secondary: #94a3b8;
-            --transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-        }
+        <style>
+            :root {
+                --bg-color: #0f172a;
+                --sidebar-color: #1e293b;
+                --accent-color: #3b82f6;
+                --secondary-accent: #00f2ff;
+                --card-bg: rgba(30, 41, 59, 0.7);
+                --text-primary: #f8fafc;
+                --text-secondary: #94a3b8;
+                --transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            }
 
         /* --- APPLY 105% ZOOM --- */
-        html {
-            zoom: 1.05;
-            /* For Chrome, Safari, Edge */
-            -moz-transform: scale(1.05);
-            /* For Firefox */
-            -moz-transform-origin: 0 0;
-        }
+        
 
         body {
             background: var(--bg-color);

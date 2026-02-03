@@ -94,10 +94,15 @@ if (isset($_POST['upload'])) {
 
     <style>
         :root {
-            --accent-color: #e14eca;
-            --glass-bg: rgba(255, 255, 255, 0.05);
-            --glass-border: rgba(255, 255, 255, 0.1);
-        }
+                --bg-color: #0f172a;
+                --sidebar-color: #1e293b;
+                --accent-color: #3b82f6;
+                --secondary-accent: #00f2ff;
+                --card-bg: rgba(30, 41, 59, 0.7);
+                --text-primary: #f8fafc;
+                --text-secondary: #94a3b8;
+                --transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            }
 
         body {
             margin: 0;
