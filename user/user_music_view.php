@@ -143,6 +143,65 @@ $music = mysqli_query($conn, "SELECT * FROM music ORDER BY id DESC");
     }
     .music-card:hover .play-trigger { opacity: 1; }
 
+    
+        .studio-wrapper {
+            width: 90%;
+            margin: 0 auto;
+            padding: 40px 0;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 25px;
+        }
+
+        /* --- UPDATED CARD DESIGN --- */
+        .music-card {
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            text-align: center;
+            transition: 0.3s ease;
+        }
+
+        .music-card:hover {
+            border-color: var(--accent);
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(255, 0, 85, 0.1);
+        }
+
+        /* Reference Image Style */
+        .image-container {
+            width: 120px;
+            height: 120px;
+            margin: 0 auto 15px;
+            border-radius: 20px;
+            border: 2px solid var(--border-glass);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #000;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Inner glowing circle from your image */
+        .inner-glow {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: radial-gradient(circle, #ff0055 20%, #80002b 60%, #000 100%);
+            box-shadow: 0 0 15px #ff0055;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .playing .inner-glow {
+            animation: pulse 1.5s infinite alternate;
+        }
     .title {
         font-weight: 600;
         font-size: 0.8rem;
@@ -189,34 +248,48 @@ $music = mysqli_query($conn, "SELECT * FROM music ORDER BY id DESC");
         </div>
     </div>
 
+   <div class="studio-wrapper">
     <div class="grid" id="musicGrid">
-        <?php if(mysqli_num_rows($music) > 0): ?>
-            <?php while($row = mysqli_fetch_assoc($music)):
+        <?php if (mysqli_num_rows($music) > 0): ?>
+            <?php while ($row = mysqli_fetch_assoc($music)):
                 $title = htmlspecialchars($row['title']);
                 $artist = htmlspecialchars($row['artist']);
                 $file  = $row['file'];
             ?>
-            <div class="music-card" data-title="<?php echo strtolower($title); ?>" data-artist="<?php echo strtolower($artist); ?>">
-                
-                <div class="disc-wrapper">
-                    <i class="bi bi-disc-fill"></i>
-                    <button class="play-trigger" onclick="toggleMusic(this)">
-                        <i class="bi bi-play-fill"></i>
-                    </button>
-                </div>
+                <div class="music-card" data-title="<?= strtolower($title); ?>" data-artist="<?= strtolower($artist); ?>">
 
-                <div class="info-section">
-                    <p class="title"><?php echo $title; ?></p>
-                    <p class="artist"><?php echo $artist; ?></p>
-                </div>
+                    <div class="image-container">
+                        <div class="inner-glow">
+                            <i class="bi bi-music-note-beamed text-white"></i>
+                        </div>
+                    </div>
 
-                <audio class="audio-player" onplay="handlePlay(this)" onpause="handlePause(this)">
-                    <source src="../admin/uploads/music/<?php echo $file; ?>" type="audio/mpeg">
-                </audio>
-            </div>
+                    <div class="info">
+                        <p class="title"><?= $title; ?></p>
+                        <p class="artist"><?= $artist; ?></p>
+                    </div>
+
+                    <div class="controls">
+                        <button class="nav-btn" onclick="skip(this, -10)">
+                            <i class="bi bi-rewind-fill"></i>
+                        </button>
+
+                        <button class="play-btn" onclick="toggleMusic(this)">
+                            <i class="bi bi-play-fill"></i>
+                        </button>
+
+                        <button class="nav-btn" onclick="skip(this, 10)">
+                            <i class="bi bi-fast-forward-fill"></i>
+                        </button>
+                    </div>
+
+                    <audio class="audio-player" onplay="handlePlay(this)" onpause="handlePause(this)">
+                        <source src="../admin/uploads/music/<?= $file; ?>" type="audio/mpeg">
+                    </audio>
+                </div>
             <?php endwhile; ?>
         <?php else: ?>
-            <p class="text-muted text-center w-100 py-5">No tracks found.</p>
+            <p class="text-center w-100 py-5 text-muted">No music available.</p>
         <?php endif; ?>
     </div>
 </div>
