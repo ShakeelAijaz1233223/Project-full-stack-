@@ -237,10 +237,7 @@ $music = mysqli_query($conn, "SELECT * FROM music ORDER BY id DESC");
 </header>
 
 <div class="studio-wrapper">
-    <div class="mb-5">
-        <h2 class="fw-bold" style="font-family: 'Syncopate'; font-size: 1.5rem;">MUSIC <span style="color: var(--accent);">STUDIO</span></h2>
-        <p class="text-muted small">Manage and preview your sound library</p>
-    </div>
+    
 
     <div class="grid" id="musicGrid">
         <?php if(mysqli_num_rows($music) > 0): ?>
