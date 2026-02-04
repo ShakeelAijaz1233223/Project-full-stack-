@@ -250,8 +250,12 @@ $albums = mysqli_query($conn, "SELECT * FROM albums ORDER BY created_at DESC");
                     <div class="artist"><?= $artist; ?></div>
 
                     <div class="progress-container">
-                        <input type="range" class="seek-bar" value="0" max="100" oninput="seekMedia(this, '<?= $id ?>')">
-                    </div>
+    <input type="range" class="seek-bar" 
+           id="seek-<?= $id ?>" 
+           value="0" min="0" max="100" 
+           oninput="seekMedia(this, '<?= $id ?>')" 
+           onchange="seekMedia(this, '<?= $id ?>')">
+</div>
 
                     <div class="controls">
                         <button class="nav-btn" onclick="skipMedia('<?= $id ?>', -10)"><i class="bi bi-rewind-fill"></i></button>
