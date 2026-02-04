@@ -7,6 +7,7 @@ $music = mysqli_query($conn, "SELECT * FROM music ORDER BY id DESC");
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -17,20 +18,20 @@ $music = mysqli_query($conn, "SELECT * FROM music ORDER BY id DESC");
     <link href="https://fonts.googleapis.com/css2?family=Syncopate:wght@700&family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap" rel="stylesheet">
 
     <style>
-       :root {
-    --bg-dark: #080808;
-    --card-bg: #121212;
-    --accent: #ff0055;
-    --accent-gradient: linear-gradient(45deg, #ff0055, #ff5e00);
-    --text-muted: #888888;
-}
+        :root {
+            --bg-dark: #080808;
+            --card-bg: #121212;
+            --accent: #ff0055;
+            --accent-gradient: linear-gradient(45deg, #ff0055, #ff5e00);
+            --text-muted: #888888;
+        }
 
         body {
-    background-color: var(--bg-dark);
-    color: #fff;
-    font-family: 'Inter', sans-serif;
-    margin: 0;
-}
+            background-color: var(--bg-dark);
+            color: #fff;
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+        }
 
         header {
             background: rgba(5, 5, 5, 0.9);
@@ -42,7 +43,7 @@ $music = mysqli_query($conn, "SELECT * FROM music ORDER BY id DESC");
             display: flex;
             justify-content: space-between;
             align-items: center;
-            border-bottom: 1px solid rgba(255,255,255,0.05);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
         }
 
         .logo {
@@ -52,7 +53,10 @@ $music = mysqli_query($conn, "SELECT * FROM music ORDER BY id DESC");
             text-decoration: none;
             letter-spacing: 3px;
         }
-        .logo span { color: var(--accent); }
+
+        .logo span {
+            color: var(--accent);
+        }
 
         .search-box {
             background: #151515;
@@ -124,8 +128,15 @@ $music = mysqli_query($conn, "SELECT * FROM music ORDER BY id DESC");
         }
 
         @keyframes pulse {
-            from { transform: scale(1); box-shadow: 0 0 15px #ff0055; }
-            to { transform: scale(1.1); box-shadow: 0 0 25px #ff0055; }
+            from {
+                transform: scale(1);
+                box-shadow: 0 0 15px #ff0055;
+            }
+
+            to {
+                transform: scale(1.1);
+                box-shadow: 0 0 25px #ff0055;
+            }
         }
 
         /* --- NAVIGATION CONTROLS --- */
@@ -146,7 +157,9 @@ $music = mysqli_query($conn, "SELECT * FROM music ORDER BY id DESC");
             transition: 0.2s;
         }
 
-        .nav-btn:hover { color: #fff; }
+        .nav-btn:hover {
+            color: #fff;
+        }
 
         .play-btn {
             width: 40px;
@@ -161,112 +174,132 @@ $music = mysqli_query($conn, "SELECT * FROM music ORDER BY id DESC");
             box-shadow: 0 4px 15px rgba(255, 0, 85, 0.3);
         }
 
-        .title { font-weight: 700; font-size: 0.95rem; margin-bottom: 2px; }
-        .artist { font-size: 0.75rem; color: #555; text-transform: uppercase; }
+        .title {
+            font-weight: 700;
+            font-size: 0.95rem;
+            margin-bottom: 2px;
+        }
 
-        footer { padding: 40px; text-align: center; font-size: 0.7rem; color: #333; letter-spacing: 2px; }
+        .artist {
+            font-size: 0.75rem;
+            color: #555;
+            text-transform: uppercase;
+        }
+
+        footer {
+            padding: 40px;
+            text-align: center;
+            font-size: 0.7rem;
+            color: #333;
+            letter-spacing: 2px;
+        }
     </style>
 </head>
+
 <body>
 
-<header>
-    <a href="index.php" class="logo">SOU<span>N</span>D</a>
-    <div class="d-flex align-items-center gap-2">
-        <input type="text" id="search" class="search-box" placeholder="Search...">
-        <a href="javascript:history.back()" class="btn-back"><i class="bi bi-arrow-left"></i></a>
-    </div>
-</header>
+    <header>
+        <a href="index.php" class="logo">SOU<span>N</span>D</a>
+        <div class="d-flex align-items-center gap-2">
+            <input type="text" id="search" class="search-box" placeholder="Search...">
+            <a href="javascript:history.back()" class="btn-back"><i class="bi bi-arrow-left"></i></a>
+        </div>
+    </header>
 
-<div class="studio-wrapper">
-    <div class="grid" id="musicGrid">
-        <?php if(mysqli_num_rows($music) > 0): ?>
-            <?php while($row = mysqli_fetch_assoc($music)):
-                $title = htmlspecialchars($row['title']);
-                $artist = htmlspecialchars($row['artist']);
-                $file  = $row['file'];
-            ?>
-            <div class="music-card" data-title="<?= strtolower($title); ?>" data-artist="<?= strtolower($artist); ?>">
-                
-                <div class="image-container">
-                    <div class="inner-glow">
-                        <i class="bi bi-music-note-beamed text-white"></i>
+    <div class="studio-wrapper">
+        <div class="grid" id="musicGrid">
+            <?php if (mysqli_num_rows($music) > 0): ?>
+                <?php while ($row = mysqli_fetch_assoc($music)):
+                    $title = htmlspecialchars($row['title']);
+                    $artist = htmlspecialchars($row['artist']);
+                    $file  = $row['file'];
+                ?>
+                    <div class="music-card" data-title="<?= strtolower($title); ?>" data-artist="<?= strtolower($artist); ?>">
+
+                        <div class="image-container">
+                            <div class="inner-glow">
+                                <i class="bi bi-music-note-beamed text-white"></i>
+                            </div>
+                        </div>
+
+                        <div class="info">
+                            <p class="title"><?= $title; ?></p>
+                            <p class="artist"><?= $artist; ?></p>
+                        </div>
+
+                        <div class="controls">
+                            <button class="nav-btn" onclick="skip(this, -10)">
+                                <i class="bi bi-rewind-fill"></i>
+                            </button>
+
+                            <button class="play-btn" onclick="toggleMusic(this)">
+                                <i class="bi bi-play-fill"></i>
+                            </button>
+
+                            <button class="nav-btn" onclick="skip(this, 10)">
+                                <i class="bi bi-fast-forward-fill"></i>
+                            </button>
+                        </div>
+
+                        <audio class="audio-player" onplay="handlePlay(this)" onpause="handlePause(this)">
+                            <source src="../admin/uploads/music/<?= $file; ?>" type="audio/mpeg">
+                        </audio>
                     </div>
-                </div>
-
-                <div class="info">
-                    <p class="title"><?= $title; ?></p>
-                    <p class="artist"><?= $artist; ?></p>
-                </div>
-
-                <div class="controls">
-                    <button class="nav-btn" onclick="skip(this, -10)">
-                        <i class="bi bi-rewind-fill"></i>
-                    </button>
-                    
-                    <button class="play-btn" onclick="toggleMusic(this)">
-                        <i class="bi bi-play-fill"></i>
-                    </button>
-                    
-                    <button class="nav-btn" onclick="skip(this, 10)">
-                        <i class="bi bi-fast-forward-fill"></i>
-                    </button>
-                </div>
-
-                <audio class="audio-player" onplay="handlePlay(this)" onpause="handlePause(this)">
-                    <source src="../admin/uploads/music/<?= $file; ?>" type="audio/mpeg">
-                </audio>
-            </div>
-            <?php endwhile; ?>
-        <?php else: ?>
-            <p class="text-center w-100 py-5 text-muted">No music available.</p>
-        <?php endif; ?>
+                <?php endwhile; ?>
+            <?php else: ?>
+                <p class="text-center w-100 py-5 text-muted">No music available.</p>
+            <?php endif; ?>
+        </div>
     </div>
-</div>
 
-<footer>SOUND ENTERTAINMENT &bull; 2026</footer>
+    <footer>SOUND ENTERTAINMENT &bull; 2026</footer>
 
-<script>
-// Toggle Play/Pause
-function toggleMusic(btn) {
-    const card = btn.closest('.music-card');
-    const audio = card.querySelector('audio');
-    
-    if (audio.paused) {
-        document.querySelectorAll('audio').forEach(a => {
-            if(a !== audio) { a.pause(); a.currentTime = 0; }
+    <script>
+        // Toggle Play/Pause
+        function toggleMusic(btn) {
+            const card = btn.closest('.music-card');
+            const audio = card.querySelector('audio');
+
+            if (audio.paused) {
+                document.querySelectorAll('audio').forEach(a => {
+                    if (a !== audio) {
+                        a.pause();
+                        a.currentTime = 0;
+                    }
+                });
+                audio.play();
+            } else {
+                audio.pause();
+            }
+        }
+
+        // Skip Forward/Backward (Aghi/Pisha logic)
+        function skip(btn, seconds) {
+            const card = btn.closest('.music-card');
+            const audio = card.querySelector('audio');
+            audio.currentTime += seconds;
+        }
+
+        function handlePlay(el) {
+            el.closest('.music-card').classList.add('playing');
+            el.closest('.music-card').querySelector('.play-btn i').className = 'bi bi-pause-fill';
+        }
+
+        function handlePause(el) {
+            el.closest('.music-card').classList.remove('playing');
+            el.closest('.music-card').querySelector('.play-btn i').className = 'bi bi-play-fill';
+        }
+
+        // Search Logic
+        document.getElementById("search").addEventListener("input", function() {
+            let val = this.value.toLowerCase();
+            document.querySelectorAll(".music-card").forEach(card => {
+                let text = card.dataset.title + " " + card.dataset.artist;
+                card.style.display = text.includes(val) ? "block" : "none";
+            });
         });
-        audio.play();
-    } else {
-        audio.pause();
-    }
-}
-
-// Skip Forward/Backward (Aghi/Pisha logic)
-function skip(btn, seconds) {
-    const card = btn.closest('.music-card');
-    const audio = card.querySelector('audio');
-    audio.currentTime += seconds;
-}
-
-function handlePlay(el) {
-    el.closest('.music-card').classList.add('playing');
-    el.closest('.music-card').querySelector('.play-btn i').className = 'bi bi-pause-fill';
-}
-
-function handlePause(el) {
-    el.closest('.music-card').classList.remove('playing');
-    el.closest('.music-card').querySelector('.play-btn i').className = 'bi bi-play-fill';
-}
-
-// Search Logic
-document.getElementById("search").addEventListener("input", function() {
-    let val = this.value.toLowerCase();
-    document.querySelectorAll(".music-card").forEach(card => {
-        let text = card.dataset.title + " " + card.dataset.artist;
-        card.style.display = text.includes(val) ? "block" : "none";
-    });
-});
-</script>
+    </script>
 
 </body>
+
 </html>
