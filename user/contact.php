@@ -489,7 +489,7 @@ if (isset($_SESSION['email'])) {
         </div>
     </div>
 
-    <footer>&copy; 2026 SOUND PORTAL | ALL RIGHTS RESERVED</footer>
+    <footer>&copy; 2026 SOUND  | ALL RIGHTS RESERVED</footer>
 </body>
 
 </html>
