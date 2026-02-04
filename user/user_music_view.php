@@ -17,19 +17,20 @@ $music = mysqli_query($conn, "SELECT * FROM music ORDER BY id DESC");
     <link href="https://fonts.googleapis.com/css2?family=Syncopate:wght@700&family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap" rel="stylesheet">
 
     <style>
-        :root {
-            --bg-dark: #050505;
-            --card-bg: #0a0a0a;
-            --accent: #ff0055;
-            --accent-gradient: linear-gradient(45deg, #ff0055, #ff5e00);
-            --border-glass: rgba(255, 0, 85, 0.3);
-        }
+       :root {
+    --bg-dark: #080808;
+    --card-bg: #121212;
+    --accent: #ff0055;
+    --accent-gradient: linear-gradient(45deg, #ff0055, #ff5e00);
+    --text-muted: #888888;
+}
 
         body {
-            background: var(--bg-dark);
-            color: #fff;
-            font-family: 'Plus Jakarta Sans', sans-serif;
-        }
+    background-color: var(--bg-dark);
+    color: #fff;
+    font-family: 'Inter', sans-serif;
+    margin: 0;
+}
 
         header {
             background: rgba(5, 5, 5, 0.9);
