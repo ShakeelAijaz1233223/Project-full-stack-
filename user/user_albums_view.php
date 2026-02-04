@@ -35,7 +35,6 @@ $albums = mysqli_query($conn, "SELECT * FROM albums ORDER BY created_at DESC");
     --card-bg: #0a0a0a;
     --accent: #ff0055;
     --accent-gradient: linear-gradient(45deg, #ff0055, #ff5e00);
-    --border-glass: rgba(255, 0, 85, 0.3);
     --text-muted: #555;
 }
 
@@ -44,6 +43,12 @@ body {
     color: #fff;
     font-family: 'Plus Jakarta Sans', sans-serif;
     margin: 0;
+}
+
+.studio-wrapper {
+    width: 90%;
+    margin: 0 auto;
+    padding: 40px 0;
 }
 
 header {
@@ -78,12 +83,6 @@ header {
     font-size: 0.8rem;
 }
 
-.studio-wrapper {
-    width: 90%;
-    margin: 0 auto;
-    padding: 40px 0;
-}
-
 .grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
@@ -93,7 +92,7 @@ header {
 .album-card {
     background: var(--card-bg);
     border-radius: 20px;
-    padding: 20px;
+    padding: 15px;
     border: 1px solid rgba(255,255,255,0.05);
     text-align: center;
     transition: 0.3s ease;
@@ -103,21 +102,23 @@ header {
 .album-card:hover {
     border-color: var(--accent);
     transform: translateY(-5px);
-    box-shadow: 0 10px 30px rgba(255,0,85,0.1);
 }
 
 .media-container {
-    width: 120px;
-    height: 120px;
-    margin: 0 auto 15px;
-    border-radius: 20px;
-    border: 2px solid var(--border-glass);
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    width: 100%;
+    aspect-ratio: 1/1;
     background: #000;
-    position: relative;
+    border-radius: 15px;
     overflow: hidden;
+    position: relative;
+    border: 1px solid rgba(255,255,255,0.1);
+}
+
+.media-container video,
+.media-container img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
 }
 
 .inner-glow {
@@ -129,6 +130,11 @@ header {
     display: flex;
     align-items: center;
     justify-content: center;
+    margin: auto;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
 }
 
 .playing .inner-glow {
@@ -136,19 +142,40 @@ header {
 }
 
 @keyframes pulse {
-    from { transform: scale(1); box-shadow: 0 0 15px #ff0055; }
-    to { transform: scale(1.1); box-shadow: 0 0 25px #ff0055; }
+    from { transform: translate(-50%, -50%) scale(1); box-shadow: 0 0 15px #ff0055; }
+    to { transform: translate(-50%, -50%) scale(1.1); box-shadow: 0 0 25px #ff0055; }
 }
 
-.title { font-weight: 700; font-size: 0.95rem; margin-bottom: 2px; }
-.artist { font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; }
+.card-actions {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    display: flex;
+    gap: 5px;
+}
+
+.action-btn {
+    background: rgba(0,0,0,0.8);
+    color: #fff;
+    width: 30px;
+    height: 30px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    font-size: 0.8rem;
+    border: 1px solid rgba(255,255,255,0.1);
+}
+
+.title { font-weight: 700; font-size: 0.95rem; margin: 8px 0 2px; }
+.artist { font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; margin-bottom: 10px; }
 
 .controls {
     display: flex;
     justify-content: center;
     align-items: center;
     gap: 15px;
-    margin-top: 10px;
 }
 
 .nav-btn {
@@ -165,33 +192,14 @@ header {
     width: 45px;
     height: 45px;
     background: var(--accent-gradient);
-    border-radius: 50%;
     border: none;
-    color: white;
+    border-radius: 50%;
+    color: #fff;
     display: flex;
     align-items: center;
     justify-content: center;
     box-shadow: 0 4px 15px rgba(255,0,85,0.3);
-}
-
-.card-actions {
-    position: absolute;
-    top: 8px;
-    right: 8px;
-    display: flex;
-    gap: 6px;
-}
-
-.action-btn {
-    background: rgba(0,0,0,0.6);
-    border-radius: 8px;
-    padding: 4px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: #fff;
-    font-size: 0.8rem;
-    text-decoration: none;
+    cursor: pointer;
 }
 
 footer {
@@ -202,8 +210,8 @@ footer {
 }
 </style>
 </head>
-<body>
 
+<body>
 <header>
     <a href="index.php" class="logo">SOU<span>N</span>D</a>
     <div class="d-flex align-items-center gap-2">
@@ -215,7 +223,7 @@ footer {
 <div class="studio-wrapper">
 
 <?php if(isset($msg)): ?>
-<div class="alert alert-success bg-dark text-success"><?= $msg ?></div>
+    <div class="alert alert-success bg-dark text-success"><?= $msg ?></div>
 <?php endif; ?>
 
 <div class="grid" id="albumGrid">
@@ -236,9 +244,11 @@ footer {
     </div>
 
     <div class="media-container">
-        <div class="inner-glow"><i class="bi bi-music-note-beamed"></i></div>
         <?php if(!empty($video)): ?>
-            <video id="vid-<?= $id ?>" preload="metadata" muted loop poster="../admin/uploads/albums/<?= $cover ?>"></video>
+            <video id="vid-<?= $id ?>" preload="metadata" muted loop poster="../admin/uploads/albums/<?= $cover ?>">
+                <source src="../admin/uploads/albums/<?= $video ?>" type="video/mp4">
+            </video>
+            <div class="inner-glow"><i class="bi bi-music-note-beamed"></i></div>
         <?php else: ?>
             <img src="../admin/uploads/albums/<?= $cover ?>" alt="<?= $title ?>">
         <?php endif; ?>
@@ -251,7 +261,6 @@ footer {
     <audio id="aud-<?= $id ?>" onplay="handlePlay(this)" onpause="handlePause(this)">
         <source src="../admin/uploads/albums/<?= $audio ?>" type="audio/mpeg">
     </audio>
-
     <div class="controls">
         <button class="nav-btn" onclick="skipMedia('<?= $id ?>', -10)"><i class="bi bi-rewind-fill"></i></button>
         <button class="play-btn" onclick="togglePlayback('<?= $id ?>', this)"><i class="bi bi-play-fill"></i></button>
@@ -278,37 +287,36 @@ document.getElementById("search").addEventListener("input", function(){
     });
 });
 
-// Play/Pause & Glow Logic
+// Play/Pause logic
 function togglePlayback(id, btn){
     const audio = document.getElementById('aud-'+id);
-    const card = btn.closest('.album-card');
-    const glow = card.querySelector('.inner-glow');
+    const video = document.getElementById('vid-'+id);
     const icon = btn.querySelector('i');
 
-    // Pause all others
-    document.querySelectorAll('audio').forEach(a=>{ if(a!==audio) a.pause(); });
-    document.querySelectorAll('.album-card').forEach(c=>c.classList.remove('playing'));
-    document.querySelectorAll('.play-btn i').forEach(i=>i.className='bi bi-play-fill');
+    document.querySelectorAll('audio, video').forEach(m => {
+        if(m !== audio && m !== video) m.pause();
+    });
+    document.querySelectorAll('.play-btn i').forEach(i => i.className='bi bi-play-fill');
 
     if(audio.paused){
         audio.play().catch(()=>{});
-        card.classList.add('playing');
+        if(video) { video.muted=true; video.currentTime=audio.currentTime; video.play(); }
         icon.className='bi bi-pause-fill';
     } else {
         audio.pause();
-        card.classList.remove('playing');
+        if(video) video.pause();
         icon.className='bi bi-play-fill';
     }
 }
 
 function skipMedia(id, secs){
     const audio = document.getElementById('aud-'+id);
-    if(audio) audio.currentTime += secs;
+    const video = document.getElementById('vid-'+id);
+    if(audio) { audio.currentTime += secs; if(video) video.currentTime=audio.currentTime; }
 }
 
-function handlePlay(current){ document.querySelectorAll('audio').forEach(a=>{ if(a!==current) a.pause(); }); }
-function handlePause(current){}
+function handlePlay(curr){ document.querySelectorAll('audio').forEach(a=>{ if(a!==curr) a.pause(); }); }
+function handlePause(curr){}
 </script>
-
 </body>
 </html>
