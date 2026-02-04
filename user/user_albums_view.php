@@ -248,7 +248,7 @@ footer {
             <video id="vid-<?= $id ?>" preload="metadata" muted loop poster="../admin/uploads/albums/<?= $cover ?>">
                 <source src="../admin/uploads/albums/<?= $video ?>" type="video/mp4">
             </video>
-            <div class="inner-glow"><i class="bi bi-music-note-beamed"></i></div>
+            
         <?php else: ?>
             <img src="../admin/uploads/albums/<?= $cover ?>" alt="<?= $title ?>">
         <?php endif; ?>
