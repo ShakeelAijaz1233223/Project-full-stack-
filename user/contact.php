@@ -285,17 +285,126 @@ if (isset($_SESSION['email'])) {
             text-transform: uppercase;
         }
 
+        /* --- RESPONSIVE ADJUSTMENTS --- */
+        @media (max-width: 1200px) {
+            .content-grid {
+                gap: 50px;
+            }
+        }
+
         @media (max-width: 992px) {
             .content-grid {
                 grid-template-columns: 1fr;
-                gap: 50px;
+                gap: 40px;
             }
 
             .hero-title {
-                margin-bottom: 40px;
+                margin-bottom: 30px;
+            }
+
+            .form-card {
+                padding: 30px;
+                border-radius: 25px;
+            }
+
+            .info-text h2 {
+                font-size: 22px;
+            }
+
+            .info-text p {
+                font-size: 15px;
             }
         }
-        
+
+        @media (max-width: 768px) {
+            header {
+                padding: 15px 5%;
+            }
+
+            nav ul {
+                gap: 15px;
+                flex-wrap: wrap;
+                justify-content: center;
+                margin-top: 10px;
+            }
+
+            nav ul li a {
+                font-size: 10px;
+            }
+
+            .user-trigger span {
+                display: none;
+            }
+
+            /* Hide username for very small screens */
+            .hero-title h1 {
+                font-size: clamp(1.8rem, 5vw, 3rem);
+            }
+
+            .form-card {
+                padding: 25px;
+            }
+
+            .form-group input,
+            .form-group textarea {
+                padding: 14px;
+                font-size: 13px;
+            }
+
+            .send-btn {
+                padding: 16px;
+                font-size: 11px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .page-container {
+                padding: 130px 5% 30px;
+            }
+
+            .hero-title h1 {
+                font-size: clamp(1.5rem, 5vw, 2.2rem);
+            }
+
+            .contact-item {
+                gap: 12px;
+            }
+
+            .contact-item i {
+                width: 35px;
+                height: 35px;
+                font-size: 12px;
+            }
+
+            .form-card {
+                padding: 20px;
+            }
+
+            .form-group label {
+                font-size: 9px;
+            }
+
+            .form-group input,
+            .form-group textarea {
+                padding: 12px;
+            }
+
+            .send-btn {
+                padding: 14px;
+                font-size: 10px;
+            }
+        }
+
+        @media (max-width: 360px) {
+            .hero-title h1 {
+                font-size: clamp(1.2rem, 5vw, 2rem);
+            }
+
+            footer {
+                font-size: 9px;
+                padding: 30px 5%;
+            }
+        }
     </style>
 </head>
 
