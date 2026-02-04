@@ -237,7 +237,7 @@ $albums = mysqli_query($conn, "SELECT * FROM albums ORDER BY created_at DESC");
 
                     <div class="media-container">
                         <?php if (!empty($video)): ?>
-                            <video id="vid-<?= $id ?>" preload="metadata" playsinline loop >
+                            <video id="vid-<?= $id ?>" preload="metadata" playsinline loop muted>
                                 <source src="../admin/uploads/albums/<?= $video; ?>" type="video/mp4">
                             </video>
                         <?php else: ?>
