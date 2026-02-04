@@ -57,374 +57,162 @@ if (isset($_SESSION['email'])) {
         /* --- PRELOADER --- */
         #loader {
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
+            top: 0; left: 0; width: 100%; height: 100%;
             background: var(--bg-dark);
             z-index: 9999;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            display: flex; justify-content: center; align-items: center;
         }
 
-        .bar-container {
-            display: flex;
-            align-items: flex-end;
-            height: 30px;
-            gap: 4px;
-        }
+        .bar-container { display: flex; align-items: flex-end; height: 30px; gap: 4px; }
+        .bar { width: 4px; background: var(--primary); animation: bounce 0.5s ease-in-out infinite alternate; }
+        .bar:nth-child(2) { animation-delay: 0.1s; }
+        .bar:nth-child(3) { animation-delay: 0.2s; }
+        @keyframes bounce { from { height: 5px; } to { height: 30px; } }
 
-        .bar {
-            width: 4px;
-            background: var(--primary);
-            animation: bounce 0.5s ease-in-out infinite alternate;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; scroll-behavior: smooth; }
 
-        .bar:nth-child(2) {
-            animation-delay: 0.1s;
-        }
+        body { background-color: var(--bg-dark); color: #fff; overflow-x: hidden; opacity: 0; transition: opacity 1s; }
+        body.visible { opacity: 1; }
 
-        .bar:nth-child(3) {
-            animation-delay: 0.2s;
-        }
-
-        @keyframes bounce {
-            from {
-                height: 5px;
-            }
-
-            to {
-                height: 30px;
-            }
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Plus Jakarta Sans', sans-serif;
-            scroll-behavior: smooth;
-        }
-
-        body {
-            background-color: var(--bg-dark);
-            color: #fff;
-            overflow-x: hidden;
-            opacity: 0;
-            transition: opacity 1s;
-        }
-
-        body.visible {
-            opacity: 1;
-        }
-
-        /* --- SYNCED HEADER --- */
+        /* --- HEADER --- */
         header {
             background: rgba(5, 5, 5, 0.9);
             backdrop-filter: blur(20px);
             padding: 18px 5%;
             position: fixed;
-            width: 100%;
-            top: 0;
-            z-index: 1000;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+            width: 100%; top: 0; z-index: 1000;
+            display: flex; justify-content: space-between; align-items: center;
             border-bottom: 1px solid var(--border-glass);
         }
 
         .logo {
             font-family: 'Syncopate', sans-serif;
             font-size: clamp(16px, 4vw, 22px);
-            color: #fff;
-            text-decoration: none;
-            letter-spacing: 5px;
+            color: #fff; text-decoration: none; letter-spacing: 5px;
         }
+        .logo span { color: var(--primary); }
 
-        .logo span {
-            color: var(--primary);
-        }
-
-        nav ul {
-            display: flex;
-            list-style: none;
-            gap: 20px;
-        }
-
+        nav ul { display: flex; list-style: none; gap: 20px; }
         nav ul li a {
             color: rgba(255, 255, 255, 0.6);
-            text-decoration: none;
-            font-size: 11px;
-            font-weight: 800;
-            text-transform: uppercase;
-            transition: 0.3s;
-            letter-spacing: 1px;
+            text-decoration: none; font-size: 11px; font-weight: 800;
+            text-transform: uppercase; transition: 0.3s; letter-spacing: 1px;
+        }
+        nav ul li a:hover { color: var(--primary); }
+
+        /* --- MOBILE MENU BUTTON --- */
+        .menu-btn {
+            display: none;
+            color: #fff;
+            font-size: 20px;
+            cursor: pointer;
         }
 
-        nav ul li a:hover {
-            color: var(--primary);
-        }
-
-        /* --- SYNCED USER DROPDOWN --- */
+        /* --- USER DROPDOWN --- */
         .user-trigger {
             background: rgba(255, 255, 255, 0.05);
-            padding: 8px 16px;
-            border-radius: 50px;
-            cursor: pointer;
-            border: 1px solid var(--border-glass);
-            display: flex;
-            align-items: center;
-            gap: 10px;
+            padding: 8px 16px; border-radius: 50px; cursor: pointer;
+            border: 1px solid var(--border-glass); display: flex; align-items: center; gap: 10px;
             transition: var(--transition);
         }
-
-        .user-dropdown {
-            position: relative;
-        }
-
+        .user-dropdown { position: relative; }
         .dropdown-content {
-            position: absolute;
-            right: 0;
-            top: 55px;
-            background: rgba(15, 15, 17, 0.98);
-            backdrop-filter: blur(25px);
-            min-width: 200px;
-            border-radius: 18px;
-            padding: 10px;
-            border: 1px solid var(--border-glass);
-            opacity: 0;
-            visibility: hidden;
-            transform: translateY(10px);
-            transition: var(--transition);
-            z-index: 1001;
+            position: absolute; right: 0; top: 55px;
+            background: rgba(15, 15, 17, 0.98); backdrop-filter: blur(25px);
+            min-width: 200px; border-radius: 18px; padding: 10px;
+            border: 1px solid var(--border-glass); opacity: 0; visibility: hidden;
+            transform: translateY(10px); transition: var(--transition); z-index: 1001;
         }
-
-        .user-dropdown:hover .dropdown-content {
-            opacity: 1;
-            visibility: visible;
-            transform: translateY(0);
-        }
-
+        .user-dropdown:hover .dropdown-content { opacity: 1; visibility: visible; transform: translateY(0); }
         .dropdown-content a {
-            color: #fff;
-            padding: 10px 15px;
-            text-decoration: none;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            font-size: 12px;
-            font-weight: 600;
-            border-radius: 10px;
-            transition: 0.3s;
+            color: #fff; padding: 10px 15px; text-decoration: none; display: flex;
+            align-items: center; gap: 12px; font-size: 12px; font-weight: 600;
+            border-radius: 10px; transition: 0.3s;
         }
+        .dropdown-content a i { color: var(--primary); width: 15px; }
+        .dropdown-content a:hover { background: rgba(255, 0, 85, 0.1); transform: translateX(5px); }
 
-        .dropdown-content a i {
-            color: var(--primary);
-            width: 15px;
-        }
-
-        .dropdown-content a:hover {
-            background: rgba(255, 0, 85, 0.1);
-            transform: translateX(5px);
-        }
-
-        /* --- HERO SECTION --- */
+        /* --- HERO --- */
         .hero {
-            height: 100vh;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
+            height: 100vh; display: flex; flex-direction: column; justify-content: center;
+            align-items: center; text-align: center;
             background: linear-gradient(rgba(5, 5, 5, 0.2), var(--bg-dark)),
                 url('https://images.unsplash.com/photo-1493225255756-d9584f8606e9?q=80&w=1920&auto=format&fit=crop');
-            background-size: cover;
-            background-position: center;
-            background-attachment: fixed;
+            background-size: cover; background-position: center; background-attachment: fixed;
         }
+        .hero h1 { font-family: 'Syncopate'; font-size: clamp(3rem, 10vw, 6rem); margin-bottom: 15px; line-height: 1; }
+        .hero p { font-size: 16px; text-transform: uppercase; letter-spacing: 8px; opacity: 0.8; margin-bottom: 30px; }
 
-        .hero h1 {
-            font-family: 'Syncopate';
-            font-size: clamp(3rem, 10vw, 6rem);
-            margin-bottom: 15px;
-            line-height: 1;
-        }
-
-        .hero p {
-            font-size: 16px;
-            text-transform: uppercase;
-            letter-spacing: 8px;
-            opacity: 0.8;
-            margin-bottom: 30px;
-        }
-
+        /* --- SECTIONS --- */
         .stats-bar {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            padding: 60px 5%;
-            background: rgba(255, 255, 255, 0.02);
-            border-bottom: 1px solid var(--border-glass);
-            text-align: center;
+            display: grid; grid-template-columns: repeat(4, 1fr);
+            padding: 60px 5%; background: rgba(255, 255, 255, 0.02);
+            border-bottom: 1px solid var(--border-glass); text-align: center;
         }
+        .stat-item h2 { font-family: 'Syncopate'; color: var(--primary); font-size: 24px; }
+        .stat-item p { font-size: 10px; text-transform: uppercase; letter-spacing: 2px; opacity: 0.5; }
 
-        .stat-item h2 {
-            font-family: 'Syncopate';
-            color: var(--primary);
-            font-size: 24px;
-        }
-
-        .stat-item p {
-            font-size: 10px;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            opacity: 0.5;
-        }
-
-        .section-container {
-            padding: 100px 5%;
-        }
-
+        .section-container { padding: 100px 5%; }
         .section-title {
-            font-family: 'Syncopate';
-            font-size: 20px;
-            margin-bottom: 50px;
-            border-left: 5px solid var(--primary);
-            padding-left: 20px;
-            letter-spacing: 3px;
+            font-family: 'Syncopate'; font-size: 20px; margin-bottom: 50px;
+            border-left: 5px solid var(--primary); padding-left: 20px; letter-spacing: 3px;
         }
-
-        .content-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-            gap: 30px;
-        }
-
+        .content-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 30px; }
         .media-card {
-            background: var(--card-glass);
-            border-radius: 20px;
-            padding: 15px;
-            border: 1px solid var(--border-glass);
-            transition: var(--transition);
+            background: var(--card-glass); border-radius: 20px; padding: 15px;
+            border: 1px solid var(--border-glass); transition: var(--transition);
         }
-
-        .media-card:hover {
-            border-color: var(--primary);
-            transform: translateY(-10px);
-            background: rgba(255, 255, 255, 0.08);
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
-        }
-
-        .img-box {
-            position: relative;
-            border-radius: 15px;
-            overflow: hidden;
-            margin-bottom: 15px;
-        }
-
-        .img-box img {
-            width: 100%;
-            display: block;
-            transition: 0.6s;
-        }
+        .media-card:hover { border-color: var(--primary); transform: translateY(-10px); background: rgba(255, 255, 255, 0.08); box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4); }
+        .img-box { position: relative; border-radius: 15px; overflow: hidden; margin-bottom: 15px; }
+        .img-box img { width: 100%; display: block; transition: 0.6s; }
 
         .btn-main {
-            display: inline-block;
-            padding: 15px 40px;
-            background: var(--primary);
-            color: white;
-            text-decoration: none;
-            border-radius: 50px;
-            font-weight: 800;
-            font-size: 12px;
-            letter-spacing: 2px;
-            transition: 0.3s;
+            display: inline-block; padding: 15px 40px; background: var(--primary);
+            color: white; text-decoration: none; border-radius: 50px;
+            font-weight: 800; font-size: 12px; letter-spacing: 2px; transition: 0.3s;
         }
-
-        .btn-main:hover {
-            transform: scale(1.05);
-            box-shadow: 0 10px 20px rgba(255, 0, 85, 0.3);
-        }
+        .btn-main:hover { transform: scale(1.05); box-shadow: 0 10px 20px rgba(255, 0, 85, 0.3); }
 
         .spotlight {
             background: linear-gradient(90deg, #050505 30%, transparent),
                 url('https://images.unsplash.com/photo-1470225620780-dba8ba36b745?q=80&w=1920&auto=format&fit=crop');
-            background-size: cover;
-            padding: 120px 5%;
-            display: flex;
-            align-items: center;
-            min-height: 600px;
+            background-size: cover; padding: 120px 5%; display: flex; align-items: center; min-height: 600px;
         }
+        .spotlight-content { max-width: 600px; }
+        .spotlight-content h2 { font-family: 'Syncopate'; font-size: 40px; margin-bottom: 20px; }
+        .tag { background: var(--primary); padding: 5px 15px; border-radius: 5px; font-size: 10px; font-weight: 800; }
 
-        .spotlight-content {
-            max-width: 600px;
-        }
-
-        .spotlight-content h2 {
-            font-family: 'Syncopate';
-            font-size: 40px;
-            margin-bottom: 20px;
-        }
-
-        .tag {
-            background: var(--primary);
-            padding: 5px 15px;
-            border-radius: 5px;
-            font-size: 10px;
-            font-weight: 800;
-        }
-
-        .pricing-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 30px;
-        }
-
+        .pricing-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; }
         .price-card {
-            background: var(--card-glass);
-            padding: 50px 40px;
-            border-radius: 30px;
-            border: 1px solid var(--border-glass);
-            text-align: center;
-            transition: 0.3s;
+            background: var(--card-glass); padding: 50px 40px; border-radius: 30px;
+            border: 1px solid var(--border-glass); text-align: center; transition: 0.3s;
         }
+        .price-card.featured { border-color: var(--primary); background: rgba(255, 0, 85, 0.05); }
+        .price-card h3 { font-family: 'Syncopate'; font-size: 18px; margin-bottom: 20px; }
+        .price-card .cost { font-size: 48px; font-weight: 800; margin-bottom: 20px; }
+        .price-card .cost span { font-size: 16px; opacity: 0.5; }
 
-        .price-card.featured {
-            border-color: var(--primary);
-            background: rgba(255, 0, 85, 0.05);
-        }
+        footer { padding: 80px 5% 40px; text-align: center; border-top: 1px solid var(--border-glass); font-size: 11px; opacity: 0.5; letter-spacing: 2px; }
 
-        .price-card h3 {
-            font-family: 'Syncopate';
-            font-size: 18px;
-            margin-bottom: 20px;
-        }
-
-        .price-card .cost {
-            font-size: 48px;
-            font-weight: 800;
-            margin-bottom: 20px;
-        }
-
-        .price-card .cost span {
-            font-size: 16px;
-            opacity: 0.5;
-        }
-
-        footer {
-            padding: 80px 5% 40px;
-            text-align: center;
-            border-top: 1px solid var(--border-glass);
-            font-size: 11px;
-            opacity: 0.5;
-            letter-spacing: 2px;
+        /* --- RESPONSIVE FIXES --- */
+        @media (max-width: 992px) {
+            .menu-btn { display: block; }
+            nav {
+                position: absolute; top: 100%; left: 0; width: 100%;
+                background: rgba(5, 5, 5, 0.98); backdrop-filter: blur(20px);
+                border-bottom: 1px solid var(--border-glass);
+                display: none; padding: 20px 0;
+            }
+            nav.active { display: block; }
+            nav ul { flex-direction: column; align-items: center; gap: 15px; }
+            .user-actions { display: none; } /* Mobile par cleaner look ke liye hide kiya hai */
         }
 
         @media (max-width: 768px) {
-            .stats-bar {
-                grid-template-columns: repeat(2, 1fr);
-                gap: 20px;
-            }
+            .stats-bar { grid-template-columns: repeat(2, 1fr); gap: 20px; }
+            .hero p { letter-spacing: 4px; font-size: 14px; }
+            .section-container { padding: 60px 5%; }
+            .spotlight { background: var(--bg-dark); text-align: center; justify-content: center; }
         }
     </style>
 </head>
@@ -433,16 +221,18 @@ if (isset($_SESSION['email'])) {
 
     <div id="loader">
         <div class="bar-container">
-            <div class="bar"></div>
-            <div class="bar"></div>
-            <div class="bar"></div>
-            <div class="bar"></div>
+            <div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div>
         </div>
     </div>
 
     <header>
         <a href="index.php" class="logo">SOU<span>N</span>D</a>
-        <nav>
+        
+        <div class="menu-btn" onclick="toggleMenu()">
+            <i class="fas fa-bars"></i>
+        </div>
+
+        <nav id="nav-bar">
             <ul>
                 <li><a href="index.php" style="color:var(--primary)">Home</a></li>
                 <li><a href="user_music_view.php">Music</a></li>
@@ -450,8 +240,12 @@ if (isset($_SESSION['email'])) {
                 <li><a href="user_albums_view.php">Albums</a></li>
                 <li><a href="about.php">About</a></li>
                 <li><a href="contact.php">Contact</a></li>
+                <?php if (!$user): ?>
+                    <li class="mobile-only"><a href="login.php" style="color:var(--primary)">Login</a></li>
+                <?php endif; ?>
             </ul>
         </nav>
+
         <div class="user-actions">
             <?php if ($user): ?>
                 <div class="user-dropdown">
@@ -481,22 +275,10 @@ if (isset($_SESSION['email'])) {
     </section>
 
     <div class="stats-bar">
-        <div class="stat-item">
-            <h2>2.4M</h2>
-            <p>Active Listeners</p>
-        </div>
-        <div class="stat-item">
-            <h2>45K</h2>
-            <p>Artists</p>
-        </div>
-        <div class="stat-item">
-            <h2>800+</h2>
-            <p>Daily Uploads</p>
-        </div>
-        <div class="stat-item">
-            <h2>100%</h2>
-            <p>Lossless Audio</p>
-        </div>
+        <div class="stat-item"><h2>2.4M</h2><p>Active Listeners</p></div>
+        <div class="stat-item"><h2>45K</h2><p>Artists</p></div>
+        <div class="stat-item"><h2>800+</h2><p>Daily Uploads</p></div>
+        <div class="stat-item"><h2>100%</h2><p>Lossless Audio</p></div>
     </div>
 
     <section class="section-container" id="music">
@@ -578,6 +360,7 @@ if (isset($_SESSION['email'])) {
     </footer>
 
     <script>
+        // Preloader
         window.addEventListener('load', function() {
             setTimeout(() => {
                 document.getElementById('loader').style.opacity = '0';
@@ -587,6 +370,15 @@ if (isset($_SESSION['email'])) {
                 }, 500);
             }, 800);
         });
+
+        // Mobile Menu Toggle
+        function toggleMenu() {
+            const nav = document.getElementById('nav-bar');
+            nav.classList.toggle('active');
+            const icon = document.querySelector('.menu-btn i');
+            icon.classList.toggle('fa-bars');
+            icon.classList.toggle('fa-times');
+        }
     </script>
 </body>
 
