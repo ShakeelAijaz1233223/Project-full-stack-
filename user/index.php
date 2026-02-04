@@ -57,14 +57,15 @@ if (isset($_SESSION['email'])) {
         /* --- PRELOADER --- */
         #loader {
             position: fixed;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
             background: var(--bg-dark);
             z-index: 9999;
             display: flex;
             justify-content: center;
             align-items: center;
-            transition: opacity 0.5s ease;
         }
 
         .bar-container {
@@ -80,20 +81,30 @@ if (isset($_SESSION['email'])) {
             animation: bounce 0.5s ease-in-out infinite alternate;
         }
 
-        .bar:nth-child(2) { animation-delay: 0.1s; }
-        .bar:nth-child(3) { animation-delay: 0.2s; }
-        .bar:nth-child(4) { animation-delay: 0.3s; }
-
-        @keyframes bounce {
-            from { height: 5px; }
-            to { height: 30px; }
+        .bar:nth-child(2) {
+            animation-delay: 0.1s;
         }
 
-        /* --- BASE STYLES --- */
+        .bar:nth-child(3) {
+            animation-delay: 0.2s;
+        }
+
+        @keyframes bounce {
+            from {
+                height: 5px;
+            }
+
+            to {
+                height: 30px;
+            }
+        }
+
         * {
-            margin: 0; padding: 0;
+            margin: 0;
+            padding: 0;
             box-sizing: border-box;
             font-family: 'Plus Jakarta Sans', sans-serif;
+            scroll-behavior: smooth;
         }
 
         body {
@@ -101,16 +112,18 @@ if (isset($_SESSION['email'])) {
             color: #fff;
             overflow-x: hidden;
             opacity: 0;
-            transition: opacity 1.2s ease-in-out;
+            transition: opacity 1s;
         }
 
-        body.visible { opacity: 1; }
+        body.visible {
+            opacity: 1;
+        }
 
-        /* --- HEADER & NAV --- */
+        /* --- SYNCED HEADER --- */
         header {
-            background: rgba(5, 5, 5, 0.85);
-            backdrop-filter: blur(15px);
-            padding: 15px 5%;
+            background: rgba(5, 5, 5, 0.9);
+            backdrop-filter: blur(20px);
+            padding: 18px 5%;
             position: fixed;
             width: 100%;
             top: 0;
@@ -123,13 +136,15 @@ if (isset($_SESSION['email'])) {
 
         .logo {
             font-family: 'Syncopate', sans-serif;
-            font-size: 20px;
+            font-size: clamp(16px, 4vw, 22px);
             color: #fff;
             text-decoration: none;
-            letter-spacing: 4px;
+            letter-spacing: 5px;
         }
 
-        .logo span { color: var(--primary); }
+        .logo span {
+            color: var(--primary);
+        }
 
         nav ul {
             display: flex;
@@ -144,11 +159,77 @@ if (isset($_SESSION['email'])) {
             font-weight: 800;
             text-transform: uppercase;
             transition: 0.3s;
+            letter-spacing: 1px;
         }
 
-        nav ul li a:hover { color: var(--primary); }
+        nav ul li a:hover {
+            color: var(--primary);
+        }
 
-        /* --- HERO --- */
+        /* --- SYNCED USER DROPDOWN --- */
+        .user-trigger {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 8px 16px;
+            border-radius: 50px;
+            cursor: pointer;
+            border: 1px solid var(--border-glass);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: var(--transition);
+        }
+
+        .user-dropdown {
+            position: relative;
+        }
+
+        .dropdown-content {
+            position: absolute;
+            right: 0;
+            top: 55px;
+            background: rgba(15, 15, 17, 0.98);
+            backdrop-filter: blur(25px);
+            min-width: 200px;
+            border-radius: 18px;
+            padding: 10px;
+            border: 1px solid var(--border-glass);
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(10px);
+            transition: var(--transition);
+            z-index: 1001;
+        }
+
+        .user-dropdown:hover .dropdown-content {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        .dropdown-content a {
+            color: #fff;
+            padding: 10px 15px;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 12px;
+            font-weight: 600;
+            border-radius: 10px;
+            transition: 0.3s;
+        }
+
+        .dropdown-content a i {
+            color: var(--primary);
+            width: 15px;
+        }
+
+        .dropdown-content a:hover {
+            background: rgba(255, 0, 85, 0.1);
+            transform: translateX(5px);
+        }
+
+        /* --- HERO SECTION --- */
         .hero {
             height: 100vh;
             display: flex;
@@ -156,114 +237,194 @@ if (isset($_SESSION['email'])) {
             justify-content: center;
             align-items: center;
             text-align: center;
-            background: linear-gradient(rgba(5, 5, 5, 0.4), var(--bg-dark)),
-                        url('https://images.unsplash.com/photo-1493225255756-d9584f8606e9?q=80&w=1920&auto=format&fit=crop');
+            background: linear-gradient(rgba(5, 5, 5, 0.2), var(--bg-dark)),
+                url('https://images.unsplash.com/photo-1493225255756-d9584f8606e9?q=80&w=1920&auto=format&fit=crop');
             background-size: cover;
             background-position: center;
-            padding: 0 20px;
+            background-attachment: fixed;
         }
 
         .hero h1 {
             font-family: 'Syncopate';
-            font-size: clamp(2.5rem, 8vw, 5rem);
-            margin-bottom: 10px;
+            font-size: clamp(3rem, 10vw, 6rem);
+            margin-bottom: 15px;
+            line-height: 1;
         }
 
         .hero p {
-            font-size: clamp(10px, 2vw, 14px);
-            letter-spacing: 6px;
+            font-size: 16px;
             text-transform: uppercase;
-            margin-bottom: 30px;
+            letter-spacing: 8px;
             opacity: 0.8;
+            margin-bottom: 30px;
         }
 
-        /* --- CONTENT GRID & CARDS --- */
-        .section-container { padding: 80px 5%; }
+        .stats-bar {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            padding: 60px 5%;
+            background: rgba(255, 255, 255, 0.02);
+            border-bottom: 1px solid var(--border-glass);
+            text-align: center;
+        }
+
+        .stat-item h2 {
+            font-family: 'Syncopate';
+            color: var(--primary);
+            font-size: 24px;
+        }
+
+        .stat-item p {
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            opacity: 0.5;
+        }
+
+        .section-container {
+            padding: 100px 5%;
+        }
 
         .section-title {
             font-family: 'Syncopate';
-            font-size: 18px;
-            margin-bottom: 40px;
-            border-left: 4px solid var(--primary);
-            padding-left: 15px;
-            letter-spacing: 2px;
+            font-size: 20px;
+            margin-bottom: 50px;
+            border-left: 5px solid var(--primary);
+            padding-left: 20px;
+            letter-spacing: 3px;
         }
 
         .content-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-            gap: 25px;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 30px;
         }
 
         .media-card {
             background: var(--card-glass);
-            border-radius: 15px;
-            padding: 12px;
+            border-radius: 20px;
+            padding: 15px;
             border: 1px solid var(--border-glass);
             transition: var(--transition);
         }
 
         .media-card:hover {
-            transform: translateY(-8px);
             border-color: var(--primary);
-            background: rgba(255, 255, 255, 0.06);
+            transform: translateY(-10px);
+            background: rgba(255, 255, 255, 0.08);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+        }
+
+        .img-box {
+            position: relative;
+            border-radius: 15px;
+            overflow: hidden;
+            margin-bottom: 15px;
         }
 
         .img-box img {
             width: 100%;
-            border-radius: 10px;
-            transition: 0.5s;
+            display: block;
+            transition: 0.6s;
         }
 
-        /* --- PRICING --- */
+        .btn-main {
+            display: inline-block;
+            padding: 15px 40px;
+            background: var(--primary);
+            color: white;
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: 800;
+            font-size: 12px;
+            letter-spacing: 2px;
+            transition: 0.3s;
+        }
+
+        .btn-main:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 20px rgba(255, 0, 85, 0.3);
+        }
+
+        .spotlight {
+            background: linear-gradient(90deg, #050505 30%, transparent),
+                url('https://images.unsplash.com/photo-1470225620780-dba8ba36b745?q=80&w=1920&auto=format&fit=crop');
+            background-size: cover;
+            padding: 120px 5%;
+            display: flex;
+            align-items: center;
+            min-height: 600px;
+        }
+
+        .spotlight-content {
+            max-width: 600px;
+        }
+
+        .spotlight-content h2 {
+            font-family: 'Syncopate';
+            font-size: 40px;
+            margin-bottom: 20px;
+        }
+
+        .tag {
+            background: var(--primary);
+            padding: 5px 15px;
+            border-radius: 5px;
+            font-size: 10px;
+            font-weight: 800;
+        }
+
         .pricing-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
             gap: 30px;
         }
 
         .price-card {
             background: var(--card-glass);
-            padding: 40px;
-            border-radius: 25px;
-            text-align: center;
+            padding: 50px 40px;
+            border-radius: 30px;
             border: 1px solid var(--border-glass);
+            text-align: center;
+            transition: 0.3s;
         }
 
         .price-card.featured {
             border-color: var(--primary);
-            background: rgba(255, 0, 85, 0.03);
-            transform: scale(1.05);
+            background: rgba(255, 0, 85, 0.05);
         }
 
-        /* --- UTILS --- */
-        .btn-main {
-            padding: 14px 30px;
-            background: var(--primary);
-            color: #fff;
-            text-decoration: none;
-            border-radius: 50px;
+        .price-card h3 {
+            font-family: 'Syncopate';
+            font-size: 18px;
+            margin-bottom: 20px;
+        }
+
+        .price-card .cost {
+            font-size: 48px;
             font-weight: 800;
+            margin-bottom: 20px;
+        }
+
+        .price-card .cost span {
+            font-size: 16px;
+            opacity: 0.5;
+        }
+
+        footer {
+            padding: 80px 5% 40px;
+            text-align: center;
+            border-top: 1px solid var(--border-glass);
             font-size: 11px;
-            letter-spacing: 1px;
-            transition: 0.3s;
+            opacity: 0.5;
+            letter-spacing: 2px;
         }
 
-        .btn-main:hover {
-            box-shadow: 0 0 20px rgba(255, 0, 85, 0.4);
-            transform: translateY(-2px);
-        }
-
-        /* --- RESPONSIVE MOBILE FIXES --- */
-        @media (max-width: 992px) {
-            nav { display: none; } /* Mobile menu can be added as a burger */
-            .stats-bar { grid-template-columns: repeat(2, 1fr); gap: 30px; }
-        }
-
-        @media (max-width: 480px) {
-            .section-container { padding: 60px 5%; }
-            .content-grid { grid-template-columns: 1fr; }
-            .price-card.featured { transform: scale(1); }
+        @media (max-width: 768px) {
+            .stats-bar {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 20px;
+            }
         }
     </style>
 </head>
@@ -288,98 +449,145 @@ if (isset($_SESSION['email'])) {
                 <li><a href="user_video_view.php">Videos</a></li>
                 <li><a href="user_albums_view.php">Albums</a></li>
                 <li><a href="about.php">About</a></li>
+                <li><a href="contact.php">Contact</a></li>
             </ul>
         </nav>
         <div class="user-actions">
             <?php if ($user): ?>
                 <div class="user-dropdown">
                     <div class="user-trigger">
-                        <div style="width: 28px; height: 28px; background: var(--primary); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 800;">
+                        <div style="width: 25px; height: 25px; background: var(--primary); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 800;">
                             <?= strtoupper(substr($user['name'], 0, 1)); ?>
                         </div>
+                        <span style="font-size: 12px; font-weight: 700;"><?= htmlspecialchars($user['name']); ?></span>
+                        <i class="fas fa-chevron-down" style="font-size: 9px; opacity: 0.5;"></i>
+                    </div>
+                    <div class="dropdown-content">
+                        <a href="user_setting.php"><i class="fas fa-cog"></i> Settings</a>
+                        <div style="height: 1px; background: var(--border-glass); margin: 5px 0;"></div>
+                        <a href="user_logout.php" style="color: #ff4d4d;"><i class="fas fa-power-off"></i> Logout</a>
                     </div>
                 </div>
             <?php else: ?>
-                <a href="login.php" class="btn-main" style="padding: 8px 20px;">LOGIN</a>
+                <a href="login.php" style="background: var(--primary); padding: 8px 22px; border-radius: 30px; text-decoration: none; color: white; font-size: 11px; font-weight: 800; transition: 0.3s;">LOGIN</a>
             <?php endif; ?>
         </div>
     </header>
 
-    <section class="hero">
+    <section class="hero" id="home">
         <h1 class="animate__animated animate__fadeInDown">SOUND <span>2026</span></h1>
-        <p class="animate__animated animate__fadeInUp animate__delay-1s">The Visual Audio Revolution</p>
-        <a href="#music" class="btn-main animate__animated animate__zoomIn animate__delay-2s">EXPLORE NOW</a>
+        <p class="animate__animated animate__fadeInUp">The Visual Audio Revolution</p>
+        <a href="#music" class="btn-main animate__animated animate__fadeInUp">EXPLORE NOW</a>
     </section>
 
-    <div class="stats-bar" style="display: grid; grid-template-columns: repeat(4, 1fr); padding: 50px 5%; text-align: center; background: rgba(255,255,255,0.01); border-bottom: 1px solid var(--border-glass);">
-        <div class="stat-item"><h2>2.4M</h2><p style="font-size:10px; opacity:0.5;">LISTENERS</p></div>
-        <div class="stat-item"><h2>45K</h2><p style="font-size:10px; opacity:0.5;">ARTISTS</p></div>
-        <div class="stat-item"><h2>800+</h2><p style="font-size:10px; opacity:0.5;">UPLOADS</p></div>
-        <div class="stat-item"><h2>100%</h2><p style="font-size:10px; opacity:0.5;">LOSSLESS</p></div>
+    <div class="stats-bar">
+        <div class="stat-item">
+            <h2>2.4M</h2>
+            <p>Active Listeners</p>
+        </div>
+        <div class="stat-item">
+            <h2>45K</h2>
+            <p>Artists</p>
+        </div>
+        <div class="stat-item">
+            <h2>800+</h2>
+            <p>Daily Uploads</p>
+        </div>
+        <div class="stat-item">
+            <h2>100%</h2>
+            <p>Lossless Audio</p>
+        </div>
     </div>
 
     <section class="section-container" id="music">
-        <h2 class="section-title">MUSIC RELEASES</h2>
+        <h2 class="section-title">MUSIC NEW RELEASES</h2>
         <div class="content-grid">
-            <?php while ($song = mysqli_fetch_assoc($latestMusic)): 
-                $musicImg = getMediaImage($song['cover_image'] ?? $song['image_path'] ?? '', 'music');
+            <?php while ($song = mysqli_fetch_assoc($latestMusic)):
+                $musicImg = getMediaImage($song['cover_image'] ?? $song['image_path'], 'music');
             ?>
-                <div class="media-card animate__animated animate__fadeInUp">
+                <div class="media-card">
                     <div class="img-box">
-                        <img src="<?= $musicImg ?>" alt="Cover" style="aspect-ratio: 1/1; object-fit: cover;">
+                        <img src="<?= $musicImg ?>" alt="Music" style="aspect-ratio: 1/1; object-fit: cover;">
                     </div>
-                    <h4 style="font-size:14px; margin-top:10px;"><?= htmlspecialchars($song['title']); ?></h4>
-                    <p style="font-size:11px; opacity:0.5;"><?= htmlspecialchars($song['artist']); ?></p>
+                    <h4 style="font-size:14px;"><?= htmlspecialchars($song['title']); ?></h4>
+                    <p style="font-size:12px; opacity:0.5;"><?= htmlspecialchars($song['artist']); ?></p>
                 </div>
             <?php endwhile; ?>
         </div>
     </section>
 
-    <section class="section-container" id="pricing" style="background: rgba(255,255,255,0.01);">
-        <h2 class="section-title">MEMBERSHIP</h2>
+    <section class="spotlight">
+        <div class="spotlight-content">
+            <span class="tag">ARTIST OF THE MONTH</span>
+            <h2 style="margin-top:20px;">XENON ECHO</h2>
+            <p style="opacity:0.7; line-height:1.8; margin-bottom:30px;">Pushing the boundaries of electronic synthesis. Experience the new album 'Neon Horizons' in Spatial Audio exclusively on SOUND.</p>
+            <a href="#" class="btn-main">LISTEN TO ALBUM</a>
+        </div>
+    </section>
+
+    <section class="section-container" id="videos" style="background: rgba(255,255,255,0.01);">
+        <h2 class="section-title">FEATURED NEW VIDEOS</h2>
+        <div class="content-grid" style="grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));">
+            <?php while ($video = mysqli_fetch_assoc($latestVideos)):
+                $videoThumb = getMediaImage($video['thumbnail'] ?? $video['video_thumbnails'], 'video');
+            ?>
+                <div class="media-card">
+                    <div class="img-box">
+                        <img src="<?= $videoThumb ?>" alt="Video" style="aspect-ratio: 16/9; object-fit: cover;">
+                    </div>
+                    <h4 style="font-size:15px;"><?= htmlspecialchars($video['title']); ?></h4>
+                </div>
+            <?php endwhile; ?>
+        </div>
+    </section>
+
+    <section class="section-container" id="pricing">
+        <h2 class="section-title">CHOOSE YOUR VIBE</h2>
         <div class="pricing-grid">
             <div class="price-card">
                 <h3>FREE</h3>
-                <div style="font-size: 35px; font-weight: 800; margin: 15px 0;">$0</div>
-                <p style="font-size: 13px; opacity: 0.6; margin-bottom: 25px;">Standard Audio Quality<br>With Advertisements</p>
-                <a href="#" class="btn-main" style="background:transparent; border:1px solid #fff;">START FREE</a>
+                <div class="cost">$0<span>/mo</span></div>
+                <ul style="list-style:none; opacity:0.6; font-size:13px; margin-bottom:30px; line-height:2;">
+                    <li>Standard Audio Quality</li>
+                    <li>With Advertisements</li>
+                    <li>Mobile & Desktop Access</li>
+                </ul>
+                <a href="#" class="btn-main" style="background:transparent; border:1px solid white;">GET STARTED</a>
             </div>
             <div class="price-card featured">
-                <span style="font-size: 9px; background: var(--primary); padding: 3px 10px; border-radius: 4px;">RECOMMENDED</span>
                 <h3>PREMIUM</h3>
-                <div style="font-size: 35px; font-weight: 800; margin: 15px 0;">$9</div>
-                <p style="font-size: 13px; opacity: 0.8; margin-bottom: 25px;">Hi-Fi Lossless Audio<br>Offline & Ad-Free</p>
-                <a href="#" class="btn-main">UPGRADE NOW</a>
+                <div class="cost">$9<span>/mo</span></div>
+                <ul style="list-style:none; opacity:0.8; font-size:13px; margin-bottom:30px; line-height:2;">
+                    <li>Lossless Audio (Hi-Fi)</li>
+                    <li>Zero Advertisements</li>
+                    <li>Offline Downloads</li>
+                    <li>Early Access to Videos</li>
+                </ul>
+                <a href="#" class="btn-main">GO PREMIUM</a>
             </div>
         </div>
     </section>
 
-    <footer style="padding: 60px 5%; text-align: center; border-top: 1px solid var(--border-glass); opacity: 0.6; font-size: 10px; letter-spacing: 2px;">
-        &copy; 2026 SOUND PORTAL | ALL RIGHTS RESERVED
+    <footer>
+        <div style="margin-bottom: 30px;">
+            <a href="#" style="color:white; margin:0 15px; text-decoration:none;">PRIVACY</a>
+            <a href="#" style="color:white; margin:0 15px; text-decoration:none;">TERMS</a>
+            <a href="#" style="color:white; margin:0 15px; text-decoration:none;">CAREERS</a>
+        </div>
+        &copy; 2026 SOUND PORTAL | DESIGNED FOR THE FUTURE
     </footer>
 
     <script>
-        // Smooth Loader Exit & Entry Animation
         window.addEventListener('load', function() {
-            const loader = document.getElementById('loader');
             setTimeout(() => {
-                loader.style.opacity = '0';
+                document.getElementById('loader').style.opacity = '0';
                 setTimeout(() => {
-                    loader.style.display = 'none';
+                    document.getElementById('loader').style.display = 'none';
                     document.body.classList.add('visible');
                 }, 500);
-            }, 1000);
-        });
-
-        // Simple Smooth Scroll for Anchors
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                e.preventDefault();
-                document.querySelector(this.getAttribute('href')).scrollIntoView({
-                    behavior: 'smooth'
-                });
-            });
+            }, 800);
         });
     </script>
 </body>
+
 </html>
