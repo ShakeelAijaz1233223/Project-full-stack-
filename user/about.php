@@ -7,8 +7,8 @@ $user = null;
 if (isset($_SESSION['email'])) {
     $email = mysqli_real_escape_string($conn, $_SESSION['email']);
     $res = mysqli_query($conn, "SELECT * FROM users WHERE email='$email' LIMIT 1");
-    if ($res && mysqli_num_rows($res) > 0) { 
-        $user = mysqli_fetch_assoc($res); 
+    if ($res && mysqli_num_rows($res) > 0) {
+        $user = mysqli_fetch_assoc($res);
     }
 }
 ?>
@@ -19,11 +19,11 @@ if (isset($_SESSION['email'])) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>About | SOUND 2026</title>
-    
+
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
     <link href="https://fonts.googleapis.com/css2?family=Syncopate:wght@700&family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap" rel="stylesheet">
-    
+
     <style>
         :root {
             --primary: #ff0055;
@@ -70,7 +70,9 @@ if (isset($_SESSION['email'])) {
             letter-spacing: 5px;
         }
 
-        .logo span { color: var(--primary); }
+        .logo span {
+            color: var(--primary);
+        }
 
         nav ul {
             display: flex;
@@ -88,7 +90,9 @@ if (isset($_SESSION['email'])) {
             letter-spacing: 1px;
         }
 
-        nav ul li a:hover { color: var(--primary); }
+        nav ul li a:hover {
+            color: var(--primary);
+        }
 
         /* --- SYNCED USER DROPDOWN (Matches Home/Contact) --- */
         .user-trigger {
@@ -103,8 +107,10 @@ if (isset($_SESSION['email'])) {
             transition: var(--transition);
         }
 
-        .user-dropdown { position: relative; }
-        
+        .user-dropdown {
+            position: relative;
+        }
+
         .dropdown-content {
             position: absolute;
             right: 0;
@@ -137,7 +143,9 @@ if (isset($_SESSION['email'])) {
             border-radius: 10px;
         }
 
-        .dropdown-content a:hover { background: rgba(255, 0, 85, 0.1); }
+        .dropdown-content a:hover {
+            background: rgba(255, 0, 85, 0.1);
+        }
 
         /* --- ABOUT PAGE SPECIFIC CONTENT --- */
         .about-hero {
@@ -214,9 +222,82 @@ if (isset($_SESSION['email'])) {
             text-transform: uppercase;
         }
 
+        /* --- RESPONSIVE ADJUSTMENTS --- */
+        @media (max-width: 992px) {
+            .about-content {
+                padding: 80px 10%;
+            }
+
+            .stats {
+                grid-template-columns: 1fr 1fr;
+                gap: 20px;
+            }
+        }
+
         @media (max-width: 768px) {
-            .stats { grid-template-columns: 1fr; }
-            .about-content { padding: 80px 5%; }
+            .about-content {
+                padding: 70px 5%;
+            }
+
+            .stats {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+
+            .about-hero h1 {
+                font-size: clamp(2rem, 7vw, 3.5rem);
+            }
+
+            .about-content h2 {
+                font-size: 1.8rem;
+            }
+
+            .about-content p {
+                font-size: 1rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .about-hero {
+                height: 40vh;
+                padding: 0 5%;
+            }
+
+            .about-hero h1 {
+                font-size: clamp(1.5rem, 6vw, 2.5rem);
+            }
+
+            .about-content h2 {
+                font-size: 1.5rem;
+            }
+
+            .about-content p {
+                font-size: 0.95rem;
+                line-height: 1.6;
+            }
+
+            .stat-box {
+                padding: 25px;
+            }
+
+            .stat-box h3 {
+                font-size: 2rem;
+            }
+
+            .stat-box p {
+                font-size: 0.85rem;
+            }
+        }
+
+        @media (max-width: 360px) {
+            .about-hero h1 {
+                font-size: clamp(1.3rem, 5vw, 2rem);
+            }
+
+            footer {
+                font-size: 9px;
+                padding: 30px 5%;
+            }
         }
     </style>
 </head>
@@ -281,4 +362,5 @@ if (isset($_SESSION['email'])) {
 
     <footer>&copy; 2026 SOUND PORTAL | ALL RIGHTS RESERVED</footer>
 </body>
+
 </html>
