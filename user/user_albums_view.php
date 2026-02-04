@@ -118,6 +118,7 @@ $albums = mysqli_query($conn, "SELECT * FROM albums ORDER BY created_at DESC");
             object-fit: cover;
         }
 
+        /* --- PROGRESS LINE --- */
         .progress-container {
             width: 100%;
             margin: 15px 0 10px;
@@ -142,6 +143,7 @@ $albums = mysqli_query($conn, "SELECT * FROM albums ORDER BY created_at DESC");
             box-shadow: 0 0 10px var(--accent);
         }
 
+        /* --- CONTROLS --- */
         .controls {
             display: flex;
             justify-content: center;
@@ -160,7 +162,6 @@ $albums = mysqli_query($conn, "SELECT * FROM albums ORDER BY created_at DESC");
             align-items: center;
             justify-content: center;
             box-shadow: 0 4px 15px rgba(255, 0, 85, 0.3);
-            cursor: pointer;
         }
 
         .nav-btn { background: none; border: none; color: #555; font-size: 1.2rem; cursor: pointer; }
@@ -237,7 +238,7 @@ $albums = mysqli_query($conn, "SELECT * FROM albums ORDER BY created_at DESC");
 
                     <div class="media-container">
                         <?php if (!empty($video)): ?>
-                            <video id="vid-<?= $id ?>" preload="metadata" playsinline loop muted>
+                            <video id="vid-<?= $id ?>" preload="metadata" playsinline loop>
                                 <source src="../admin/uploads/albums/<?= $video; ?>" type="video/mp4">
                             </video>
                         <?php else: ?>
@@ -249,12 +250,12 @@ $albums = mysqli_query($conn, "SELECT * FROM albums ORDER BY created_at DESC");
                     <div class="artist"><?= $artist; ?></div>
 
                     <div class="progress-container">
-                        <input type="range" class="seek-bar" 
-                               id="seek-<?= $id ?>" 
-                               value="0" min="0" max="100" 
-                               oninput="seekMedia(this, '<?= $id ?>')"
-                               onchange="seekMedia(this, '<?= $id ?>')">
-                    </div>
+    <input type="range" class="seek-bar" 
+           id="seek-<?= $id ?>" 
+           value="0" min="0" max="100" 
+           oninput="seekMedia(this, '<?= $id ?>')" 
+           onchange="seekMedia(this, '<?= $id ?>')">
+</div>
 
                     <div class="controls">
                         <button class="nav-btn" onclick="skipMedia('<?= $id ?>', -10)"><i class="bi bi-rewind-fill"></i></button>
@@ -293,7 +294,7 @@ $albums = mysqli_query($conn, "SELECT * FROM albums ORDER BY created_at DESC");
             const icon = btn.querySelector('i');
 
             if (audio.paused) {
-                // Stop all other audio/video
+                // Stop others
                 document.querySelectorAll('audio, video').forEach(m => m.pause());
                 document.querySelectorAll('.play-btn i').forEach(i => i.className = 'bi bi-play-fill');
 
@@ -301,6 +302,7 @@ $albums = mysqli_query($conn, "SELECT * FROM albums ORDER BY created_at DESC");
                 if (video) {
                     video.currentTime = audio.currentTime;
                     video.play();
+                    video.muted = false; // Ensures sound is active
                 }
                 icon.className = 'bi bi-pause-fill';
             } else {
@@ -310,41 +312,48 @@ $albums = mysqli_query($conn, "SELECT * FROM albums ORDER BY created_at DESC");
             }
         }
 
-        // Auto Update Seek Bar
-        function updateProgress(id) {
-            const audio = document.getElementById('aud-' + id);
-            const seekBar = document.getElementById('seek-' + id);
+        // Move Line (Progress)
+      // 1. Line ko gaane ke sath chalane ke liye (Auto Update)
+function updateProgress(id) {
+    const audio = document.getElementById('aud-' + id);
+    const seekBar = document.getElementById('seek-' + id);
 
-            if (!audio.duration || isNaN(audio.duration)) return;
+    // Agar audio duration available nahi hai to ruk jao
+    if (!audio.duration || isNaN(audio.duration)) return;
 
-            const percentage = (audio.currentTime / audio.duration) * 100;
-            seekBar.value = percentage;
-        }
+    // Line ki position calculate karein
+    const percentage = (audio.currentTime / audio.duration) * 100;
+    
+    // Sirf tab update karein jab user khud drag na kar raha ho
+    seekBar.value = percentage;
+}
 
-        // Manual Seek Logic
-        function seekMedia(slider, id) {
-            const audio = document.getElementById('aud-' + id);
-            const video = document.getElementById('vid-' + id);
+// 2. Manual Seek (Jab aap khud line pakar kar aage piche karein)
+function seekMedia(slider, id) {
+    const audio = document.getElementById('aud-' + id);
+    const video = document.getElementById('vid-' + id);
 
-            if (!audio.duration || isNaN(audio.duration)) return;
+    if (!audio.duration || isNaN(audio.duration)) return;
 
-            const seekTo = (slider.value / 100) * audio.duration;
-            audio.currentTime = seekTo;
-            if (video) {
-                video.currentTime = seekTo;
-            }
-        }
+    // Slider ki value ko seconds mein convert karein
+    const seekTo = (slider.value / 100) * audio.duration;
+    
+    audio.currentTime = seekTo;
+    if (video) {
+        video.currentTime = seekTo;
+    }
+}
 
-        // Skip Logic
-        function skipMedia(id, secs) {
-            const audio = document.getElementById('aud-' + id);
-            const video = document.getElementById('vid-' + id);
-            
-            if (audio) {
-                audio.currentTime += secs;
-                if (video) video.currentTime = audio.currentTime;
-            }
-        }
+// 3. Skip Button Fix
+function skipMedia(id, secs) {
+    const audio = document.getElementById('aud-' + id);
+    const video = document.getElementById('vid-' + id);
+    
+    if (audio) {
+        audio.currentTime += secs;
+        if (video) video.currentTime = audio.currentTime;
+    }
+}
     </script>
 </body>
 </html>
