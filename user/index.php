@@ -17,29 +17,25 @@ function getMediaImage($fileName, $type)
     return (!empty($fileName) && file_exists($fullPath)) ? $fullPath : $default;
 }
 
-// Fetch latest music and videos
+// Fetch data
 $latestMusic = mysqli_query($conn, "SELECT * FROM music ORDER BY id DESC LIMIT 5");
 $latestVideos = mysqli_query($conn, "SELECT * FROM videos ORDER BY id DESC LIMIT 4");
 
-// Login check
 $user = null;
 if (isset($_SESSION['email'])) {
     $email = mysqli_real_escape_string($conn, $_SESSION['email']);
     $res = mysqli_query($conn, "SELECT * FROM users WHERE email='$email' LIMIT 1");
-    if ($res && mysqli_num_rows($res) > 0) {
-        $user = mysqli_fetch_assoc($res);
-    }
+    if ($res && mysqli_num_rows($res) > 0) { $user = mysqli_fetch_assoc($res); }
 }
 ?>
 
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SOUND | 2026 Immersive Experience</title>
-
+    <title>SOUND | 2026 Immersive Portal</title>
+    
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
     <link href="https://fonts.googleapis.com/css2?family=Syncopate:wght@700&family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap" rel="stylesheet">
@@ -51,543 +47,222 @@ if (isset($_SESSION['email'])) {
             --bg-dark: #050505;
             --card-glass: rgba(255, 255, 255, 0.03);
             --border-glass: rgba(255, 255, 255, 0.1);
-            --transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            --transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
         }
+
+        /* --- SMOOTH SCROLL & SECTIONS --- */
+        html { scroll-behavior: smooth; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; }
+        body { background: var(--bg-dark); color: #fff; overflow-x: hidden; }
+
+        /* --- PAGE REVEAL ANIMATION --- */
+        .reveal { opacity: 0; transform: translateY(50px); transition: var(--transition); }
+        .reveal.active { opacity: 1; transform: translateY(0); }
 
         /* --- PRELOADER --- */
         #loader {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: var(--bg-dark);
-            z-index: 9999;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: var(--bg-dark); z-index: 9999;
+            display: flex; justify-content: center; align-items: center;
         }
 
-        .bar-container {
-            display: flex;
-            align-items: flex-end;
-            height: 30px;
-            gap: 4px;
-        }
-
-        .bar {
-            width: 4px;
-            background: var(--primary);
-            animation: bounce 0.5s ease-in-out infinite alternate;
-        }
-
-        .bar:nth-child(2) {
-            animation-delay: 0.1s;
-        }
-
-        .bar:nth-child(3) {
-            animation-delay: 0.2s;
-        }
-
-        @keyframes bounce {
-            from {
-                height: 5px;
-            }
-
-            to {
-                height: 30px;
-            }
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Plus Jakarta Sans', sans-serif;
-            scroll-behavior: smooth;
-        }
-
-        body {
-            background-color: var(--bg-dark);
-            color: #fff;
-            overflow-x: hidden;
-            opacity: 0;
-            transition: opacity 1s;
-        }
-
-        body.visible {
-            opacity: 1;
-        }
-
-        /* --- SYNCED HEADER --- */
+        /* --- MODERN HEADER --- */
         header {
-            background: rgba(5, 5, 5, 0.9);
-            backdrop-filter: blur(20px);
-            padding: 18px 5%;
-            position: fixed;
-            width: 100%;
-            top: 0;
-            z-index: 1000;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+            background: rgba(5, 5, 5, 0.8); backdrop-filter: blur(20px);
+            padding: 15px 5%; position: fixed; width: 100%; top: 0; z-index: 1000;
+            display: flex; justify-content: space-between; align-items: center;
             border-bottom: 1px solid var(--border-glass);
         }
 
-        .logo {
-            font-family: 'Syncopate', sans-serif;
-            font-size: clamp(16px, 4vw, 22px);
-            color: #fff;
-            text-decoration: none;
-            letter-spacing: 5px;
+        .nav-links { display: flex; list-style: none; gap: 30px; align-items: center; }
+        .dropdown { position: relative; }
+        .dropdown-trigger { 
+            color: rgba(255,255,255,0.7); text-decoration: none; 
+            font-size: 11px; font-weight: 800; text-transform: uppercase;
+            cursor: pointer; display: flex; align-items: center; gap: 5px;
         }
-
-        .logo span {
-            color: var(--primary);
+        .dropdown-menu {
+            position: absolute; top: 40px; left: 0; background: #111;
+            min-width: 200px; border-radius: 12px; padding: 10px;
+            border: 1px solid var(--border-glass); opacity: 0;
+            visibility: hidden; transform: translateY(10px); transition: 0.3s;
         }
-
-        nav ul {
-            display: flex;
-            list-style: none;
-            gap: 20px;
+        .dropdown:hover .dropdown-menu { opacity: 1; visibility: visible; transform: translateY(0); }
+        .dropdown-menu a {
+            display: block; color: #fff; text-decoration: none;
+            padding: 10px; font-size: 12px; border-radius: 8px; transition: 0.2s;
         }
+        .dropdown-menu a:hover { background: var(--primary); }
 
-        nav ul li a {
-            color: rgba(255, 255, 255, 0.6);
-            text-decoration: none;
-            font-size: 11px;
-            font-weight: 800;
-            text-transform: uppercase;
-            transition: 0.3s;
-            letter-spacing: 1px;
-        }
-
-        nav ul li a:hover {
-            color: var(--primary);
-        }
-
-        /* --- SYNCED USER DROPDOWN --- */
-        .user-trigger {
-            background: rgba(255, 255, 255, 0.05);
-            padding: 8px 16px;
-            border-radius: 50px;
-            cursor: pointer;
-            border: 1px solid var(--border-glass);
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            transition: var(--transition);
-        }
-
-        .user-dropdown {
-            position: relative;
-        }
-
-        .dropdown-content {
-            position: absolute;
-            right: 0;
-            top: 55px;
-            background: rgba(15, 15, 17, 0.98);
-            backdrop-filter: blur(25px);
-            min-width: 200px;
-            border-radius: 18px;
-            padding: 10px;
-            border: 1px solid var(--border-glass);
-            opacity: 0;
-            visibility: hidden;
-            transform: translateY(10px);
-            transition: var(--transition);
-            z-index: 1001;
-        }
-
-        .user-dropdown:hover .dropdown-content {
-            opacity: 1;
-            visibility: visible;
-            transform: translateY(0);
-        }
-
-        .dropdown-content a {
-            color: #fff;
-            padding: 10px 15px;
-            text-decoration: none;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            font-size: 12px;
-            font-weight: 600;
-            border-radius: 10px;
-            transition: 0.3s;
-        }
-
-        .dropdown-content a i {
-            color: var(--primary);
-            width: 15px;
-        }
-
-        .dropdown-content a:hover {
-            background: rgba(255, 0, 85, 0.1);
-            transform: translateX(5px);
-        }
-
-        /* --- HERO SECTION --- */
+        /* --- HERO --- */
         .hero {
-            height: 100vh;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
-            background: linear-gradient(rgba(5, 5, 5, 0.2), var(--bg-dark)),
-                url('https://images.unsplash.com/photo-1493225255756-d9584f8606e9?q=80&w=1920&auto=format&fit=crop');
-            background-size: cover;
-            background-position: center;
-            background-attachment: fixed;
+            height: 100vh; display: flex; flex-direction: column;
+            justify-content: center; align-items: center; text-align: center;
+            background: linear-gradient(to bottom, transparent, var(--bg-dark)), 
+                        url('https://images.unsplash.com/photo-1514525253361-bee8a19740c1?q=80&w=1920&auto=format&fit=crop');
+            background-size: cover; background-position: center;
+        }
+        .hero h1 { font-family: 'Syncopate'; font-size: clamp(3rem, 10vw, 7rem); letter-spacing: -2px; }
+
+        /* --- CONTENT BLOCKS --- */
+        .section-container { padding: 120px 8%; }
+        .grid-custom { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 30px; }
+        
+        .feature-card {
+            background: var(--card-glass); border: 1px solid var(--border-glass);
+            padding: 40px; border-radius: 30px; transition: var(--transition);
+        }
+        .feature-card:hover { background: rgba(255,255,255,0.07); transform: scale(1.03); }
+
+        /* --- NEWSLETTER --- */
+        .newsletter {
+            background: var(--primary); padding: 100px 5%; text-align: center;
+            border-radius: 50px; margin: 0 5% 100px;
+        }
+        .newsletter input {
+            padding: 15px 30px; border-radius: 50px; border: none; width: 300px; max-width: 90%;
         }
 
-        .hero h1 {
-            font-family: 'Syncopate';
-            font-size: clamp(3rem, 10vw, 6rem);
-            margin-bottom: 15px;
-            line-height: 1;
-        }
-
-        .hero p {
-            font-size: 16px;
-            text-transform: uppercase;
-            letter-spacing: 8px;
-            opacity: 0.8;
-            margin-bottom: 30px;
-        }
-
-        .stats-bar {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            padding: 60px 5%;
-            background: rgba(255, 255, 255, 0.02);
-            border-bottom: 1px solid var(--border-glass);
-            text-align: center;
-        }
-
-        .stat-item h2 {
-            font-family: 'Syncopate';
-            color: var(--primary);
-            font-size: 24px;
-        }
-
-        .stat-item p {
-            font-size: 10px;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            opacity: 0.5;
-        }
-
-        .section-container {
-            padding: 100px 5%;
-        }
-
-        .section-title {
-            font-family: 'Syncopate';
-            font-size: 20px;
-            margin-bottom: 50px;
-            border-left: 5px solid var(--primary);
-            padding-left: 20px;
-            letter-spacing: 3px;
-        }
-
-        .content-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-            gap: 30px;
-        }
-
-        .media-card {
-            background: var(--card-glass);
-            border-radius: 20px;
-            padding: 15px;
-            border: 1px solid var(--border-glass);
-            transition: var(--transition);
-        }
-
-        .media-card:hover {
-            border-color: var(--primary);
-            transform: translateY(-10px);
-            background: rgba(255, 255, 255, 0.08);
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
-        }
-
-        .img-box {
-            position: relative;
-            border-radius: 15px;
-            overflow: hidden;
-            margin-bottom: 15px;
-        }
-
-        .img-box img {
-            width: 100%;
-            display: block;
-            transition: 0.6s;
+        /* --- MOBILE RESPONSIVENESS --- */
+        @media (max-width: 992px) {
+            .nav-links { display: none; } /* Hide for simplicity or use a burger menu */
+            .hero h1 { font-size: 3.5rem; }
         }
 
         .btn-main {
-            display: inline-block;
-            padding: 15px 40px;
-            background: var(--primary);
-            color: white;
-            text-decoration: none;
-            border-radius: 50px;
-            font-weight: 800;
-            font-size: 12px;
-            letter-spacing: 2px;
-            transition: 0.3s;
-        }
-
-        .btn-main:hover {
-            transform: scale(1.05);
-            box-shadow: 0 10px 20px rgba(255, 0, 85, 0.3);
-        }
-
-        .spotlight {
-            background: linear-gradient(90deg, #050505 30%, transparent),
-                url('https://images.unsplash.com/photo-1470225620780-dba8ba36b745?q=80&w=1920&auto=format&fit=crop');
-            background-size: cover;
-            padding: 120px 5%;
-            display: flex;
-            align-items: center;
-            min-height: 600px;
-        }
-
-        .spotlight-content {
-            max-width: 600px;
-        }
-
-        .spotlight-content h2 {
-            font-family: 'Syncopate';
-            font-size: 40px;
-            margin-bottom: 20px;
-        }
-
-        .tag {
-            background: var(--primary);
-            padding: 5px 15px;
-            border-radius: 5px;
-            font-size: 10px;
-            font-weight: 800;
-        }
-
-        .pricing-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 30px;
-        }
-
-        .price-card {
-            background: var(--card-glass);
-            padding: 50px 40px;
-            border-radius: 30px;
-            border: 1px solid var(--border-glass);
-            text-align: center;
-            transition: 0.3s;
-        }
-
-        .price-card.featured {
-            border-color: var(--primary);
-            background: rgba(255, 0, 85, 0.05);
-        }
-
-        .price-card h3 {
-            font-family: 'Syncopate';
-            font-size: 18px;
-            margin-bottom: 20px;
-        }
-
-        .price-card .cost {
-            font-size: 48px;
-            font-weight: 800;
-            margin-bottom: 20px;
-        }
-
-        .price-card .cost span {
-            font-size: 16px;
-            opacity: 0.5;
-        }
-
-        footer {
-            padding: 80px 5% 40px;
-            text-align: center;
-            border-top: 1px solid var(--border-glass);
-            font-size: 11px;
-            opacity: 0.5;
-            letter-spacing: 2px;
-        }
-
-        @media (max-width: 768px) {
-            .stats-bar {
-                grid-template-columns: repeat(2, 1fr);
-                gap: 20px;
-            }
+            padding: 15px 40px; background: var(--primary); color: #fff;
+            text-decoration: none; border-radius: 50px; font-weight: 800; font-size: 12px;
+            display: inline-block; transition: 0.3s;
         }
     </style>
 </head>
-
 <body>
 
     <div id="loader">
-        <div class="bar-container">
-            <div class="bar"></div>
-            <div class="bar"></div>
-            <div class="bar"></div>
-            <div class="bar"></div>
+        <div class="animate__animated animate__pulse animate__infinite">
+            <h2 style="font-family:'Syncopate'; letter-spacing:10px;">SOUND</h2>
         </div>
     </div>
 
     <header>
-        <a href="index.php" class="logo">SOU<span>N</span>D</a>
-        <nav>
-            <ul>
-                <li><a href="index.php" style="color:var(--primary)">Home</a></li>
-                <li><a href="user_music_view.php">Music</a></li>
-                <li><a href="user_video_view.php">Videos</a></li>
-                <li><a href="user_albums_view.php">Albums</a></li>
-                <li><a href="about.php">About</a></li>
-                <li><a href="contact.php">Contact</a></li>
-            </ul>
-        </nav>
+        <a href="#" class="logo" style="font-family:'Syncopate'; text-decoration:none; color:#fff; letter-spacing:3px;">SOU<span>N</span>D</a>
+        
+        <ul class="nav-links">
+            <li class="dropdown">
+                <span class="dropdown-trigger">Browse <i class="fas fa-chevron-down"></i></span>
+                <div class="dropdown-menu">
+                    <a href="#">New Releases</a>
+                    <a href="#">Top Charts</a>
+                    <a href="#">Genres</a>
+                    <a href="#">Radio</a>
+                </div>
+            </li>
+            <li class="dropdown">
+                <span class="dropdown-trigger">Community <i class="fas fa-chevron-down"></i></span>
+                <div class="dropdown-menu">
+                    <a href="#">Artists</a>
+                    <a href="#">Events</a>
+                    <a href="#">Fan Clubs</a>
+                    <a href="#">Podcasts</a>
+                </div>
+            </li>
+            <li><a href="#" style="color:#fff; text-decoration:none; font-size:11px; font-weight:800;">UPGRADE</a></li>
+        </ul>
+
         <div class="user-actions">
-            <?php if ($user): ?>
-                <div class="user-dropdown">
-                    <div class="user-trigger">
-                        <div style="width: 25px; height: 25px; background: var(--primary); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 800;">
-                            <?= strtoupper(substr($user['name'], 0, 1)); ?>
-                        </div>
-                        <span style="font-size: 12px; font-weight: 700;"><?= htmlspecialchars($user['name']); ?></span>
-                        <i class="fas fa-chevron-down" style="font-size: 9px; opacity: 0.5;"></i>
+            <?php if($user): ?>
+                <div class="dropdown">
+                    <div class="dropdown-trigger" style="background:var(--card-glass); padding:8px 15px; border-radius:50px; border:1px solid var(--border-glass);">
+                        <i class="fas fa-user-circle"></i> <?= htmlspecialchars($user['name']) ?>
                     </div>
-                    <div class="dropdown-content">
-                        <a href="user_setting.php"><i class="fas fa-cog"></i> Settings</a>
-                        <div style="height: 1px; background: var(--border-glass); margin: 5px 0;"></div>
-                        <a href="user_logout.php" style="color: #ff4d4d;"><i class="fas fa-power-off"></i> Logout</a>
+                    <div class="dropdown-menu" style="left:auto; right:0;">
+                        <a href="user_setting.php"><i class="fas fa-cog"></i> Profile</a>
+                        <a href="user_logout.php" style="color:red;"><i class="fas fa-sign-out-alt"></i> Logout</a>
                     </div>
                 </div>
             <?php else: ?>
-                <a href="login.php" style="background: var(--primary); padding: 8px 22px; border-radius: 30px; text-decoration: none; color: white; font-size: 11px; font-weight: 800; transition: 0.3s;">LOGIN</a>
+                <a href="login.php" class="btn-main" style="padding:10px 25px;">SIGN IN</a>
             <?php endif; ?>
         </div>
     </header>
 
-    <section class="hero" id="home">
-        <h1 class="animate__animated animate__fadeInDown">SOUND <span>2026</span></h1>
-        <p class="animate__animated animate__fadeInUp">The Visual Audio Revolution</p>
-        <a href="#music" class="btn-main animate__animated animate__fadeInUp">EXPLORE NOW</a>
+    <section class="hero">
+        <h1 class="animate__animated animate__fadeInUp">REDEFINE SOUND</h1>
+        <p class="animate__animated animate__fadeInUp" style="letter-spacing:10px; margin-top:10px; opacity:0.6;">EXPERIENCE 2026</p>
+        <div style="margin-top:40px;">
+            <a href="#music" class="btn-main animate__animated animate__fadeInUp">EXPLORE NOW</a>
+        </div>
     </section>
 
-    <div class="stats-bar">
-        <div class="stat-item">
-            <h2>2.4M</h2>
-            <p>Active Listeners</p>
-        </div>
-        <div class="stat-item">
-            <h2>45K</h2>
-            <p>Artists</p>
-        </div>
-        <div class="stat-item">
-            <h2>800+</h2>
-            <p>Daily Uploads</p>
-        </div>
-        <div class="stat-item">
-            <h2>100%</h2>
-            <p>Lossless Audio</p>
+    <div class="section-container reveal" style="text-align:center;">
+        <div class="grid-custom">
+            <div><h2 style="font-size:4rem; color:var(--primary);">90M</h2><p>Tracks Available</p></div>
+            <div><h2 style="font-size:4rem; color:var(--secondary);">24/7</h2><p>Live Streaming</p></div>
+            <div><h2 style="font-size:4rem; color:var(--primary);">HI-FI</h2><p>Lossless Quality</p></div>
         </div>
     </div>
 
-    <section class="section-container" id="music">
-        <h2 class="section-title">MUSIC NEW RELEASES</h2>
-        <div class="content-grid">
-            <?php while ($song = mysqli_fetch_assoc($latestMusic)):
-                $musicImg = getMediaImage($song['cover_image'] ?? $song['image_path'], 'music');
-            ?>
-                <div class="media-card">
-                    <div class="img-box">
-                        <img src="<?= $musicImg ?>" alt="Music" style="aspect-ratio: 1/1; object-fit: cover;">
-                    </div>
-                    <h4 style="font-size:14px;"><?= htmlspecialchars($song['title']); ?></h4>
-                    <p style="font-size:12px; opacity:0.5;"><?= htmlspecialchars($song['artist']); ?></p>
+    <section class="section-container reveal" id="music">
+        <h2 style="font-family:'Syncopate'; margin-bottom:50px; border-left:5px solid var(--primary); padding-left:20px;">LATEST SOUNDS</h2>
+        <div class="grid-custom">
+            <?php while($song = mysqli_fetch_assoc($latestMusic)): ?>
+                <div class="feature-card">
+                    <img src="<?= getMediaImage($song['cover_image'], 'music') ?>" style="width:100%; border-radius:15px; margin-bottom:20px;">
+                    <h3><?= $song['title'] ?></h3>
+                    <p style="opacity:0.5;"><?= $song['artist'] ?></p>
                 </div>
             <?php endwhile; ?>
         </div>
     </section>
 
-    <section class="spotlight">
-        <div class="spotlight-content">
-            <span class="tag">ARTIST OF THE MONTH</span>
-            <h2 style="margin-top:20px;">XENON ECHO</h2>
-            <p style="opacity:0.7; line-height:1.8; margin-bottom:30px;">Pushing the boundaries of electronic synthesis. Experience the new album 'Neon Horizons' in Spatial Audio exclusively on SOUND.</p>
-            <a href="#" class="btn-main">LISTEN TO ALBUM</a>
-        </div>
-    </section>
-
-    <section class="section-container" id="videos" style="background: rgba(255,255,255,0.01);">
-        <h2 class="section-title">FEATURED NEW VIDEOS</h2>
-        <div class="content-grid" style="grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));">
-            <?php while ($video = mysqli_fetch_assoc($latestVideos)):
-                $videoThumb = getMediaImage($video['thumbnail'] ?? $video['video_thumbnails'], 'video');
-            ?>
-                <div class="media-card">
-                    <div class="img-box">
-                        <img src="<?= $videoThumb ?>" alt="Video" style="aspect-ratio: 16/9; object-fit: cover;">
-                    </div>
-                    <h4 style="font-size:15px;"><?= htmlspecialchars($video['title']); ?></h4>
+    <section class="section-container reveal" style="background:rgba(255,255,255,0.02);">
+        <h2 style="font-family:'Syncopate'; margin-bottom:50px;">CINEMATIC VISUALS</h2>
+        <div class="grid-custom" style="grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));">
+            <?php while($vid = mysqli_fetch_assoc($latestVideos)): ?>
+                <div class="feature-card" style="padding:15px;">
+                    <img src="<?= getMediaImage($vid['thumbnail'], 'video') ?>" style="width:100%; aspect-ratio:16/9; object-fit:cover; border-radius:15px;">
+                    <h4 style="margin-top:15px;"><?= $vid['title'] ?></h4>
                 </div>
             <?php endwhile; ?>
         </div>
     </section>
 
-    <section class="section-container" id="pricing">
-        <h2 class="section-title">CHOOSE YOUR VIBE</h2>
-        <div class="pricing-grid">
-            <div class="price-card">
-                <h3>FREE</h3>
-                <div class="cost">$0<span>/mo</span></div>
-                <ul style="list-style:none; opacity:0.6; font-size:13px; margin-bottom:30px; line-height:2;">
-                    <li>Standard Audio Quality</li>
-                    <li>With Advertisements</li>
-                    <li>Mobile & Desktop Access</li>
-                </ul>
-                <a href="#" class="btn-main" style="background:transparent; border:1px solid white;">GET STARTED</a>
-            </div>
-            <div class="price-card featured">
-                <h3>PREMIUM</h3>
-                <div class="cost">$9<span>/mo</span></div>
-                <ul style="list-style:none; opacity:0.8; font-size:13px; margin-bottom:30px; line-height:2;">
-                    <li>Lossless Audio (Hi-Fi)</li>
-                    <li>Zero Advertisements</li>
-                    <li>Offline Downloads</li>
-                    <li>Early Access to Videos</li>
-                </ul>
-                <a href="#" class="btn-main">GO PREMIUM</a>
-            </div>
+    <section class="reveal">
+        <div class="newsletter">
+            <h2 style="font-family:'Syncopate'; font-size:2.5rem; margin-bottom:20px;">JOIN THE REVOLUTION</h2>
+            <p style="margin-bottom:30px;">Get early access to exclusive 2026 drops.</p>
+            <form>
+                <input type="email" placeholder="Enter your email...">
+                <button type="submit" class="btn-main" style="background:#000; border:none; cursor:pointer;">SUBSCRIBE</button>
+            </form>
         </div>
     </section>
 
-    <footer>
-        <div style="margin-bottom: 30px;">
-            <a href="#" style="color:white; margin:0 15px; text-decoration:none;">PRIVACY</a>
-            <a href="#" style="color:white; margin:0 15px; text-decoration:none;">TERMS</a>
-            <a href="#" style="color:white; margin:0 15px; text-decoration:none;">CAREERS</a>
-        </div>
-        &copy; 2026 SOUND PORTAL | DESIGNED FOR THE FUTURE
+    <footer style="padding:100px 5%; border-top:1px solid var(--border-glass); text-align:center;">
+        <p style="opacity:0.4; letter-spacing:5px; font-size:12px;">&copy; 2026 SOUND PORTAL | PRIVACY | TERMS | CAREERS</p>
     </footer>
 
     <script>
-        window.addEventListener('load', function() {
+        // PRELOADER
+        window.addEventListener('load', () => {
+            const loader = document.getElementById('loader');
             setTimeout(() => {
-                document.getElementById('loader').style.opacity = '0';
-                setTimeout(() => {
-                    document.getElementById('loader').style.display = 'none';
-                    document.body.classList.add('visible');
-                }, 500);
-            }, 800);
+                loader.style.opacity = '0';
+                setTimeout(() => loader.style.display = 'none', 500);
+            }, 1000);
         });
+
+        // SCROLL REVEAL ANIMATION SYSTEM
+        const observerOptions = { threshold: 0.1 };
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('active');
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
     </script>
 </body>
-
 </html>
