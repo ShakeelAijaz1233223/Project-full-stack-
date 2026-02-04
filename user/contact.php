@@ -463,7 +463,7 @@ if (isset($_SESSION['email'])) {
                     <i class="fas fa-location-dot"></i>
                     <div>
                         <p style="font-size: 10px; color: var(--primary); font-weight: 800;">VISIT US</p>
-                        <p style="font-weight: 600;">Digital Plaza, Silicon Valley, CA</p>
+                        <p style="font-weight: 600;">Digital World, Soung and Music Play </p>
                     </div>
                 </div>
             </div>
