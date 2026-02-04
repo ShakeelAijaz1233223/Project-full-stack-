@@ -148,6 +148,94 @@ footer {
     color: #444;
     letter-spacing: 1px;
 }
+/* ============================= */
+/* RESPONSIVE ADJUSTMENTS */
+/* ============================= */
+@media (max-width: 1200px) {
+    .studio-wrapper {
+        width: 90%;
+    }
+
+    .search-box {
+        width: 200px;
+    }
+}
+
+@media (max-width: 992px) {
+    .studio-wrapper {
+        width: 95%;
+        padding: 15px 0;
+    }
+
+    .header-section {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+
+    .search-box {
+        width: 100%;
+    }
+
+    .btn-back {
+        width: 100%;
+        justify-content: center;
+    }
+}
+
+@media (max-width: 768px) {
+    .grid {
+        grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+        gap: 10px;
+    }
+
+    .card {
+        padding: 8px;
+    }
+
+    .media-wrapper {
+        aspect-ratio: 1/1;
+    }
+
+    .card-body .title {
+        font-size: 0.8rem;
+    }
+
+    .card-body .meta {
+        font-size: 0.7rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .grid {
+        grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+        gap: 8px;
+    }
+
+    .header-section h4 {
+        font-size: 1.1rem;
+    }
+
+    .search-box {
+        font-size: 0.8rem;
+    }
+
+    .btn-back {
+        font-size: 0.75rem;
+        padding: 5px 8px;
+    }
+
+    .play-overlay {
+        width: 30px;
+        height: 30px;
+    }
+
+    footer {
+        padding: 20px;
+        font-size: 0.65rem;
+    }
+}
+
 </style>
 </head>
 <body>
