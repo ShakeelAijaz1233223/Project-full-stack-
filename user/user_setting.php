@@ -50,68 +50,232 @@ if (isset($_POST['change_password'])) {
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&family=Syncopate:wght@700&display=swap" rel="stylesheet">
     
     <style>
-        :root {
-            --primary: #ff0055;
-            --bg-dark: #050505;
-            --card-bg: rgba(255, 255, 255, 0.03);
-            --border-glass: rgba(255, 255, 255, 0.1);
-        }
+      :root {
+    --primary: #ff0055;
+    --bg-dark: #050505;
+    --card-bg: rgba(255, 255, 255, 0.03);
+    --border-glass: rgba(255, 255, 255, 0.1);
+}
 
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; }
-        body { background-color: var(--bg-dark); color: #fff; overflow-x: hidden; display: flex; align-items: center; justify-content: center; min-height: 100vh; }
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+}
 
-        /* Navigation Header */
-        header {
-            background: rgba(5, 5, 5, 0.8); backdrop-filter: blur(15px);
-            padding: 15px 5%; position: fixed; width: 100%; top: 0; z-index: 1000;
-            display: flex; justify-content: space-between; align-items: center;
-            border-bottom: 1px solid var(--border-glass);
-        }
-        .logo { font-family: 'Syncopate'; font-size: 20px; color: #fff; text-decoration: none; letter-spacing: 3px; }
-        .logo span { color: var(--primary); }
+body {
+    background-color: var(--bg-dark);
+    color: #fff;
+    overflow-x: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    padding: 60px 10px 20px; /* top padding for fixed header */
+}
 
-        /* Container */
-        .wrapper { width: 100%; max-width: 500px; padding: 20px; }
-        
-        .security-card {
-            background: var(--card-bg); border-radius: 30px; padding: 40px;
-            border: 1px solid var(--border-glass); backdrop-filter: blur(10px);
-            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
-        }
+/* Navigation Header */
+header {
+    background: rgba(5, 5, 5, 0.8);
+    backdrop-filter: blur(15px);
+    padding: 15px 5%;
+    position: fixed;
+    width: 100%;
+    top: 0;
+    z-index: 1000;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid var(--border-glass);
+}
+.logo {
+    font-family: 'Syncopate';
+    font-size: 20px;
+    color: #fff;
+    text-decoration: none;
+    letter-spacing: 3px;
+}
+.logo span {
+    color: var(--primary);
+}
 
-        .header-text { text-align: center; margin-bottom: 35px; }
-        .header-text i { font-size: 40px; color: var(--primary); margin-bottom: 15px; }
-        .header-text h2 { font-family: 'Syncopate'; font-size: 18px; letter-spacing: 2px; }
+/* Container */
+.wrapper {
+    width: 100%;
+    max-width: 500px;
+    padding: 20px;
+}
 
-        /* Form Elements */
-        .form-group { margin-bottom: 25px; }
-        .form-group label { display: block; font-size: 11px; font-weight: 800; text-transform: uppercase; margin-bottom: 10px; color: rgba(255,255,255,0.5); letter-spacing: 1px; }
-        
-        .input-wrapper { position: relative; }
-        .input-wrapper i { position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: var(--primary); font-size: 14px; }
-        
-        input {
-            width: 100%; padding: 15px 15px 15px 45px; background: rgba(255,255,255,0.05);
-            border: 1px solid var(--border-glass); border-radius: 15px; color: #fff;
-            transition: 0.3s; font-size: 14px;
-        }
-        input:focus { outline: none; border-color: var(--primary); background: rgba(255,255,255,0.08); box-shadow: 0 0 15px rgba(255, 0, 85, 0.1); }
+/* Security Card */
+.security-card {
+    background: var(--card-bg);
+    border-radius: 30px;
+    padding: 30px 20px;
+    border: 1px solid var(--border-glass);
+    backdrop-filter: blur(10px);
+    box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+    width: 100%;
+    box-sizing: border-box;
+}
 
-        .btn-submit {
-            width: 100%; padding: 16px; background: var(--primary); color: #fff;
-            border: none; border-radius: 15px; font-weight: 800; cursor: pointer;
-            transition: 0.4s; text-transform: uppercase; letter-spacing: 2px; font-size: 13px;
-        }
-        .btn-submit:hover { transform: translateY(-3px); box-shadow: 0 10px 25px rgba(255, 0, 85, 0.3); }
+/* Header Text */
+.header-text {
+    text-align: center;
+    margin-bottom: 30px;
+}
+.header-text i {
+    font-size: 36px;
+    color: var(--primary);
+    margin-bottom: 10px;
+}
+.header-text h2 {
+    font-family: 'Syncopate';
+    font-size: 18px;
+    letter-spacing: 2px;
+}
 
-        /* Alerts */
-        .alert { padding: 15px; border-radius: 12px; margin-bottom: 25px; font-size: 13px; text-align: center; font-weight: 600; }
-        .success { background: rgba(0, 255, 127, 0.1); color: #00ff7f; border: 1px solid rgba(0, 255, 127, 0.2); }
-        .error { background: rgba(255, 0, 85, 0.1); color: var(--primary); border: 1px solid rgba(255, 0, 85, 0.2); }
+/* Form Elements */
+.form-group {
+    margin-bottom: 20px;
+}
+.form-group label {
+    display: block;
+    font-size: 11px;
+    font-weight: 800;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+    color: rgba(255,255,255,0.5);
+    letter-spacing: 1px;
+}
 
-        .back-link { text-align: center; margin-top: 25px; }
-        .back-link a { color: rgba(255,255,255,0.4); text-decoration: none; font-size: 12px; transition: 0.3s; }
-        .back-link a:hover { color: #fff; }
+.input-wrapper {
+    position: relative;
+}
+.input-wrapper i {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--primary);
+    font-size: 14px;
+}
+
+input {
+    width: 100%;
+    padding: 12px 15px 12px 40px;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid var(--border-glass);
+    border-radius: 15px;
+    color: #fff;
+    transition: 0.3s;
+    font-size: 14px;
+}
+input:focus {
+    outline: none;
+    border-color: var(--primary);
+    background: rgba(255,255,255,0.08);
+    box-shadow: 0 0 15px rgba(255, 0, 85, 0.1);
+}
+
+/* Button */
+.btn-submit {
+    width: 100%;
+    padding: 14px;
+    background: var(--primary);
+    color: #fff;
+    border: none;
+    border-radius: 15px;
+    font-weight: 800;
+    cursor: pointer;
+    transition: 0.4s;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    font-size: 13px;
+}
+.btn-submit:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 25px rgba(255, 0, 85, 0.3);
+}
+
+/* Alerts */
+.alert {
+    padding: 12px;
+    border-radius: 12px;
+    margin-bottom: 20px;
+    font-size: 13px;
+    text-align: center;
+    font-weight: 600;
+}
+.success {
+    background: rgba(0, 255, 127, 0.1);
+    color: #00ff7f;
+    border: 1px solid rgba(0, 255, 127, 0.2);
+}
+.error {
+    background: rgba(255, 0, 85, 0.1);
+    color: var(--primary);
+    border: 1px solid rgba(255, 0, 85, 0.2);
+}
+
+.back-link {
+    text-align: center;
+    margin-top: 20px;
+}
+.back-link a {
+    color: rgba(255,255,255,0.6);
+    text-decoration: none;
+    font-size: 12px;
+    transition: 0.3s;
+}
+.back-link a:hover {
+    color: #fff;
+}
+
+/* RESPONSIVE ADJUSTMENTS */
+@media (max-width: 600px) {
+    .security-card {
+        padding: 25px 15px;
+        border-radius: 20px;
+    }
+
+    .header-text i {
+        font-size: 30px;
+    }
+
+    .header-text h2 {
+        font-size: 16px;
+    }
+
+    input {
+        padding: 10px 12px 10px 38px;
+        font-size: 13px;
+    }
+
+    .btn-submit {
+        padding: 12px;
+        font-size: 12px;
+    }
+}
+
+@media (max-width: 400px) {
+    header {
+        padding: 10px 5%;
+    }
+
+    .header-text i {
+        font-size: 28px;
+    }
+
+    .header-text h2 {
+        font-size: 15px;
+    }
+
+    input {
+        padding: 10px 10px 10px 35px;
+    }
+}
+
     </style>
 </head>
 <body>
