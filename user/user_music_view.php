@@ -23,7 +23,6 @@ $music = mysqli_query($conn, "SELECT * FROM music ORDER BY id DESC");
             --card-bg: #0a0a0a;
             --accent: #ff0055;
             --accent-gradient: linear-gradient(45deg, #ff0055, #ff5e00);
-            --border-glass: rgba(255, 0, 85, 0.3);
         }
 
         body {
@@ -33,7 +32,6 @@ $music = mysqli_query($conn, "SELECT * FROM music ORDER BY id DESC");
             margin: 0;
         }
 
-        /* --- HEADER --- */
         header {
             background: rgba(5, 5, 5, 0.9);
             backdrop-filter: blur(20px);
@@ -72,14 +70,12 @@ $music = mysqli_query($conn, "SELECT * FROM music ORDER BY id DESC");
             padding: 40px 0;
         }
 
-        /* --- GRID --- */
         .grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
             gap: 25px;
         }
 
-        /* --- MUSIC CARD --- */
         .music-card {
             background: var(--card-bg);
             border-radius: 20px;
@@ -89,21 +85,14 @@ $music = mysqli_query($conn, "SELECT * FROM music ORDER BY id DESC");
             position: relative;
         }
 
-        .music-card:hover {
-            border-color: var(--accent);
-            transform: translateY(-5px);
-        }
-
         .image-container {
             width: 100%;
             aspect-ratio: 1/1;
             background: #000;
             border-radius: 15px;
-            overflow: hidden;
             display: flex;
             align-items: center;
             justify-content: center;
-            position: relative;
             border: 1px solid rgba(255,255,255,0.1);
             margin-bottom: 15px;
         }
@@ -117,28 +106,22 @@ $music = mysqli_query($conn, "SELECT * FROM music ORDER BY id DESC");
             display: flex;
             align-items: center;
             justify-content: center;
-            transition: 0.3s;
         }
 
         .playing .inner-glow {
             animation: pulse 1.2s infinite alternate;
-            box-shadow: 0 0 35px #ff0055;
         }
 
         @keyframes pulse {
-            from { transform: scale(1); opacity: 0.8; }
-            to { transform: scale(1.15); opacity: 1; }
+            from { transform: scale(1); }
+            to { transform: scale(1.1); }
         }
 
-        /* --- PROGRESS LINE (MOVING LINE) --- */
-        .progress-container {
-            width: 100%;
-            margin: 15px 0 10px;
-        }
+        .progress-container { width: 100%; margin: 15px 0 10px; }
 
         .seek-bar {
             width: 100%;
-            height: 4px;
+            height: 5px;
             -webkit-appearance: none;
             background: #222;
             border-radius: 10px;
@@ -148,8 +131,8 @@ $music = mysqli_query($conn, "SELECT * FROM music ORDER BY id DESC");
 
         .seek-bar::-webkit-slider-thumb {
             -webkit-appearance: none;
-            width: 12px;
-            height: 12px;
+            width: 14px;
+            height: 14px;
             background: var(--accent);
             border-radius: 50%;
             box-shadow: 0 0 10px var(--accent);
@@ -158,12 +141,11 @@ $music = mysqli_query($conn, "SELECT * FROM music ORDER BY id DESC");
         .time-info {
             display: flex;
             justify-content: space-between;
-            font-size: 0.65rem;
-            color: #555;
+            font-size: 0.7rem;
+            color: #666;
             margin-top: 5px;
         }
 
-        /* --- CONTROLS --- */
         .controls {
             display: flex;
             justify-content: center;
@@ -181,17 +163,15 @@ $music = mysqli_query($conn, "SELECT * FROM music ORDER BY id DESC");
             display: flex;
             align-items: center;
             justify-content: center;
-            box-shadow: 0 4px 15px rgba(255, 0, 85, 0.3);
             cursor: pointer;
         }
 
         .nav-btn { background: none; border: none; color: #555; font-size: 1.2rem; cursor: pointer; }
-        .nav-btn:hover { color: #fff; }
 
-        .title { font-weight: 700; font-size: 0.95rem; margin: 0; text-align: center; color: #fff; }
-        .artist { font-size: 0.75rem; color: #555; text-transform: uppercase; text-align: center; margin-bottom: 5px; }
+        .title { font-weight: 700; font-size: 0.95rem; text-align: center; margin: 0; }
+        .artist { font-size: 0.75rem; color: #555; text-align: center; text-transform: uppercase; }
 
-        footer { padding: 40px; text-align: center; font-size: 0.7rem; color: #333; letter-spacing: 2px; }
+        footer { padding: 40px; text-align: center; font-size: 0.7rem; color: #333; }
     </style>
 </head>
 <body>
@@ -205,148 +185,124 @@ $music = mysqli_query($conn, "SELECT * FROM music ORDER BY id DESC");
 </header>
 
 <div class="studio-wrapper">
-    <div class="mb-4">
-        <h4 class="fw-bold">MUSIC<span style="color: var(--accent);">STUDIO</span></h4>
-        <p class="text-muted small">Professional Audio Dashboard</p>
-    </div>
-
     <div class="grid" id="musicGrid">
-        <?php if(mysqli_num_rows($music) > 0): ?>
-            <?php while($row = mysqli_fetch_assoc($music)):
-                $id = $row['id'];
-                $title = htmlspecialchars($row['title']);
-                $artist = htmlspecialchars($row['artist']);
-                $file  = $row['file'];
-            ?>
-            <div class="music-card" data-title="<?= strtolower($title); ?>" data-artist="<?= strtolower($artist); ?>">
-                
-                <div class="image-container">
-                    <div class="inner-glow">
-                        <i class="bi bi-music-note-beamed text-white fs-4"></i>
-                    </div>
+        <?php while($row = mysqli_fetch_assoc($music)): ?>
+        <div class="music-card">
+            <div class="image-container">
+                <div class="inner-glow">
+                    <i class="bi bi-music-note-beamed text-white fs-4"></i>
                 </div>
-
-                <div class="info">
-                    <p class="title"><?= $title; ?></p>
-                    <p class="artist"><?= $artist; ?></p>
-                </div>
-
-                <div class="progress-container">
-                    <input type="range" class="seek-bar" value="0" max="100" oninput="seekAudio(this)">
-                    <div class="time-info">
-                        <span class="current-time">0:00</span>
-                        <span class="duration">0:00</span>
-                    </div>
-                </div>
-
-                <div class="controls">
-                    <button class="nav-btn" onclick="skip(this, -10)"><i class="bi bi-rewind-fill"></i></button>
-                    <button class="play-btn" onclick="toggleMusic(this)">
-                        <i class="bi bi-play-fill"></i>
-                    </button>
-                    <button class="nav-btn" onclick="skip(this, 10)"><i class="bi bi-fast-forward-fill"></i></button>
-                </div>
-
-                <audio class="audio-player" 
-                       onplay="handlePlay(this)" 
-                       onpause="handlePause(this)" 
-                       ontimeupdate="updateProgress(this)" 
-                       onloadedmetadata="initDuration(this)">
-                    <source src="../admin/uploads/music/<?= $file; ?>" type="audio/mpeg">
-                </audio>
             </div>
-            <?php endwhile; ?>
-        <?php else: ?>
-            <div class="text-center w-100 py-5">
-                <p class="text-muted">No music tracks found in your studio.</p>
+
+            <p class="title"><?= htmlspecialchars($row['title']) ?></p>
+            <p class="artist"><?= htmlspecialchars($row['artist']) ?></p>
+
+            <div class="progress-container">
+                <input type="range" class="seek-bar" value="0" min="0" max="100" 
+                       oninput="manualSeek(this)" 
+                       onchange="manualSeek(this)">
+                <div class="time-info">
+                    <span class="curr-time">0:00</span>
+                    <span class="dur-time">0:00</span>
+                </div>
             </div>
-        <?php endif; ?>
+
+            <div class="controls">
+                <button class="nav-btn" onclick="skip(this, -10)"><i class="bi bi-rewind-fill"></i></button>
+                <button class="play-btn" onclick="togglePlay(this)"><i class="bi bi-play-fill"></i></button>
+                <button class="nav-btn" onclick="skip(this, 10)"><i class="bi bi-fast-forward-fill"></i></button>
+            </div>
+
+            <audio class="player" preload="metadata" 
+                   ontimeupdate="updateUI(this)" 
+                   onloadedmetadata="loadDur(this)"
+                   onplay="playVisual(this, true)"
+                   onpause="playVisual(this, false)">
+                <source src="../admin/uploads/music/<?= $row['file'] ?>" type="audio/mpeg">
+            </audio>
+        </div>
+        <?php endwhile; ?>
     </div>
 </div>
 
-<footer>SOUND ENTERTAINMENT &bull; 2026</footer>
-
 <script>
-// Format time utility
-function formatTime(secs) {
-    if (isNaN(secs)) return "0:00";
-    let min = Math.floor(secs / 60);
-    let sec = Math.floor(secs % 60);
-    if (sec < 10) sec = `0${sec}`;
-    return `${min}:${sec}`;
-}
-
-// Initial total time
-function initDuration(audio) {
-    const card = audio.closest('.music-card');
-    card.querySelector('.duration').innerText = formatTime(audio.duration);
-}
-
-// Update the "Line" and Time as it plays
-function updateProgress(audio) {
-    const card = audio.closest('.music-card');
-    const seekBar = card.querySelector('.seek-bar');
-    const currentTimeText = card.querySelector('.current-time');
-    
-    if (!audio.duration) return;
-    const percentage = (audio.currentTime / audio.duration) * 100;
-    seekBar.value = percentage;
-    currentTimeText.innerText = formatTime(audio.currentTime);
-}
-
-// Manual Seek (moving line "ahgi/peshi")
-function seekAudio(slider) {
-    const card = slider.closest('.music-card');
-    const audio = card.querySelector('audio');
-    const seekTo = (slider.value / 100) * audio.duration;
-    audio.currentTime = seekTo;
-}
-
-// Master Play/Pause
-function toggleMusic(btn) {
-    const card = btn.closest('.music-card');
-    const audio = card.querySelector('audio');
-    
-    if (audio.paused) {
-        // Stop all other playing music cards
-        document.querySelectorAll('audio').forEach(a => { 
-            if(a !== audio) {
-                a.pause();
-                a.closest('.music-card').classList.remove('playing');
-                a.closest('.music-card').querySelector('.play-btn i').className = 'bi bi-play-fill';
-            }
-        });
-        audio.play();
-    } else {
-        audio.pause();
+    // Format Seconds to 0:00
+    function fmt(s) {
+        if(isNaN(s)) return "0:00";
+        let m = Math.floor(s/60);
+        let sec = Math.floor(s%60);
+        return m + ":" + (sec < 10 ? "0"+sec : sec);
     }
-}
 
-// Skip 10s
-function skip(btn, secs) {
-    const audio = btn.closest('.music-card').querySelector('audio');
-    audio.currentTime += secs;
-}
+    // 1. Load Duration when file metadata is ready
+    function loadDur(audio) {
+        const card = audio.closest('.music-card');
+        card.querySelector('.dur-time').innerText = fmt(audio.duration);
+    }
 
-// Visual Handlers
-function handlePlay(el) {
-    el.closest('.music-card').classList.add('playing');
-    el.closest('.music-card').querySelector('.play-btn i').className = 'bi bi-pause-fill';
-}
+    // 2. Update Seekbar Line as song plays
+    function updateUI(audio) {
+        const card = audio.closest('.music-card');
+        const bar = card.querySelector('.seek-bar');
+        const curr = card.querySelector('.curr-time');
+        
+        // Update line position
+        if(!audio.seeking) { // Prevents jumping while dragging
+            let percent = (audio.currentTime / audio.duration) * 100;
+            bar.value = percent || 0;
+        }
+        curr.innerText = fmt(audio.currentTime);
+    }
 
-function handlePause(el) {
-    el.closest('.music-card').classList.remove('playing');
-    el.closest('.music-card').querySelector('.play-btn i').className = 'bi bi-play-fill';
-}
+    // 3. MANUAL MOVE (The Line Movement Fix)
+    function manualSeek(input) {
+        const card = input.closest('.music-card');
+        const audio = card.querySelector('.player');
+        // Calculate new time: (percent / 100) * total duration
+        const newTime = (input.value / 100) * audio.duration;
+        audio.currentTime = newTime;
+    }
 
-// Real-time Search
-document.getElementById("search").addEventListener("input", function() {
-    let val = this.value.toLowerCase().trim();
-    document.querySelectorAll(".music-card").forEach(card => {
-        let text = card.dataset.title + " " + card.dataset.artist;
-        card.style.display = text.includes(val) ? "block" : "none";
+    // 4. Play/Pause Logic
+    function togglePlay(btn) {
+        const card = btn.closest('.music-card');
+        const audio = card.querySelector('.player');
+
+        if(audio.paused) {
+            // Stop all others
+            document.querySelectorAll('.player').forEach(p => {
+                p.pause();
+                p.closest('.music-card').querySelector('.play-btn i').className = 'bi bi-play-fill';
+            });
+            audio.play();
+            btn.querySelector('i').className = 'bi bi-pause-fill';
+        } else {
+            audio.pause();
+            btn.querySelector('i').className = 'bi bi-play-fill';
+        }
+    }
+
+    // 5. Skip Logic
+    function skip(btn, val) {
+        const audio = btn.closest('.music-card').querySelector('.player');
+        audio.currentTime += val;
+    }
+
+    // 6. Animation Visuals
+    function playVisual(audio, isPlaying) {
+        const card = audio.closest('.music-card');
+        if(isPlaying) card.classList.add('playing');
+        else card.classList.remove('playing');
+    }
+
+    // Search logic
+    document.getElementById("search").addEventListener("input", function() {
+        let v = this.value.toLowerCase();
+        document.querySelectorAll(".music-card").forEach(c => {
+            let t = c.innerText.toLowerCase();
+            c.style.display = t.includes(v) ? "block" : "none";
+        });
     });
-});
 </script>
 
 </body>
