@@ -57,7 +57,6 @@ if(isset($_POST['change_password'])){
     $new = $_POST['new_password'] ?? '';
     $confirm = $_POST['confirm_password'] ?? '';
 
-    // Fixed: Password match check as per your DB dump (plain text)
     if($current === $user['password']){
         if($new === $confirm && !empty($new)){
             mysqli_query($conn, "UPDATE admin_users SET password='$new' WHERE id=".$user['id']);
@@ -69,6 +68,7 @@ if(isset($_POST['change_password'])){
         $error = "Current Master Key (Password) is incorrect!";
     }
 }
+
 ?>
 
 <!DOCTYPE html>
