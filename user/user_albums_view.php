@@ -174,18 +174,7 @@ $albums = mysqli_query($conn, "SELECT * FROM albums ORDER BY created_at DESC");
         .title { font-weight: 700; font-size: 0.95rem; margin: 8px 0 2px; text-align: center; }
         .artist { font-size: 0.75rem; color: #555; text-transform: uppercase; text-align: center; margin-bottom: 10px; }
 
-        .card-actions {
-            position: absolute;
-            top: 25px;
-            right: 25px;
-            z-index: 20;
-            display: flex;
-            gap: 5px;
-            opacity: 0;
-            transition: 0.3s;
-        }
-        .album-card:hover .card-actions { opacity: 1; }
-
+      
         .action-btn {
             background: rgba(0,0,0,0.7);
             border: 1px solid rgba(255,255,255,0.1);
@@ -236,10 +225,8 @@ $albums = mysqli_query($conn, "SELECT * FROM albums ORDER BY created_at DESC");
         ?>
         <div class="album-card" data-title="<?= strtolower($title); ?>" data-artist="<?= strtolower($artist); ?>">
             
-            <div class="card-actions">
-                <a href="edit_album.php?id=<?= $id; ?>" class="action-btn"><i class="bi bi-pencil"></i></a>
-                <a href="?delete=<?= $id; ?>" class="action-btn" onclick="return confirm('Delete?');"><i class="bi bi-trash"></i></a>
-            </div>
+            
+
 
             <div class="media-container">
                 <?php if(!empty($video)): ?>
