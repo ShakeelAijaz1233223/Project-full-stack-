@@ -347,16 +347,7 @@ $albums = mysqli_query($conn, "SELECT * FROM albums ORDER BY created_at DESC");
                 icon.className = 'bi bi-play-fill';
             }
         }
-            // Auto Update Seek Bar
-        function updateProgress(id) {
-            const audio = document.getElementById('aud-' + id);
-            const seekBar = document.getElementById('seek-' + id);
-
-            if (!audio.duration || isNaN(audio.duration)) return;
-
-            const percentage = (audio.currentTime / audio.duration) * 100;
-            seekBar.value = percentage;
-        }
+        
 
         // Move Line (Progress)
         // 1. Line ko gaane ke sath chalane ke liye (Auto Update)
