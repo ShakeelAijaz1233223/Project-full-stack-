@@ -159,13 +159,12 @@ $music = mysqli_query($conn, "SELECT * FROM music ORDER BY id DESC");
     }
 
     audio {
-        width: 100%;
-        height: 24px;
-        margin-top: 8px;
-        filter: invert(1) hue-rotate(180deg) brightness(1.5);
-        opacity: 0.3;
-    }
-    .music-card:hover audio { opacity: 1; }
+    width: 100%;
+    height: 24px;
+    margin-top: 8px;
+    opacity: 1; /* fully visible */
+}
+.music-card:hover audio { opacity: 1; }
 
     footer {
         padding: 30px;
