@@ -190,7 +190,7 @@ $music = mysqli_query($conn, "SELECT * FROM music ORDER BY id DESC");
     <a href="index.php" class="logo">SOU<span>N</span>D</a>
     <div class="d-flex align-items-center gap-2">
         <input type="text" id="search" class="search-box" placeholder="Search...">
-        <a href="javascript:history.back()" class="btn-back"><i class="bi bi-arrow-left"></i></a>
+        <a href="index.php" class="btn-back"><i class="bi bi-arrow-left"></i></a>
     </div>
 </header>
 
