@@ -172,7 +172,14 @@ $albums = mysqli_query($conn, "SELECT * FROM albums ORDER BY created_at DESC");
         .card:hover .play-overlay {
             opacity: 1;
         }
-
+  /* --- NAVIGATION CONTROLS --- */
+        .controls {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 15px;
+            margin-top: 15px;
+        }
         .card-body {
             padding: 5px 0;
         }
@@ -272,6 +279,19 @@ $albums = mysqli_query($conn, "SELECT * FROM albums ORDER BY created_at DESC");
                             <div class="title"><?php echo $title; ?></div>
                             <div class="artist"><?php echo $artist; ?></div>
                             <?php if (!empty($audio)): ?>
+                                <div class="controls">
+                    <button class="nav-btn" onclick="skip(this, -10)">
+                        <i class="bi bi-rewind-fill"></i>
+                    </button>
+                    
+                    <button class="play-btn" onclick="toggleMusic(this)">
+                        <i class="bi bi-play-fill"></i>
+                    </button>
+                    
+                    <button class="nav-btn" onclick="skip(this, 10)">
+                        <i class="bi bi-fast-forward-fill"></i>
+                    </button>
+                </div>
                                 <audio id="aud-<?php echo $id; ?>" onplay="handleMediaPlay(this)" onpause="handleMediaPause(this)">
                                     <source src="../admin/uploads/albums/<?php echo $audio; ?>" type="audio/mpeg">
                                 </audio>
