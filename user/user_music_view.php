@@ -44,6 +44,8 @@ $music = mysqli_query($conn, "SELECT * FROM music ORDER BY id DESC");
         margin-bottom: 20px;
         border-bottom: 1px solid #1a1a1a;
         padding-bottom: 15px;
+        flex-wrap: wrap; /* added for mobile wrap */
+        gap: 10px;
     }
 
     h2 { font-size: 1.2rem; letter-spacing: 1px; }
@@ -143,7 +145,6 @@ $music = mysqli_query($conn, "SELECT * FROM music ORDER BY id DESC");
     }
     .music-card:hover .play-trigger { opacity: 1; }
 
-    
     .title {
         font-weight: 600;
         font-size: 0.8rem;
@@ -174,6 +175,57 @@ $music = mysqli_query($conn, "SELECT * FROM music ORDER BY id DESC");
         font-size: 0.65rem;
         color: #333;
     }
+
+    /* RESPONSIVE STYLES */
+    @media (max-width: 768px) {
+        .search-box {
+            width: 100%;
+        }
+
+        .header-section h2 {
+            flex: 1 1 100%;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
+        .btn-back {
+            font-size: 0.7rem;
+            padding: 5px 10px;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .grid {
+            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            gap: 10px;
+        }
+
+        .disc-wrapper {
+            width: 60px;
+            height: 60px;
+        }
+
+        .disc-wrapper i {
+            font-size: 1.5rem;
+        }
+
+        .play-trigger {
+            width: 25px;
+            height: 25px;
+        }
+
+        .title {
+            font-size: 0.7rem;
+        }
+
+        .artist {
+            font-size: 0.6rem;
+        }
+
+        audio {
+            height: 20px;
+        }
+    }
 </style>
 </head>
 <body>
@@ -182,7 +234,7 @@ $music = mysqli_query($conn, "SELECT * FROM music ORDER BY id DESC");
     <div class="header-section">
         <h2 class="m-0 fw-bold">MUSIC<span style="color: var(--accent);">STUDIO</span></h2>
         
-        <div class="d-flex align-items-center gap-2">
+        <div class="d-flex align-items-center gap-2 flex-wrap">
             <input type="text" id="search" class="search-box" placeholder="Search track...">
             <a href="javascript:history.back()" class="btn-back">
                 <i class="bi bi-arrow-left"></i> Back
