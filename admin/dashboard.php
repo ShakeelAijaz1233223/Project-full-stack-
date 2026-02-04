@@ -68,104 +68,240 @@ $userName = !empty($userData['name']) ? $userData['name'] : 'Admin';
 
         /* Premium Loader */
         #pageLoader {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: #fff; display: flex; flex-direction: column; 
-            justify-content: center; align-items: center; z-index: 99999;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #fff;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 99999;
         }
 
         .loader-ring {
-            width: 60px; height: 60px; border: 5px solid #f3f3f3;
-            border-top: 5px solid var(--accent-color); border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            border: 5px solid #f3f3f3;
+            border-top: 5px solid var(--accent-color);
+            border-radius: 50%;
             animation: spin 1s cubic-bezier(0.68, -0.55, 0.27, 1.55) infinite;
         }
 
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
 
         /* Sidebar Responsive */
         .sidebar {
-            position: fixed; width: 280px; height: 100vh;
-            background: var(--sidebar-bg); padding: 30px 20px; 
+            position: fixed;
+            width: 280px;
+            height: 100vh;
+            background: var(--sidebar-bg);
+            padding: 30px 20px;
             transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            z-index: 1050; left: 0;
+            z-index: 1050;
+            left: 0;
         }
 
         /* Sidebar Close Button Style (Mobile Only) */
         .btn-sidebar-close {
-            color: #fff; font-size: 24px; cursor: pointer;
-            transition: 0.3s; margin-bottom: 10px;
+            color: #fff;
+            font-size: 24px;
+            cursor: pointer;
+            transition: 0.3s;
+            margin-bottom: 10px;
         }
-        .btn-sidebar-close:hover { color: var(--accent-color); transform: rotate(90deg); }
+
+        .btn-sidebar-close:hover {
+            color: var(--accent-color);
+            transform: rotate(90deg);
+        }
 
         .sidebar h2 {
-            color: #fff; font-weight: 700; font-size: 22px; 
-            margin-bottom: 30px; display: flex; align-items: center;
+            color: #fff;
+            font-weight: 700;
+            font-size: 22px;
+            margin-bottom: 30px;
+            display: flex;
+            align-items: center;
         }
-        .sidebar h2 i { color: var(--accent-color); margin-right: 12px; }
+
+        .sidebar h2 i {
+            color: var(--accent-color);
+            margin-right: 12px;
+        }
 
         .sidebar a {
-            padding: 12px 18px; display: flex; align-items: center;
-            color: rgba(255, 255, 255, 0.6); text-decoration: none;
-            border-radius: 12px; margin-bottom: 5px; transition: 0.3s;
+            padding: 12px 18px;
+            display: flex;
+            align-items: center;
+            color: rgba(255, 255, 255, 0.6);
+            text-decoration: none;
+            border-radius: 12px;
+            margin-bottom: 5px;
+            transition: 0.3s;
             font-size: 0.95rem;
         }
 
-        .sidebar a:hover, .sidebar a.active {
+        .sidebar a:hover,
+        .sidebar a.active {
             background: linear-gradient(45deg, var(--accent-color), var(--secondary-accent));
-            color: #fff; box-shadow: 0 8px 15px rgba(225, 78, 202, 0.2);
+            color: #fff;
+            box-shadow: 0 8px 15px rgba(225, 78, 202, 0.2);
         }
 
-        .sidebar a i { margin-right: 12px; width: 20px; text-align: center; }
+        .sidebar a i {
+            margin-right: 12px;
+            width: 20px;
+            text-align: center;
+        }
 
         /* Top Navbar */
         .top-navbar {
-            position: fixed; left: 280px; right: 0; height: 70px;
-            background: var(--glass-white); backdrop-filter: blur(10px);
-            display: flex; justify-content: space-between; align-items: center;
-            padding: 0 30px; z-index: 1000; border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+            position: fixed;
+            left: 280px;
+            right: 0;
+            height: 70px;
+            background: var(--glass-white);
+            backdrop-filter: blur(10px);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 30px;
+            z-index: 1000;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
             transition: all 0.4s;
         }
 
-        .main-content { margin-left: 280px; padding: 100px 30px 40px; transition: all 0.4s; }
+        .main-content {
+            margin-left: 280px;
+            padding: 100px 30px 40px;
+            transition: all 0.4s;
+        }
 
         .sidebar-overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.5); z-index: 1040; display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1040;
+            display: none;
         }
 
         /* Modern Cards */
         .card-stats {
-            background: #fff; border: none; border-radius: 20px; padding: 25px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.02); transition: 0.3s;
-            position: relative; overflow: hidden; height: 100%;
+            background: #fff;
+            border: none;
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.02);
+            transition: 0.3s;
+            position: relative;
+            overflow: hidden;
+            height: 100%;
         }
 
-        .card-stats:hover { transform: translateY(-5px); box-shadow: 0 15px 35px rgba(0, 0, 0, 0.07); }
-        .card-stats h2 { font-size: 28px; font-weight: 700; margin: 10px 0 0; }
-        .card-stats p { margin: 0; font-size: 13px; color: #8898aa; text-transform: uppercase; letter-spacing: 0.5px; }
+        .card-stats:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.07);
+        }
+
+        .card-stats h2 {
+            font-size: 28px;
+            font-weight: 700;
+            margin: 10px 0 0;
+        }
+
+        .card-stats p {
+            margin: 0;
+            font-size: 13px;
+            color: #8898aa;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
 
         /* Swiper Fixes */
-        .swiper-slide { border-radius: 18px; overflow: hidden; height: 240px; background: #000; border: 3px solid #fff; }
-        .swiper-slide img { width: 100%; height: 100%; object-fit: cover; }
+        .swiper-slide {
+            border-radius: 18px;
+            overflow: hidden;
+            height: 240px;
+            background: #000;
+            border: 3px solid #fff;
+        }
+
+        .swiper-slide img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
 
         /* Tablet & Mobile Adjustments */
         @media (max-width: 992px) {
-            .sidebar { left: -280px; }
-            .sidebar.active { left: 0; }
-            .sidebar.active+.sidebar-overlay { display: block; }
-            .main-content { margin-left: 0; padding: 90px 20px 40px; }
-            .top-navbar { left: 0; padding: 0 20px; }
-            .mobile-toggle { display: block; cursor: pointer; font-size: 1.5rem; margin-right: 15px; }
+            .sidebar {
+                left: -280px;
+            }
+
+            .sidebar.active {
+                left: 0;
+            }
+
+            .sidebar.active+.sidebar-overlay {
+                display: block;
+            }
+
+            .main-content {
+                margin-left: 0;
+                padding: 90px 20px 40px;
+            }
+
+            .top-navbar {
+                left: 0;
+                padding: 0 20px;
+            }
+
+            .mobile-toggle {
+                display: block;
+                cursor: pointer;
+                font-size: 1.5rem;
+                margin-right: 15px;
+            }
         }
 
         @media (max-width: 576px) {
-            .card-stats { padding: 20px; }
-            .swiper-slide { height: 180px; }
+            .card-stats {
+                padding: 20px;
+            }
+
+            .swiper-slide {
+                height: 180px;
+            }
         }
 
-        .dropdown-menu.show { animation: fadeInDown 0.3s ease-out; }
+        .dropdown-menu.show {
+            animation: fadeInDown 0.3s ease-out;
+        }
+
         @keyframes fadeInDown {
-            from { opacity: 0; transform: translateY(-10px); }
-            to { opacity: 1; transform: translateY(0); }
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
     </style>
 </head>
@@ -198,7 +334,7 @@ $userName = !empty($userData['name']) ? $userData['name'] : 'Admin';
             <a href="add_music.php"><i class="fa-solid fa-cloud-arrow-up"></i> Add Music</a>
             <a href="add_video.php"><i class="fa-solid fa-file-video"></i> Add Video</a>
             <a href="admin_messages.php"><i class="fa-solid fa-envelope-open-text"></i> Messages</a>
-            <a href="album_reviews.php"><i class="fa-solid fa-envelope-open-text"></i> Messages</a>
+           
             <a href="logout.php" class="text-danger mt-3"><i class="fa-solid fa-power-off"></i> Sign Out</a>
         </nav>
     </div>
@@ -225,13 +361,17 @@ $userName = !empty($userData['name']) ? $userData['name'] : 'Admin';
                 </li>
                 <li><a class="dropdown-item rounded-3 py-2" href="profile.php"><i class="fa-regular fa-user me-2"></i> Account</a></li>
                 <li><a class="dropdown-item rounded-3 py-2" href="settings.php"><i class="fa-solid fa-gear me-2"></i> Preferences</a></li>
-                <li class="d-none d-md-block"><hr class="dropdown-divider"></li>
+                <li class="d-none d-md-block">
+                    <hr class="dropdown-divider">
+                </li>
                 <li class="d-none d-md-block">
                     <a class="dropdown-item rounded-3 py-2 text-center small text-muted" href="#" data-bs-toggle="dropdown">
                         <i class="fa-solid fa-chevron-up me-1"></i> Close Menu
                     </a>
                 </li>
-                <li><hr class="dropdown-divider"></li>
+                <li>
+                    <hr class="dropdown-divider">
+                </li>
                 <li><a class="dropdown-item rounded-3 py-2 text-danger" href="logout.php"><i class="fa-solid fa-arrow-right-from-bracket me-2"></i> Logout</a></li>
             </ul>
         </div>
@@ -247,10 +387,30 @@ $userName = !empty($userData['name']) ? $userData['name'] : 'Admin';
             </div>
 
             <div class="row g-3 mb-5">
-                <div class="col-6 col-lg-3 gs-anim"><div class="card-stats"><p>Musics</p><h2 class="counter"><?php echo $musicCount; ?></h2></div></div>
-                <div class="col-6 col-lg-3 gs-anim"><div class="card-stats"><p>Videos</p><h2 class="counter"><?php echo $videoCount; ?></h2></div></div>
-                <div class="col-6 col-lg-3 gs-anim"><div class="card-stats"><p>Albums</p><h2 class="counter"><?php echo $albumCount; ?></h2></div></div>
-                <div class="col-6 col-lg-3 gs-anim"><div class="card-stats"><p>Users</p><h2 class="counter"><?php echo $userCount; ?></h2></div></div>
+                <div class="col-6 col-lg-3 gs-anim">
+                    <div class="card-stats">
+                        <p>Musics</p>
+                        <h2 class="counter"><?php echo $musicCount; ?></h2>
+                    </div>
+                </div>
+                <div class="col-6 col-lg-3 gs-anim">
+                    <div class="card-stats">
+                        <p>Videos</p>
+                        <h2 class="counter"><?php echo $videoCount; ?></h2>
+                    </div>
+                </div>
+                <div class="col-6 col-lg-3 gs-anim">
+                    <div class="card-stats">
+                        <p>Albums</p>
+                        <h2 class="counter"><?php echo $albumCount; ?></h2>
+                    </div>
+                </div>
+                <div class="col-6 col-lg-3 gs-anim">
+                    <div class="card-stats">
+                        <p>Users</p>
+                        <h2 class="counter"><?php echo $userCount; ?></h2>
+                    </div>
+                </div>
             </div>
 
             <?php
@@ -281,10 +441,16 @@ $userName = !empty($userData['name']) ? $userData['name'] : 'Admin';
     <script>
         window.addEventListener('load', () => {
             gsap.to("#pageLoader", {
-                opacity: 0, duration: 0.5,
+                opacity: 0,
+                duration: 0.5,
                 onComplete: () => {
                     document.getElementById('pageLoader').style.display = 'none';
-                    gsap.from(".gs-anim", { y: 30, opacity: 0, duration: 0.6, stagger: 0.1 });
+                    gsap.from(".gs-anim", {
+                        y: 30,
+                        opacity: 0,
+                        duration: 0.6,
+                        stagger: 0.1
+                    });
                 }
             });
         });
@@ -294,16 +460,31 @@ $userName = !empty($userData['name']) ? $userData['name'] : 'Admin';
         }
 
         new Swiper(".mySwiper", {
-            slidesPerView: 1.2, spaceBetween: 15,
-            autoplay: { delay: 3000 },
-            pagination: { el: ".swiper-pagination", clickable: true },
+            slidesPerView: 1.2,
+            spaceBetween: 15,
+            autoplay: {
+                delay: 3000
+            },
+            pagination: {
+                el: ".swiper-pagination",
+                clickable: true
+            },
             breakpoints: {
-                480: { slidesPerView: 2.2 },
-                768: { slidesPerView: 3.2 },
-                1024: { slidesPerView: 4.5 },
-                1400: { slidesPerView: 5.5 }
+                480: {
+                    slidesPerView: 2.2
+                },
+                768: {
+                    slidesPerView: 3.2
+                },
+                1024: {
+                    slidesPerView: 4.5
+                },
+                1400: {
+                    slidesPerView: 5.5
+                }
             }
         });
     </script>
 </body>
+
 </html>
