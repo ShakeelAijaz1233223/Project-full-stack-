@@ -14,7 +14,7 @@ if (isset($_GET['delete'])) {
         $msg = "Album deleted successfully!";
     }
 }
-    
+
 // Fetch albums
 $albums = mysqli_query($conn, "SELECT * FROM albums ORDER BY created_at DESC");
 ?>
