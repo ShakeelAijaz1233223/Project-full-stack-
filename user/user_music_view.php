@@ -7,6 +7,7 @@ $music = mysqli_query($conn, "SELECT * FROM music ORDER BY id DESC");
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -41,7 +42,7 @@ $music = mysqli_query($conn, "SELECT * FROM music ORDER BY id DESC");
             display: flex;
             justify-content: space-between;
             align-items: center;
-            border-bottom: 1px solid rgba(255,255,255,0.05);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
         }
 
         .logo {
@@ -51,7 +52,10 @@ $music = mysqli_query($conn, "SELECT * FROM music ORDER BY id DESC");
             text-decoration: none;
             letter-spacing: 3px;
         }
-        .logo span { color: var(--accent); }
+
+        .logo span {
+            color: var(--accent);
+        }
 
         .search-box {
             background: #151515;
@@ -113,11 +117,18 @@ $music = mysqli_query($conn, "SELECT * FROM music ORDER BY id DESC");
             justify-content: center;
         }
 
-        .playing .inner-glow { animation: pulse 1.5s infinite alternate; }
+        .playing .inner-glow {
+            animation: pulse 1.5s infinite alternate;
+        }
 
         @keyframes pulse {
-            from { transform: scale(1); }
-            to { transform: scale(1.1); }
+            from {
+                transform: scale(1);
+            }
+
+            to {
+                transform: scale(1.1);
+            }
         }
 
         /* --- PROGRESS LINE (SEEKBAR) --- */
@@ -175,137 +186,165 @@ $music = mysqli_query($conn, "SELECT * FROM music ORDER BY id DESC");
             justify-content: center;
         }
 
-        .nav-btn { background: none; border: none; color: #555; font-size: 1.2rem; cursor: pointer; }
-        .nav-btn:hover { color: #fff; }
+        .nav-btn {
+            background: none;
+            border: none;
+            color: #555;
+            font-size: 1.2rem;
+            cursor: pointer;
+        }
 
-        .title { font-weight: 700; font-size: 0.9rem; margin-bottom: 2px; color: #fff; }
-        .artist { font-size: 0.7rem; color: #555; text-transform: uppercase; }
+        .nav-btn:hover {
+            color: #fff;
+        }
 
-        footer { padding: 40px; text-align: center; font-size: 0.7rem; color: #333; }
+        .title {
+            font-weight: 700;
+            font-size: 0.9rem;
+            margin-bottom: 2px;
+            color: #fff;
+        }
+
+        .artist {
+            font-size: 0.7rem;
+            color: #555;
+            text-transform: uppercase;
+        }
+
+        footer {
+            padding: 40px;
+            text-align: center;
+            font-size: 0.7rem;
+            color: #333;
+        }
     </style>
 </head>
+
 <body>
 
-<header>
-    <a href="index.php" class="logo">SOU<span>N</span>D</a>
-    <div class="d-flex align-items-center gap-2">
-        <input type="text" id="search" class="search-box" placeholder="Search...">
-        <a href="index.php" class="btn-back"><i class="bi bi-arrow-left"></i></a>
-    </div>
-</header>
+    <header>
+        <a href="index.php" class="logo">SOU<span>N</span>D</a>
+        <div class="d-flex align-items-center gap-2">
+            <input type="text" id="search" class="search-box" placeholder="Search...">
+            <a href="index.php" class="btn-back"><i class="bi bi-arrow-left"></i></a>
+        </div>
+    </header>
 
-<div class="studio-wrapper">
-    <div class="grid" id="musicGrid">
-        <?php if(mysqli_num_rows($music) > 0): ?>
-            <?php while($row = mysqli_fetch_assoc($music)):
-                $title = htmlspecialchars($row['title']);
-                $artist = htmlspecialchars($row['artist']);
-                $file  = $row['file'];
-            ?>
-            <div class="music-card" data-title="<?= strtolower($title); ?>">
-                
-                <div class="image-container">
-                    <div class="inner-glow">
-                        <i class="bi bi-music-note-beamed text-white"></i>
+    <div class="studio-wrapper">
+        <div class="grid" id="musicGrid">
+            <?php if (mysqli_num_rows($music) > 0): ?>
+                <?php while ($row = mysqli_fetch_assoc($music)):
+                    $title = htmlspecialchars($row['title']);
+                    $artist = htmlspecialchars($row['artist']);
+                    $file  = $row['file'];
+                ?>
+                    <div class="music-card" data-title="<?= strtolower($title); ?>">
+
+                        <div class="image-container">
+                            <div class="inner-glow">
+                                <i class="bi bi-music-note-beamed text-white"></i>
+                            </div>
+                        </div>
+
+                        <div class="info">
+                            <p class="title"><?= $title; ?></p>
+                            <p class="artist"><?= $artist; ?></p>
+                        </div>
+
+                        <div class="progress-container">
+                            <input type="range" class="seek-bar" value="0" max="100" oninput="seekAudio(this)">
+                            <div class="time-info">
+                                <span class="current-time">0:00</span>
+                                <span class="duration">0:00</span>
+                            </div>
+                        </div>
+
+                        <div class="controls">
+                            <button class="nav-btn" onclick="skip(this, -10)"><i class="bi bi-rewind-fill"></i></button>
+                            <button class="play-btn" onclick="toggleMusic(this)"><i class="bi bi-play-fill"></i></button>
+                            <button class="nav-btn" onclick="skip(this, 10)"><i class="bi bi-fast-forward-fill"></i></button>
+                        </div>
+
+                        <audio class="audio-player"
+                            onplay="handlePlay(this)"
+                            onpause="handlePause(this)"
+                            ontimeupdate="updateProgress(this)"
+                            onloadedmetadata="initDuration(this)">
+                            <source src="../admin/uploads/music/<?= $file; ?>" type="audio/mpeg">
+                        </audio>
                     </div>
-                </div>
-
-                <div class="info">
-                    <p class="title"><?= $title; ?></p>
-                    <p class="artist"><?= $artist; ?></p>
-                </div>
-
-                <div class="progress-container">
-                    <input type="range" class="seek-bar" value="0" max="100" oninput="seekAudio(this)">
-                    <div class="time-info">
-                        <span class="current-time">0:00</span>
-                        <span class="duration">0:00</span>
-                    </div>
-                </div>
-
-                <div class="controls">
-                    <button class="nav-btn" onclick="skip(this, -10)"><i class="bi bi-rewind-fill"></i></button>
-                    <button class="play-btn" onclick="toggleMusic(this)"><i class="bi bi-play-fill"></i></button>
-                    <button class="nav-btn" onclick="skip(this, 10)"><i class="bi bi-fast-forward-fill"></i></button>
-                </div>
-
-                <audio class="audio-player" 
-                       onplay="handlePlay(this)" 
-                       onpause="handlePause(this)" 
-                       ontimeupdate="updateProgress(this)" 
-                       onloadedmetadata="initDuration(this)">
-                    <source src="../admin/uploads/music/<?= $file; ?>" type="audio/mpeg">
-                </audio>
-            </div>
-            <?php endwhile; ?>
-        <?php else: ?>
-            <p class="text-center w-100 py-5 text-muted">No music available.</p>
-        <?php endif; ?>
+                <?php endwhile; ?>
+            <?php else: ?>
+                <p class="text-center w-100 py-5 text-muted">No music available.</p>
+            <?php endif; ?>
+        </div>
     </div>
-</div>
 
-<footer>SOUND ENTERTAINMENT &bull; 2026</footer>
+    <footer>SOUND ENTERTAINMENT &bull; 2026</footer>
 
-<script>
-// Format time in MM:SS
-function formatTime(secs) {
-    let min = Math.floor(secs / 60);
-    let sec = Math.floor(secs % 60);
-    if (sec < 10) sec = `0${sec}`;
-    return `${min}:${sec}`;
-}
+    <script>
+        // Format time in MM:SS
+        function formatTime(secs) {
+            let min = Math.floor(secs / 60);
+            let sec = Math.floor(secs % 60);
+            if (sec < 10) sec = `0${sec}`;
+            return `${min}:${sec}`;
+        }
 
-// Set total duration when audio loads
-function initDuration(audio) {
-    const card = audio.closest('.music-card');
-    card.querySelector('.duration').innerText = formatTime(audio.duration);
-}
+        // Set total duration when audio loads
+        function initDuration(audio) {
+            const card = audio.closest('.music-card');
+            card.querySelector('.duration').innerText = formatTime(audio.duration);
+        }
 
-// Update line (progress bar) as music plays
-function updateProgress(audio) {
-    const card = audio.closest('.music-card');
-    const seekBar = card.querySelector('.seek-bar');
-    const currentTimeText = card.querySelector('.current-time');
-    
-    const percentage = (audio.currentTime / audio.duration) * 100;
-    seekBar.value = percentage;
-    currentTimeText.innerText = formatTime(audio.currentTime);
-}
+        // Update line (progress bar) as music plays
+        function updateProgress(audio) {
+            const card = audio.closest('.music-card');
+            const seekBar = card.querySelector('.seek-bar');
+            const currentTimeText = card.querySelector('.current-time');
 
-// Logic to move line "ahgi/peshi" manually
-function seekAudio(slider) {
-    const card = slider.closest('.music-card');
-    const audio = card.querySelector('audio');
-    const seekTo = (slider.value / 100) * audio.duration;
-    audio.currentTime = seekTo;
-}
+            const percentage = (audio.currentTime / audio.duration) * 100;
+            seekBar.value = percentage;
+            currentTimeText.innerText = formatTime(audio.currentTime);
+        }
 
-function toggleMusic(btn) {
-    const card = btn.closest('.music-card');
-    const audio = card.querySelector('audio');
-    if (audio.paused) {
-        document.querySelectorAll('audio').forEach(a => { if(a !== audio) a.pause(); });
-        audio.play();
-    } else {
-        audio.pause();
-    }
-}
+        // Logic to move line "ahgi/peshi" manually
+        function seekAudio(slider) {
+            const card = slider.closest('.music-card');
+            const audio = card.querySelector('audio');
+            const seekTo = (slider.value / 100) * audio.duration;
+            audio.currentTime = seekTo;
+        }
 
-function skip(btn, secs) {
-    const audio = btn.closest('.music-card').querySelector('audio');
-    audio.currentTime += secs;
-}
+        function toggleMusic(btn) {
+            const card = btn.closest('.music-card');
+            const audio = card.querySelector('audio');
+            if (audio.paused) {
+                document.querySelectorAll('audio').forEach(a => {
+                    if (a !== audio) a.pause();
+                });
+                audio.play();
+            } else {
+                audio.pause();
+            }
+        }
 
-function handlePlay(el) {
-    el.closest('.music-card').classList.add('playing');
-    el.closest('.music-card').querySelector('.play-btn i').className = 'bi bi-pause-fill';
-}
+        function skip(btn, secs) {
+            const audio = btn.closest('.music-card').querySelector('audio');
+            audio.currentTime += secs;
+        }
 
-function handlePause(el) {
-    el.closest('.music-card').classList.remove('playing');
-    el.closest('.music-card').querySelector('.play-btn i').className = 'bi bi-play-fill';
-}
-</script>
+        function handlePlay(el) {
+            el.closest('.music-card').classList.add('playing');
+            el.closest('.music-card').querySelector('.play-btn i').className = 'bi bi-pause-fill';
+        }
+
+        function handlePause(el) {
+            el.closest('.music-card').classList.remove('playing');
+            el.closest('.music-card').querySelector('.play-btn i').className = 'bi bi-play-fill';
+        }
+    </script>
 
 </body>
+
 </html>

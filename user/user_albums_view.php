@@ -21,6 +21,7 @@ $albums = mysqli_query($conn, "SELECT * FROM albums ORDER BY created_at DESC");
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -56,7 +57,7 @@ $albums = mysqli_query($conn, "SELECT * FROM albums ORDER BY created_at DESC");
             display: flex;
             justify-content: space-between;
             align-items: center;
-            border-bottom: 1px solid rgba(255,255,255,0.05);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
         }
 
         .logo {
@@ -66,7 +67,10 @@ $albums = mysqli_query($conn, "SELECT * FROM albums ORDER BY created_at DESC");
             text-decoration: none;
             letter-spacing: 3px;
         }
-        .logo span { color: var(--accent); }
+
+        .logo span {
+            color: var(--accent);
+        }
 
         .search-box {
             background: #151515;
@@ -113,10 +117,11 @@ $albums = mysqli_query($conn, "SELECT * FROM albums ORDER BY created_at DESC");
             border-radius: 15px;
             overflow: hidden;
             position: relative;
-            border: 1px solid rgba(255,255,255,0.1);
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
 
-        .media-container video, .media-container img {
+        .media-container video,
+        .media-container img {
             width: 100%;
             height: 100%;
             object-fit: cover;
@@ -168,16 +173,36 @@ $albums = mysqli_query($conn, "SELECT * FROM albums ORDER BY created_at DESC");
             box-shadow: 0 4px 15px rgba(255, 0, 85, 0.3);
         }
 
-        .nav-btn { background: none; border: none; color: #555; font-size: 1.2rem; }
-        .nav-btn:hover { color: #fff; }
+        .nav-btn {
+            background: none;
+            border: none;
+            color: #555;
+            font-size: 1.2rem;
+        }
 
-        .title { font-weight: 700; font-size: 0.95rem; margin: 8px 0 2px; text-align: center; }
-        .artist { font-size: 0.75rem; color: #555; text-transform: uppercase; text-align: center; margin-bottom: 10px; }
+        .nav-btn:hover {
+            color: #fff;
+        }
 
-      
+        .title {
+            font-weight: 700;
+            font-size: 0.95rem;
+            margin: 8px 0 2px;
+            text-align: center;
+        }
+
+        .artist {
+            font-size: 0.75rem;
+            color: #555;
+            text-transform: uppercase;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
+
         .action-btn {
-            background: rgba(0,0,0,0.7);
-            border: 1px solid rgba(255,255,255,0.1);
+            background: rgba(0, 0, 0, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.1);
             color: #fff;
             width: 30px;
             height: 30px;
@@ -188,149 +213,164 @@ $albums = mysqli_query($conn, "SELECT * FROM albums ORDER BY created_at DESC");
             text-decoration: none;
             font-size: 0.8rem;
         }
-        .action-btn:hover { border-color: var(--accent); color: var(--accent); }
 
-        footer { padding: 40px; text-align: center; font-size: 0.7rem; color: #333; letter-spacing: 2px; }
+        .action-btn:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+
+        footer {
+            padding: 40px;
+            text-align: center;
+            font-size: 0.7rem;
+            color: #333;
+            letter-spacing: 2px;
+        }
     </style>
 </head>
+
 <body>
 
-<header>
-    <a href="index.php" class="logo">SOU<span>N</span>D</a>
-    <div class="d-flex align-items-center gap-2">
-        <input type="text" id="search" class="search-box" placeholder="Search albums...">
-        <a href="index.php" class="btn-back" style="color:#fff; text-decoration:none;"><i class="bi bi-arrow-left"></i></a>
-    </div>
-</header>
-
-<div class="studio-wrapper">
-    <div class="mb-4">
-        <h4 class="fw-bold">ALBUMS<span style="color: var(--accent);">STUDIO</span></h4>
-        <p class="text-muted small">Manage your synced video and audio content</p>
-    </div>
-
-    <?php if (isset($msg)): ?>
-        <div class="alert alert-success bg-dark text-success border-success"><?= $msg ?></div>
-    <?php endif; ?>
-
-    <div class="grid" id="albumGrid">
-        <?php if (mysqli_num_rows($albums) > 0):
-            while ($row = mysqli_fetch_assoc($albums)):
-                $id = $row['id'];
-                $title = htmlspecialchars($row['title']);
-                $artist = htmlspecialchars($row['artist']);
-                $audio = $row['audio'];
-                $video = $row['video'];
-                $cover = $row['cover'];
-        ?>
-        <div class="album-card" data-title="<?= strtolower($title); ?>" data-artist="<?= strtolower($artist); ?>">
-            
-            
-
-
-            <div class="media-container">
-                <?php if(!empty($video)): ?>
-                    <video id="vid-<?= $id ?>" preload="metadata" playsinline muted loop>
-                        <source src="../admin/uploads/albums/<?= $video; ?>" type="video/mp4">
-                    </video>
-                <?php else: ?>
-                    <img src="../admin/uploads/albums/<?= $cover; ?>" alt="Cover">
-                <?php endif; ?>
-            </div>
-
-            <div class="title"><?= $title; ?></div>
-            <div class="artist"><?= $artist; ?></div>
-
-            <div class="progress-container">
-                <input type="range" class="seek-bar" value="0" max="100" oninput="seekMedia(this, '<?= $id ?>')">
-            </div>
-
-            <div class="controls">
-                <button class="nav-btn" onclick="skipMedia('<?= $id ?>', -10)"><i class="bi bi-rewind-fill"></i></button>
-                <button class="play-btn" onclick="togglePlayback('<?= $id ?>', this)">
-                    <i class="bi bi-play-fill"></i>
-                </button>
-                <button class="nav-btn" onclick="skipMedia('<?= $id ?>', 10)"><i class="bi bi-fast-forward-fill"></i></button>
-            </div>
-
-            <audio id="aud-<?= $id ?>" ontimeupdate="updateProgress('<?= $id ?>')" onloadedmetadata="initDuration('<?= $id ?>')">
-                <source src="../admin/uploads/albums/<?= $audio; ?>" type="audio/mpeg">
-            </audio>
+    <header>
+        <a href="index.php" class="logo">SOU<span>N</span>D</a>
+        <div class="d-flex align-items-center gap-2">
+            <input type="text" id="search" class="search-box" placeholder="Search albums...">
+            <a href="index.php" class="btn-back" style="color:#fff; text-decoration:none;"><i class="bi bi-arrow-left"></i></a>
         </div>
-        <?php endwhile; else: ?>
-            <div class="text-center w-100 py-5"><p class="text-muted">No Albums Found</p></div>
+    </header>
+
+    <div class="studio-wrapper">
+        <div class="mb-4">
+            <h4 class="fw-bold">ALBUMS<span style="color: var(--accent);">STUDIO</span></h4>
+            <p class="text-muted small">Manage your synced video and audio content</p>
+        </div>
+
+        <?php if (isset($msg)): ?>
+            <div class="alert alert-success bg-dark text-success border-success"><?= $msg ?></div>
         <?php endif; ?>
+
+        <div class="grid" id="albumGrid">
+            <?php if (mysqli_num_rows($albums) > 0):
+                while ($row = mysqli_fetch_assoc($albums)):
+                    $id = $row['id'];
+                    $title = htmlspecialchars($row['title']);
+                    $artist = htmlspecialchars($row['artist']);
+                    $audio = $row['audio'];
+                    $video = $row['video'];
+                    $cover = $row['cover'];
+            ?>
+                    <div class="album-card" data-title="<?= strtolower($title); ?>" data-artist="<?= strtolower($artist); ?>">
+
+
+
+
+                        <div class="media-container">
+                            <?php if (!empty($video)): ?>
+                                <video id="vid-<?= $id ?>" preload="metadata" playsinline muted loop>
+                                    <source src="../admin/uploads/albums/<?= $video; ?>" type="video/mp4">
+                                </video>
+                            <?php else: ?>
+                                <img src="../admin/uploads/albums/<?= $cover; ?>" alt="Cover">
+                            <?php endif; ?>
+                        </div>
+
+                        <div class="title"><?= $title; ?></div>
+                        <div class="artist"><?= $artist; ?></div>
+
+                        <div class="progress-container">
+                            <input type="range" class="seek-bar" value="0" max="100" oninput="seekMedia(this, '<?= $id ?>')">
+                        </div>
+
+                        <div class="controls">
+                            <button class="nav-btn" onclick="skipMedia('<?= $id ?>', -10)"><i class="bi bi-rewind-fill"></i></button>
+                            <button class="play-btn" onclick="togglePlayback('<?= $id ?>', this)">
+                                <i class="bi bi-play-fill"></i>
+                            </button>
+                            <button class="nav-btn" onclick="skipMedia('<?= $id ?>', 10)"><i class="bi bi-fast-forward-fill"></i></button>
+                        </div>
+
+                        <audio id="aud-<?= $id ?>" ontimeupdate="updateProgress('<?= $id ?>')" onloadedmetadata="initDuration('<?= $id ?>')">
+                            <source src="../admin/uploads/albums/<?= $audio; ?>" type="audio/mpeg">
+                        </audio>
+                    </div>
+                <?php endwhile;
+            else: ?>
+                <div class="text-center w-100 py-5">
+                    <p class="text-muted">No Albums Found</p>
+                </div>
+            <?php endif; ?>
+        </div>
     </div>
-</div>
 
-<footer>SOUND ENTERTAINMENT &bull; 2026</footer>
+    <footer>SOUND ENTERTAINMENT &bull; 2026</footer>
 
-<script>
-// ===============================
-// SEARCH LOGIC
-// ===============================
-document.getElementById("search").addEventListener("input", function(){
-    let val = this.value.toLowerCase().trim();
-    document.querySelectorAll(".album-card").forEach(card=>{
-        let text = card.dataset.title + " " + card.dataset.artist;
-        card.style.display = text.includes(val) ? "block" : "none";
-    });
-});
+    <script>
+        // ===============================
+        // SEARCH LOGIC
+        // ===============================
+        document.getElementById("search").addEventListener("input", function() {
+            let val = this.value.toLowerCase().trim();
+            document.querySelectorAll(".album-card").forEach(card => {
+                let text = card.dataset.title + " " + card.dataset.artist;
+                card.style.display = text.includes(val) ? "block" : "none";
+            });
+        });
 
-// ===============================
-// PLAYBACK LOGIC (SYNCED)
-// ===============================
-function togglePlayback(id, btn) {
-    const audio = document.getElementById('aud-' + id);
-    const video = document.getElementById('vid-' + id);
-    const icon = btn.querySelector('i');
+        // ===============================
+        // PLAYBACK LOGIC (SYNCED)
+        // ===============================
+        function togglePlayback(id, btn) {
+            const audio = document.getElementById('aud-' + id);
+            const video = document.getElementById('vid-' + id);
+            const icon = btn.querySelector('i');
 
-    if (audio.paused) {
-        // Stop all other media
-        document.querySelectorAll('audio, video').forEach(m => m.pause());
-        document.querySelectorAll('.play-btn i').forEach(i => i.className = 'bi bi-play-fill');
+            if (audio.paused) {
+                // Stop all other media
+                document.querySelectorAll('audio, video').forEach(m => m.pause());
+                document.querySelectorAll('.play-btn i').forEach(i => i.className = 'bi bi-play-fill');
 
-        audio.play();
-        if(video) {
-            video.currentTime = audio.currentTime;
-            video.play();
+                audio.play();
+                if (video) {
+                    video.currentTime = audio.currentTime;
+                    video.play();
+                }
+                icon.className = 'bi bi-pause-fill';
+            } else {
+                audio.pause();
+                if (video) video.pause();
+                icon.className = 'bi bi-play-fill';
+            }
         }
-        icon.className = 'bi bi-pause-fill';
-    } else {
-        audio.pause();
-        if(video) video.pause();
-        icon.className = 'bi bi-play-fill';
-    }
-}
 
-// Update the "Line"
-function updateProgress(id) {
-    const audio = document.getElementById('aud-' + id);
-    const card = audio.closest('.album-card');
-    const seekBar = card.querySelector('.seek-bar');
-    
-    const percentage = (audio.currentTime / audio.duration) * 100;
-    seekBar.value = percentage || 0;
-}
+        // Update the "Line"
+        function updateProgress(id) {
+            const audio = document.getElementById('aud-' + id);
+            const card = audio.closest('.album-card');
+            const seekBar = card.querySelector('.seek-bar');
 
-// Seek/Move Line
-function seekMedia(slider, id) {
-    const audio = document.getElementById('aud-' + id);
-    const video = document.getElementById('vid-' + id);
-    const seekTo = (slider.value / 100) * audio.duration;
-    
-    audio.currentTime = seekTo;
-    if(video) video.currentTime = seekTo;
-}
+            const percentage = (audio.currentTime / audio.duration) * 100;
+            seekBar.value = percentage || 0;
+        }
 
-// Skip Forward/Backward
-function skipMedia(id, secs) {
-    const audio = document.getElementById('aud-' + id);
-    const video = document.getElementById('vid-' + id);
-    audio.currentTime += secs;
-    if(video) video.currentTime = audio.currentTime;
-}
-</script>
+        // Seek/Move Line
+        function seekMedia(slider, id) {
+            const audio = document.getElementById('aud-' + id);
+            const video = document.getElementById('vid-' + id);
+            const seekTo = (slider.value / 100) * audio.duration;
+
+            audio.currentTime = seekTo;
+            if (video) video.currentTime = seekTo;
+        }
+
+        // Skip Forward/Backward
+        function skipMedia(id, secs) {
+            const audio = document.getElementById('aud-' + id);
+            const video = document.getElementById('vid-' + id);
+            audio.currentTime += secs;
+            if (video) video.currentTime = audio.currentTime;
+        }
+    </script>
 
 </body>
+
 </html>
