@@ -162,7 +162,7 @@ $music = mysqli_query($conn, "SELECT * FROM music ORDER BY id DESC");
     width: 100%;
     height: 24px;
     margin-top: 8px;
-    opacity: 1; /* fully visible */
+    opacity: 1; 
 }
 .music-card:hover audio { opacity: 1; }
 
