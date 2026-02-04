@@ -313,30 +313,47 @@ $albums = mysqli_query($conn, "SELECT * FROM albums ORDER BY created_at DESC");
         }
 
         // Move Line (Progress)
-        function updateProgress(id) {
-            const audio = document.getElementById('aud-' + id);
-            const card = audio.closest('.album-card');
-            const seekBar = card.querySelector('.seek-bar');
-            const percentage = (audio.currentTime / audio.duration) * 100;
-            seekBar.value = percentage || 0;
-        }
+      // 1. Line ko gaane ke sath chalane ke liye (Auto Update)
+function updateProgress(id) {
+    const audio = document.getElementById('aud-' + id);
+    const seekBar = document.getElementById('seek-' + id);
 
-        // Seek (Ahgi / Pisha manual move)
-        function seekMedia(slider, id) {
-            const audio = document.getElementById('aud-' + id);
-            const video = document.getElementById('vid-' + id);
-            const seekTo = (slider.value / 100) * audio.duration;
-            audio.currentTime = seekTo;
-            if (video) video.currentTime = seekTo;
-        }
+    // Agar audio duration available nahi hai to ruk jao
+    if (!audio.duration || isNaN(audio.duration)) return;
 
-        // Skip
-        function skipMedia(id, secs) {
-            const audio = document.getElementById('aud-' + id);
-            const video = document.getElementById('vid-' + id);
-            audio.currentTime += secs;
-            if (video) video.currentTime = audio.currentTime;
-        }
+    // Line ki position calculate karein
+    const percentage = (audio.currentTime / audio.duration) * 100;
+    
+    // Sirf tab update karein jab user khud drag na kar raha ho
+    seekBar.value = percentage;
+}
+
+// 2. Manual Seek (Jab aap khud line pakar kar aage piche karein)
+function seekMedia(slider, id) {
+    const audio = document.getElementById('aud-' + id);
+    const video = document.getElementById('vid-' + id);
+
+    if (!audio.duration || isNaN(audio.duration)) return;
+
+    // Slider ki value ko seconds mein convert karein
+    const seekTo = (slider.value / 100) * audio.duration;
+    
+    audio.currentTime = seekTo;
+    if (video) {
+        video.currentTime = seekTo;
+    }
+}
+
+// 3. Skip Button Fix
+function skipMedia(id, secs) {
+    const audio = document.getElementById('aud-' + id);
+    const video = document.getElementById('vid-' + id);
+    
+    if (audio) {
+        audio.currentTime += secs;
+        if (video) video.currentTime = audio.currentTime;
+    }
+}
     </script>
 </body>
 </html>
