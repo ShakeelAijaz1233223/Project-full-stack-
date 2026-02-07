@@ -121,7 +121,7 @@ $music = mysqli_query($conn, $query);
             border-color: var(--accent);
         }
 
-        /* --- Media Area (Image/Vinyl) --- */
+        /* --- Audio Visual/Thumbnail Area --- */
         .media-wrapper {
             position: relative;
             width: 100%;
@@ -136,15 +136,7 @@ $music = mysqli_query($conn, $query);
             justify-content: center;
         }
 
-        /* Uploaded Image as Background */
-        .cover-art {
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
-            object-fit: cover;
-            opacity: 0.5;
-            filter: blur(2px);
-        }
-
+        /* Vinyl Animation for Music */
         .vinyl-disc {
             width: 80%;
             height: 80%;
@@ -154,23 +146,6 @@ $music = mysqli_query($conn, $query);
             position: relative;
             animation: rotate 5s linear infinite;
             animation-play-state: paused;
-            z-index: 2;
-            background-size: cover;
-            background-position: center;
-            box-shadow: 0 0 20px rgba(0,0,0,0.5);
-        }
-
-        /* Center Circle of Vinyl showing the actual image */
-        .vinyl-disc::after {
-            content: "";
-            position: absolute;
-            top: 50%; left: 50%;
-            transform: translate(-50%, -50%);
-            width: 35%; height: 35%;
-            border-radius: 50%;
-            border: 4px solid #111;
-            background-image: inherit; /* Takes image from vinyl-disc */
-            background-size: cover;
         }
 
         .music-card.playing .vinyl-disc {
@@ -201,26 +176,58 @@ $music = mysqli_query($conn, $query);
             box-shadow: 0 0 15px rgba(255, 51, 102, 0.5);
         }
 
-        /* --- Meta Info --- */
-        .meta-info {
+        /* --- Controls --- */
+        .custom-controls {
+            position: absolute;
+            bottom: 0; left: 0; right: 0;
+            background: linear-gradient(transparent, rgba(0,0,0,0.9));
+            padding: 12px;
             display: flex;
-            flex-direction: column;
-            gap: 2px;
-            margin-bottom: 10px;
+            align-items: center;
+            gap: 10px;
+            opacity: 0;
+            transition: 0.3s;
         }
 
-        .meta-info span {
-            font-size: 0.8rem;
-            display: block;
+        .media-wrapper:hover .custom-controls {
+            opacity: 1;
+        }
+
+        .progress {
+            flex: 1;
+            height: 4px;
+            accent-color: var(--accent);
+            cursor: pointer;
+        }
+
+        .control-btn {
+            background: none;
+            border: none;
+            color: #fff;
+            font-size: 1.1rem;
+        }
+
+        /* --- Text Styling --- */
+        .title {
+            font-size: 1rem;
+            font-weight: 700;
+            margin: 0;
+            color: #fff;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
         }
 
-        .id-tag { color: var(--text-muted); font-size: 0.7rem !important; }
-        .title-tag { color: #fff; font-weight: 700; font-size: 0.95rem !important; }
-        .artist-tag { color: var(--accent); font-weight: 600; }
-        .album-tag, .year-tag { color: var(--text-muted); }
+        .artist-tag {
+            display: inline-block;
+            color: var(--accent);
+            background: rgba(255, 51, 102, 0.1);
+            font-size: 0.75rem;
+            font-weight: 600;
+            padding: 2px 10px;
+            border-radius: 5px;
+            margin: 5px 0 10px;
+        }
 
         .stars-display {
             color: #ffd700;
@@ -241,7 +248,9 @@ $music = mysqli_query($conn, $query);
             margin-bottom: 8px;
         }
 
-        .rev-btn:hover { background: var(--accent); }
+        .rev-btn:hover {
+            background: var(--accent);
+        }
 
         .download-btn {
             display: flex;
@@ -258,8 +267,12 @@ $music = mysqli_query($conn, $query);
             transition: 0.3s;
         }
 
-        .download-btn:hover { background: #333; color: #fff; }
+        .download-btn:hover {
+            background: #333;
+            color: #fff;
+        }
 
+        /* --- Review Overlay --- */
         #reviewOverlay {
             display: none;
             position: fixed;
@@ -310,27 +323,31 @@ $music = mysqli_query($conn, $query);
         <div class="grid" id="musicGrid">
             <?php while ($row = mysqli_fetch_assoc($music)): 
                 $avg = round($row['avg_rating'], 1);
-                // Check if image exists, else use a placeholder
-                $img_path = !empty($row['image']) ? "../admin/uploads/thumbnails/" . $row['image'] : "https://via.placeholder.com/300x300?text=No+Cover";
             ?>
                 <div class="music-card" data-search="<?= strtolower($row['title'] . ' ' . $row['artist']); ?>">
                     <div class="media-wrapper">
-                        <img src="<?= $img_path ?>" class="cover-art" alt="blur">
-                        
-                        <div class="vinyl-disc" style="background-image: url('<?= $img_path ?>');"></div>
+                        <div class="vinyl-disc"></div>
                         
                         <button class="play-btn" onclick="toggleAudio('<?= $row['id'] ?>', this)">
                             <i class="bi bi-play-fill"></i>
                         </button>
+
+                        <div class="custom-controls">
+                            <input type="range" class="progress" min="0" max="100" value="0">
+                            <button class="control-btn" onclick="muteAudio('<?= $row['id'] ?>', this)">
+                                <i class="bi bi-volume-up"></i>
+                            </button>
+                        </div>
                     </div>
 
-                    <div class="meta-info">
-                        <span class="id-tag">#<?= htmlspecialchars($row['id']) ?></span>
-                        <span class="title-tag"><?= htmlspecialchars($row['title']) ?></span>
-                        <span class="artist-tag"><?= htmlspecialchars($row['artist']) ?></span>
-                        <span class="album-tag">Album: <?= htmlspecialchars($row['album']) ?></span>
-                        <span class="year-tag">Year: <?= htmlspecialchars($row['year']) ?></span>
-                    </div>
+                   <div class="meta-info">
+    <span class="id-tag">ID: <?= htmlspecialchars($row['id']) ?></span>
+    <span class="title-tag">Title: <?= htmlspecialchars($row['title']) ?></span>
+    <span class="artist-tag">Artist: <?= htmlspecialchars($row['artist']) ?></span>
+    <span class="album-tag">Album: <?= htmlspecialchars($row['album']) ?></span>
+    <span class="year-tag">Year: <?= htmlspecialchars($row['year']) ?></span>
+    <span class="album-id-tag">Album ID: <?= htmlspecialchars($row['album_id']) ?></span>
+</div>
 
                     <div class="stars-display">
                         <?php for ($i = 1; $i <= 5; $i++) echo ($i <= $avg) ? '★' : '☆'; ?>
@@ -381,11 +398,21 @@ $music = mysqli_query($conn, $query);
     <footer>&copy; 2026 Music Studio Pro &bull; Experience Premium Sound</footer>
 
     <script>
+        // Search Functionality
+        document.getElementById("search").addEventListener("input", function() {
+            let val = this.value.toLowerCase();
+            document.querySelectorAll(".music-card").forEach(card => {
+                card.style.display = card.getAttribute('data-search').includes(val) ? "block" : "none";
+            });
+        });
+
+        // Audio Management
         function toggleAudio(id, btn) {
             const audio = document.getElementById('audio-' + id);
             const card = btn.closest('.music-card');
             const icon = btn.querySelector('i');
 
+            // Pause all other audios
             document.querySelectorAll('audio').forEach(a => {
                 if (a !== audio) {
                     a.pause();
@@ -406,6 +433,29 @@ $music = mysqli_query($conn, $query);
             }
         }
 
+        // Progress Bar & Time Update
+        document.querySelectorAll('audio').forEach(audio => {
+            const card = audio.closest('.music-card');
+            const progress = card.querySelector('.progress');
+
+            audio.addEventListener('timeupdate', () => {
+                if (audio.duration) {
+                    progress.value = (audio.currentTime / audio.duration) * 100;
+                }
+            });
+
+            progress.addEventListener('input', () => {
+                audio.currentTime = (progress.value / 100) * audio.duration;
+            });
+        });
+
+        function muteAudio(id, btn) {
+            const audio = document.getElementById('audio-' + id);
+            audio.muted = !audio.muted;
+            btn.innerHTML = audio.muted ? '<i class="bi bi-volume-mute"></i>' : '<i class="bi bi-volume-up"></i>';
+        }
+
+        // Modal Controls
         function openReview(id, title) {
             document.getElementById('revMusicId').value = id;
             document.getElementById('revTitle').innerText = title;
@@ -415,13 +465,6 @@ $music = mysqli_query($conn, $query);
         function closeReview() {
             document.getElementById('reviewOverlay').style.display = 'none';
         }
-
-        document.getElementById("search").addEventListener("input", function() {
-            let val = this.value.toLowerCase();
-            document.querySelectorAll(".music-card").forEach(card => {
-                card.style.display = card.getAttribute('data-search').includes(val) ? "block" : "none";
-            });
-        });
     </script>
 </body>
 </html>
