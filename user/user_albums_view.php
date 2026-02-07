@@ -344,11 +344,16 @@ $albums = mysqli_query($conn, $query);
 
                     <p class="title"><?= htmlspecialchars($row['title']) ?></p>
 
-                    <<div class="meta-info">
-                        <span class="artist-tag"><?= htmlspecialchars($row['artist']) ?></span>
-                        <span class="album-tag"><?= htmlspecialchars($row['title']) ?></span>
-                        <span class="year-tag"><?= htmlspecialchars($row['year']) ?></span>
-                </div>
+                   <div class="meta-info">
+    <span class="id-tag">ID: <?= htmlspecialchars($row['id']) ?></span>
+    <span class="artist-tag">Artist: <?= htmlspecialchars($row['artist']) ?></span>
+    <span class="album-tag">Album: <?= htmlspecialchars($row['title']) ?></span>
+    <span class="year-tag">Year: <?= htmlspecialchars($row['year']) ?></span>
+    <span class="genre-tag">Genre: <?= htmlspecialchars($row['genre']) ?></span>
+    <span class="lang-tag">Language: <?= htmlspecialchars($row['language']) ?></span>
+    <span class="created-tag">Uploaded: <?= date('d M Y', strtotime($row['created_at'])) ?></span>
+</div>
+
 
 
 
