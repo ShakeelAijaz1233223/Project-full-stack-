@@ -6,7 +6,8 @@ include "../config/db.php";
 if (isset($_GET['delete'])) {
     $id = (int)$_GET['delete'];
     mysqli_query($conn, "DELETE FROM album_reviews WHERE id = $id");
-    header("Location: album_reviews_manage.php?status=deleted");
+    header("Location: /admin/album_reviews_manage.php?status=deleted");
+
     exit();
 }
 
