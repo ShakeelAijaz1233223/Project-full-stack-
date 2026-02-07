@@ -226,8 +226,7 @@ $videos = mysqli_query($conn, $query);
             <h4 class="m-0 fw-bold">VIDEO<span style="color: var(--accent);">STUDIO</span></h4>
             <div class="d-flex gap-2">
                 <input type="text" id="search" class="search-box" placeholder="Search videos...">
-                <a href="index.php" class="btn-back"><i class="bi bi-arrow-left"></i> Back</a>
-            </div>
+<a href="index.php" class="btn-back"><i class="bi bi-arrow-left"></i> Back</a>            </div>
         </div>
 
         <div class="grid" id="videoGrid">
