@@ -161,7 +161,7 @@ $albums = mysqli_query($conn, $query);
     position: absolute;
     top: 50%;
     left: 50%;
-    /* transform: translate(-50%, -50%); */
+    transform: translate(-50%, -50%);
     background: rgba(255, 0, 85, 0.3);
     border: none;
     padding: 16px 20px; /* Slightly bigger */
@@ -173,7 +173,6 @@ $albums = mysqli_query($conn, $query);
 
 .album-card .play-btn:hover {
     background: rgba(255, 0, 85, 0.6);
-    transform: scale(1.3); /* Pop effect */
 }
 
 
