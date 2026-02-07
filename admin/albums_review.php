@@ -2,21 +2,28 @@
 session_start();
 include "../config/db.php";
 
-// 1. Handle Delete Review - ISME KOI CHANGE NAHI HAI
+// 1. DELETE LOGIC (Top par rakhein taaki output se pehle execute ho)
 if (isset($_GET['delete'])) {
     $id = (int)$_GET['delete'];
-    $delete_query = "DELETE FROM album_reviews WHERE id = $id";
-    if(mysqli_query($conn, $delete_query)) {
+    
+    // Pehle check karein review exist karta hai ya nahi
+    $check = mysqli_query($conn, "SELECT id FROM album_reviews WHERE id = $id");
+    if(mysqli_num_rows($check) > 0) {
+        mysqli_query($conn, "DELETE FROM album_reviews WHERE id = $id");
+        // Redirecting back to the SAME file name
         header("Location: album_reviews_manage.php?status=deleted");
+        exit();
+    } else {
+        echo "Review not found!";
         exit();
     }
 }
 
-// 2. Fetch all reviews with Album Titles
+// 2. FETCH REVIEWS
 $query = "SELECT album_reviews.*, albums.title as album_name, albums.cover 
           FROM album_reviews 
-          JOIN albums ON album_reviews.album_id = albums.id 
-          ORDER BY album_reviews.created_at DESC";
+          LEFT JOIN albums ON album_reviews.album_id = albums.id 
+          ORDER BY album_reviews.id DESC";
 $result = mysqli_query($conn, $query);
 ?>
 
@@ -24,47 +31,43 @@ $result = mysqli_query($conn, $query);
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Manage Album Reviews | Admin</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Album Reviews</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
     <style>
         :root { --bg-dark: #080808; --card-bg: #121212; --accent: #ff0055; }
         body { background-color: var(--bg-dark); color: #fff; font-family: 'Inter', sans-serif; }
-        .table-container { background: var(--card-bg); border-radius: 15px; padding: 20px; border: 1px solid #222; margin-top: 30px; }
-        .table { color: #fff; border-color: #222; }
-        .table thead { background: #1a1a1a; color: var(--accent); }
-        .album-img { width: 45px; height: 45px; border-radius: 6px; object-fit: cover; margin-right: 12px; border: 1px solid #333; }
-        .stars { color: #ffca08; letter-spacing: 2px; }
-        .btn-action { padding: 5px 10px; font-size: 0.9rem; border-radius: 6px; transition: 0.3s; }
-        .status-msg { font-size: 0.85rem; padding: 12px; border-radius: 8px; margin-bottom: 20px; text-align: center; font-weight: bold; }
-        .table-hover tbody tr:hover { background-color: rgba(255, 0, 85, 0.05); }
-        tr { border-bottom: 1px solid #1a1a1a; }
+        .table-container { background: var(--card-bg); border-radius: 12px; padding: 20px; border: 1px solid #222; margin-top: 20px; }
+        .table { color: #fff; border-color: #222; vertical-align: middle; }
+        .album-img { width: 50px; height: 50px; border-radius: 6px; object-fit: cover; border: 1px solid #333; }
+        .stars { color: #ffca08; }
+        .btn-delete { color: #ff4d4d; border: 1px solid #ff4d4d; padding: 5px 10px; border-radius: 6px; text-decoration: none; transition: 0.3s; }
+        .btn-delete:hover { background: #ff4d4d; color: white; }
     </style>
 </head>
 <body>
 
 <div class="container py-5">
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h3 class="fw-bold m-0">ALBUM <span style="color: var(--accent);">REVIEWS</span></h3>
-        <a href="index.php" class="btn btn-outline-light btn-sm px-3"><i class="bi bi-speedometer2 me-1"></i> Dashboard</a>
+        <h4 class="fw-bold m-0 text-uppercase">Album <span style="color: var(--accent);">Reviews</span></h4>
+        <a href="index.php" class="btn btn-outline-light btn-sm px-3">Dashboard</a>
     </div>
 
     <?php if(isset($_GET['status']) && $_GET['status'] == 'deleted'): ?>
-        <div class="alert alert-danger status-msg bg-danger text-white border-0 shadow">
-            <i class="bi bi-check-circle me-2"></i> Review has been removed from the database.
-        </div>
+        <div class="alert alert-success bg-success text-white border-0 py-2 small">Review deleted successfully!</div>
     <?php endif; ?>
 
-    <div class="table-container shadow-lg">
+    <div class="table-container">
         <div class="table-responsive">
-            <table class="table table-hover align-middle mb-0">
-                <thead>
+            <table class="table">
+                <thead class="text-muted small">
                     <tr>
-                        <th class="border-0">Album Details</th>
-                        <th class="border-0">User Rating</th>
-                        <th class="border-0">User Comment</th>
-                        <th class="border-0">Posted Date</th>
-                        <th class="border-0 text-center">Action</th>
+                        <th>ALBUM</th>
+                        <th>RATING</th>
+                        <th>COMMENT</th>
+                        <th>DATE</th>
+                        <th class="text-center">REMOVE</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -73,50 +76,29 @@ $result = mysqli_query($conn, $query);
                             <tr>
                                 <td>
                                     <div class="d-flex align-items-center">
-                                        <img src="uploads/albums/<?= $row['cover'] ?>" class="album-img">
-                                        <div>
-                                            <div class="fw-bold"><?= htmlspecialchars($row['album_name']) ?></div>
-                                            <small class="text-muted">ID: #<?= $row['id'] ?></small>
-                                        </div>
+                                        <img src="uploads/albums/<?= $row['cover'] ?>" class="album-img me-3">
+                                        <span class="fw-bold"><?= htmlspecialchars($row['album_name'] ?? 'Deleted Album') ?></span>
                                     </div>
                                 </td>
                                 <td>
-                                    <div class="stars">
-                                        <?php 
-                                        for($i=1; $i<=5; $i++) {
-                                            echo ($i <= $row['rating']) ? '★' : '<span style="color:#333">★</span>'; 
-                                        }
-                                        ?>
+                                    <div class="stars small">
+                                        <?php for($i=1; $i<=5; $i++) echo ($i <= $row['rating']) ? '★' : '☆'; ?>
                                     </div>
-                                    <small class="badge bg-dark text-warning border border-secondary mt-1"><?= $row['rating'] ?> / 5</small>
+                                    <span class="text-muted small"><?= $row['rating'] ?>/5</span>
                                 </td>
-                                <td>
-                                    <div style="max-width: 250px; font-size: 0.9rem;" title="<?= htmlspecialchars($row['comment']) ?>">
-                                        <?= nl2br(htmlspecialchars($row['comment'])) ?>
-                                    </div>
-                                </td>
-                                <td>
-                                    <div class="text-muted small">
-                                        <i class="bi bi-calendar3 me-1"></i> <?= date('M d, Y', strtotime($row['created_at'])) ?><br>
-                                        <i class="bi bi-clock me-1"></i> <?= date('h:i A', strtotime($row['created_at'])) ?>
-                                    </div>
-                                </td>
+                                <td class="small text-muted" style="max-width:200px;"><?= htmlspecialchars($row['comment']) ?></td>
+                                <td class="small text-muted"><?= date('M d, Y', strtotime($row['created_at'])) ?></td>
                                 <td class="text-center">
                                     <a href="album_reviews_manage.php?delete=<?= $row['id'] ?>" 
-                                       class="btn btn-outline-danger btn-action" 
-                                       onclick="return confirm('Do you really want to delete this review? This action cannot be undone.');">
-                                        <i class="bi bi-trash3-fill"></i>
+                                       class="btn-delete" 
+                                       onclick="return confirm('Delete this review permanently?')">
+                                        <i class="bi bi-trash3"></i>
                                     </a>
                                 </td>
                             </tr>
                         <?php endwhile; ?>
                     <?php else: ?>
-                        <tr>
-                            <td colspan="5" class="text-center py-5">
-                                <i class="bi bi-chat-left-dots text-muted display-4 d-block mb-3"></i>
-                                <p class="text-muted m-0">No reviews found in the studio records.</p>
-                            </td>
-                        </tr>
+                        <tr><td colspan="5" class="text-center py-5 text-muted">No reviews found.</td></tr>
                     <?php endif; ?>
                 </tbody>
             </table>
