@@ -344,30 +344,29 @@ $albums = mysqli_query($conn, $query);
 
                     <p class="title"><?= htmlspecialchars($row['title']) ?></p>
 
-                   <div class="meta-info">
+                    <div class="meta-info">
 
-    <span class="artist-tag">Artist: <?= htmlspecialchars($row['artist']) ?></span>
-    <span class="album-tag">Album: <?= htmlspecialchars($row['title']) ?></span>
-    <span class="year-tag">Year: <?= htmlspecialchars($row['year']) ?></span>
+                        <span class="artist-tag">Artist: <?= htmlspecialchars($row['artist']) ?></span>
+                        <span class="album-tag">Album: <?= htmlspecialchars($row['title']) ?></span>
+                        <span class="year-tag">Year: <?= htmlspecialchars($row['year']) ?></span>
+                        <span class="lang-tag">Language: <?= htmlspecialchars($row['language']) ?></span>
 
-    <span class="lang-tag">Language: <?= htmlspecialchars($row['language']) ?></span>
-    
-</div>
-
+                    </div>
 
 
 
-                <div class="stars-display">
-                    <?php for ($i = 1; $i <= 5; $i++) echo ($i <= $avg) ? '★' : '☆'; ?>
-                    <span style="color: #666; font-size: 0.7rem;">(<?= $row['total_reviews'] ?>)</span>
+
+                    <div class="stars-display">
+                        <?php for ($i = 1; $i <= 5; $i++) echo ($i <= $avg) ? '★' : '☆'; ?>
+                        <span style="color: #666; font-size: 0.7rem;">(<?= $row['total_reviews'] ?>)</span>
+                    </div>
+
+                    <button class="rev-btn" onclick="openReview('<?= $row['id'] ?>', '<?= addslashes($row['title']) ?>')">
+                        <i class="bi bi-chat-square-text me-2"></i>ADD REVIEW
+                    </button>
                 </div>
-
-                <button class="rev-btn" onclick="openReview('<?= $row['id'] ?>', '<?= addslashes($row['title']) ?>')">
-                    <i class="bi bi-chat-square-text me-2"></i>ADD REVIEW
-                </button>
+            <?php endwhile; ?>
         </div>
-    <?php endwhile; ?>
-    </div>
     </div>
 
     <div id="reviewOverlay">
