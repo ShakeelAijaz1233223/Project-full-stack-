@@ -259,16 +259,15 @@ if (isset($_SESSION['email']) && isset($conn)) {
 
         /* --- HERO SECTION --- */
         .hero {
-    min-height: calc(100vh - 80px);
-    margin-top: 80px;
-    position: relative;
-    overflow: hidden;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: url('https://images.unsplash.com/photo-1514525253440-b393452e23f9?q=80&w=1920&auto=format&fit=crop')
-        no-repeat center / cover;
-}
+            min-height: calc(100vh - 80px);
+            margin-top: 80px;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: url('https://images.unsplash.com/photo-1514525253440-b393452e23f9?q=80&w=1920&auto=format&fit=crop') no-repeat center / cover;
+        }
 
 
         .hero-title {
@@ -993,44 +992,43 @@ if (isset($_SESSION['email']) && isset($conn)) {
 
         // Animation Text
 
-       const texts = ["VISUAL AUDIO", "REVOLUTION"];
-const animatedText = document.getElementById("animated-text");
-let textIndex = 0;
-let charIndex = 0;
+        const texts = ["VISUAL AUDIO", "REVOLUTION"];
+        const animatedText = document.getElementById("animated-text");
+        let textIndex = 0;
+        let charIndex = 0;
 
-function type() {
-  // Set color based on word
-  if (texts[textIndex] === "REVOLUTION") {
-    animatedText.style.color = "#ff0055"; // Primary color
-  } else {
-    animatedText.style.color = "#fff"; // Default color
-  }
+        function type() {
+            // Set color based on word
+            if (texts[textIndex] === "REVOLUTION") {
+                animatedText.style.color = "#ff0055"; // Primary color
+            } else {
+                animatedText.style.color = "#fff"; // Default color
+            }
 
-  if (charIndex < texts[textIndex].length) {
-    animatedText.textContent += texts[textIndex].charAt(charIndex);
-    charIndex++;
-    setTimeout(type, 150);
-  } else {
-    // Wait 1 second then delete
-    setTimeout(deleteText, 1000);
-  }
-}
+            if (charIndex < texts[textIndex].length) {
+                animatedText.textContent += texts[textIndex].charAt(charIndex);
+                charIndex++;
+                setTimeout(type, 150);
+            } else {
+                // Wait 1 second then delete
+                setTimeout(deleteText, 1000);
+            }
+        }
 
-function deleteText() {
-  if (charIndex > 0) {
-    animatedText.textContent = texts[textIndex].substring(0, charIndex - 1);
-    charIndex--;
-    setTimeout(deleteText, 100);
-  } else {
-    // Move to next text
-    textIndex = (textIndex + 1) % texts.length;
-    setTimeout(type, 500); // small delay before typing next word
-  }
-}
+        function deleteText() {
+            if (charIndex > 0) {
+                animatedText.textContent = texts[textIndex].substring(0, charIndex - 1);
+                charIndex--;
+                setTimeout(deleteText, 100);
+            } else {
+                // Move to next text
+                textIndex = (textIndex + 1) % texts.length;
+                setTimeout(type, 500); // small delay before typing next word
+            }
+        }
 
-// Start the animation
-type();
-
+        // Start the animation
+        type();
     </script>
 </body>
 
