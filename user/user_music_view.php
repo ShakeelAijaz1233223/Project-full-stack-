@@ -242,6 +242,34 @@ body {
     transition: transform 0.3s, box-shadow 0.3s;
 }
 
+.custom-controls {
+    position: absolute;
+    bottom: 5px;
+    left: 0;
+    right: 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 10px;
+    background: rgba(0,0,0,0.6);
+    backdrop-filter: blur(4px);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    border-radius: 0 0 8px 8px;
+}
+.media-wrapper:hover .custom-controls { opacity: 1; }
+.custom-controls button {
+    background: none;
+    border: none;
+    color: white;
+    cursor: pointer;
+}
+.custom-controls input[type="range"] {
+    flex: 1;
+    margin: 0 5px;
+    accent-color: var(--accent);
+}
+
 
 /* Review overlay */
 #reviewOverlay {
