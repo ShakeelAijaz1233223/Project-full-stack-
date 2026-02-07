@@ -12,7 +12,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['submit_review'])) {
     exit();
 }
 
-// Fetch videos with average rating and new columns
+// Fetch videos with average rating and metadata
 $query = "SELECT videos.*, 
           (SELECT AVG(rating) FROM video_reviews WHERE video_reviews.video_id = videos.id) as avg_rating,
           (SELECT COUNT(*) FROM video_reviews WHERE video_reviews.video_id = videos.id) as total_reviews
@@ -25,7 +25,7 @@ $videos = mysqli_query($conn, $query);
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Video Studio | Pro Dashboard</title>
+    <title>Video Studio | Premium Dashboard</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
@@ -55,7 +55,7 @@ $videos = mysqli_query($conn, $query);
             padding: 25px 0;
         }
 
-        /* --- Header --- */
+        /* --- Header Section --- */
         .header-section {
             display: flex;
             justify-content: space-between;
@@ -81,7 +81,7 @@ $videos = mysqli_query($conn, $query);
             box-shadow: 0 0 12px rgba(255, 51, 102, 0.3);
         }
 
-        .btn-back {
+        .btn-nav {
             background: #222;
             border: none;
             color: var(--text-main);
@@ -95,15 +95,15 @@ $videos = mysqli_query($conn, $query);
             transition: 0.3s;
         }
 
-        .btn-back:hover {
+        .btn-nav:hover {
             background: var(--accent);
             color: #fff;
         }
 
-        /* --- Grid & Cards --- */
+        /* --- Video Grid & Cards --- */
         .grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
             gap: 25px;
         }
 
@@ -121,7 +121,7 @@ $videos = mysqli_query($conn, $query);
             border-color: var(--accent);
         }
 
-        /* --- Thumbnail & Video Logic --- */
+        /* --- Media Player Container --- */
         .media-wrapper {
             position: relative;
             width: 100%;
@@ -151,14 +151,14 @@ $videos = mysqli_query($conn, $query);
             z-index: 1;
         }
 
-        /* --- Play Button --- */
+        /* --- Visual Play Button --- */
         .play-btn {
             position: absolute;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            width: 50px;
-            height: 50px;
+            width: 55px;
+            height: 55px;
             background: var(--accent-grad);
             border-radius: 50%;
             border: none;
@@ -166,28 +166,22 @@ $videos = mysqli_query($conn, $query);
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.5rem;
+            font-size: 1.6rem;
             cursor: pointer;
             z-index: 10;
             transition: 0.3s;
             box-shadow: 0 0 15px rgba(255, 51, 102, 0.5);
         }
 
-        .video-card:hover .play-btn {
-            transform: translate(-50%, -50%) scale(1.1);
-        }
-
-        /* --- Controls --- */
+        /* --- Bottom Controls Overlay --- */
         .custom-controls {
             position: absolute;
-            bottom: 0;
-            left: 0;
-            right: 0;
+            bottom: 0; left: 0; right: 0;
             background: linear-gradient(transparent, rgba(0,0,0,0.9));
-            padding: 10px;
+            padding: 15px 10px 10px;
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 12px;
             z-index: 11;
             opacity: 0;
             transition: 0.3s;
@@ -197,68 +191,84 @@ $videos = mysqli_query($conn, $query);
             opacity: 1;
         }
 
-        .custom-controls button {
-            background: none;
-            border: none;
-            color: #fff;
-            cursor: pointer;
+        .progress-bar-container {
+            flex: 1;
+            display: flex;
+            align-items: center;
         }
 
-        .progress {
-            flex: 1;
-            height: 5px;
+        .video-progress {
+            width: 100%;
+            height: 4px;
             accent-color: var(--accent);
             cursor: pointer;
         }
 
-        /* --- Text Styling --- */
-        .title {
-            font-size: 1rem;
+        .control-icon {
+            background: none;
+            border: none;
+            color: #fff;
+            font-size: 1.1rem;
+            padding: 0;
+            transition: 0.2s;
+        }
+
+        .control-icon:hover {
+            color: var(--accent);
+            transform: scale(1.1);
+        }
+
+        /* --- Content Styling --- */
+        .video-title {
+            font-size: 1.05rem;
             font-weight: 700;
             margin: 0;
             color: #fff;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
 
-        .meta-info {
+        .meta-tags {
             display: flex;
-            gap: 8px;
-            margin: 5px 0 10px;
-            font-size: 0.75rem;
+            gap: 6px;
+            margin: 8px 0 12px;
             flex-wrap: wrap;
         }
 
-        .meta-info span {
-            background: rgba(255,255,255,0.08);
-            padding: 2px 8px;
-            border-radius: 5px;
+        .tag {
+            font-size: 0.7rem;
+            padding: 2px 10px;
+            border-radius: 6px;
+            background: rgba(255,255,255,0.05);
             color: var(--text-muted);
+            font-weight: 500;
         }
 
         .artist-tag {
-            color: var(--accent) !important;
-            font-weight: 600;
-            background: rgba(255, 51, 102, 0.1) !important;
+            background: rgba(255, 51, 102, 0.1);
+            color: var(--accent);
         }
 
-        .stars-display {
+        .rating-stars {
             color: #ffd700;
-            font-size: 0.8rem;
-            margin-bottom: 12px;
+            font-size: 0.85rem;
+            margin-bottom: 15px;
         }
 
-        .rev-btn {
+        .action-btn {
             width: 100%;
-            padding: 8px;
-            border-radius: 10px;
+            padding: 10px;
+            border-radius: 12px;
             border: none;
-            background: #222;
+            background: #252525;
             color: #fff;
             font-size: 0.8rem;
             font-weight: 600;
             transition: 0.3s;
         }
 
-        .rev-btn:hover {
+        .action-btn:hover {
             background: var(--accent);
         }
 
@@ -268,86 +278,93 @@ $videos = mysqli_query($conn, $query);
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0,0,0,0.9);
-            backdrop-filter: blur(8px);
+            backdrop-filter: blur(10px);
             z-index: 9999;
             align-items: center;
             justify-content: center;
         }
 
-        .review-box {
+        .review-card {
             background: #151515;
-            padding: 30px;
-            border-radius: 20px;
+            padding: 35px;
+            border-radius: 25px;
             width: 90%;
-            max-width: 400px;
+            max-width: 420px;
             border: 1px solid #333;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
         }
 
         .star-rating {
             display: flex;
             flex-direction: row-reverse;
             justify-content: center;
-            gap: 5px;
-            margin-bottom: 20px;
+            gap: 10px;
+            margin: 20px 0;
         }
 
-        .star-rating label { font-size: 2.5rem; color: #333; cursor: pointer; }
+        .star-rating label { font-size: 2.8rem; color: #333; cursor: pointer; transition: 0.2s; }
         .star-rating input { display: none; }
         .star-rating label:hover, .star-rating label:hover~label, .star-rating input:checked~label { color: #ffd700; }
 
-        footer { text-align: center; padding: 40px; color: #444; font-size: 0.8rem; }
+        footer { text-align: center; padding: 50px 0; color: #444; font-size: 0.75rem; letter-spacing: 1px; }
     </style>
 </head>
 <body>
 
 <div class="studio-wrapper">
     <div class="header-section">
-        <h4 class="m-0 fw-bold">My<span style="color: var(--accent);">Viodes</span></h4>
+        <h4 class="m-0 fw-bold">VIDEO<span style="color: var(--accent);">STUDIO</span></h4>
         <div class="d-flex gap-2">
-            <input type="text" id="search" class="search-box" placeholder="Search by title or artist...">
-            <a href="index.php" class="btn-back"><i class="bi bi-house"></i> Home</a>
+            <input type="text" id="search" class="search-box" placeholder="Search visuals...">
+            <a href="index.php" class="btn-nav"><i class="bi bi-house-door"></i> Dashboard</a>
         </div>
     </div>
 
     <div class="grid" id="videoGrid">
         <?php while ($row = mysqli_fetch_assoc($videos)): 
             $avg = round($row['avg_rating'], 1);
-            $thumbnail = !empty($row['thumbnail']) ? "../admin/uploads/video_thumbnails/".$row['thumbnail'] : "../assets/img/default_thumb.jpg";
+            $thumbPath = !empty($row['thumbnail']) ? "../admin/uploads/video_thumbnails/".$row['thumbnail'] : "../assets/img/default_thumb.jpg";
         ?>
             <div class="video-card" data-search="<?= strtolower($row['title'] . ' ' . $row['artist']); ?>">
                 <div class="media-wrapper">
-                    <img src="<?= $thumbnail ?>" class="thumb-img" id="thumb-<?= $row['id'] ?>">
+                    <img src="<?= $thumbPath ?>" class="thumb-img" id="thumb-<?= $row['id'] ?>">
                     
-                    <video id="vid-<?= $row['id'] ?>" loop  playsinline>
+                    <video id="vid-<?= $row['id'] ?>" loop playsinline preload="none">
                         <source src="../admin/uploads/videos/<?= $row['file'] ?>" type="video/mp4">
                     </video>
 
-                    <button class="play-btn" onclick="handleMedia('<?= $row['id'] ?>', this)">
+                    <button class="play-btn" onclick="togglePlayback('<?= $row['id'] ?>', this)">
                         <i class="bi bi-play-fill"></i>
                     </button>
 
                     <div class="custom-controls">
-                        <input type="range" class="progress" min="0" max="100" value="0">
-                        <button onclick="toggleMute('<?= $row['id'] ?>', this)"><i class="bi bi-volume-up"></i></button>
-                        <button onclick="toggleFS('<?= $row['id'] ?>')"><i class="bi bi-arrows-fullscreen"></i></button>
+                        <div class="progress-bar-container">
+                            <input type="range" class="video-progress" min="0" max="100" value="0">
+                        </div>
+                        <button class="control-icon" onclick="toggleMute('<?= $row['id'] ?>', this)">
+                            <i class="bi bi-volume-up"></i>
+                        </button>
+                        <button class="control-icon" onclick="goFullscreen('<?= $row['id'] ?>')">
+                            <i class="bi bi-fullscreen"></i>
+                        </button>
                     </div>
                 </div>
 
-                <p class="title"><?= htmlspecialchars($row['title']) ?></p>
+                <p class="video-title"><?= htmlspecialchars($row['title']) ?></p>
                 
-                <div class="meta-info">
-                    <span class="artist-tag"><?= htmlspecialchars($row['artist']) ?></span>
-                    <span><?= htmlspecialchars($row['album']) ?></span>
-                    <span><?= htmlspecialchars($row['year']) ?></span>
+                <div class="meta-tags">
+                    <span class="tag artist-tag"><?= htmlspecialchars($row['artist']) ?></span>
+                    <span class="tag"><?= htmlspecialchars($row['album']) ?></span>
+                    <span class="tag"><?= htmlspecialchars($row['year']) ?></span>
                 </div>
 
-                <div class="stars-display">
+                <div class="rating-stars">
                     <?php for ($i = 1; $i <= 5; $i++) echo ($i <= $avg) ? '★' : '☆'; ?>
-                    <span style="color: #666; font-size: 0.7rem;">(<?= $row['total_reviews'] ?>)</span>
+                    <span style="color: #555; font-size: 0.7rem; margin-left: 5px;">(<?= $row['total_reviews'] ?> reviews)</span>
                 </div>
 
-                <button class="rev-btn" onclick="openReview('<?= $row['id'] ?>', '<?= addslashes($row['title']) ?>')">
-                    <i class="bi bi-chat-square-text me-2"></i>ADD REVIEW
+                <button class="action-btn" onclick="openReview('<?= $row['id'] ?>', '<?= addslashes($row['title']) ?>')">
+                    <i class="bi bi-star-half me-2"></i>RATE EXPERIENCE
                 </button>
             </div>
         <?php endwhile; ?>
@@ -355,9 +372,9 @@ $videos = mysqli_query($conn, $query);
 </div>
 
 <div id="reviewOverlay">
-    <div class="review-box">
-        <h5 class="text-center mb-1" id="revTitle">Video Name</h5>
-        <p class="text-center text-muted small mb-4">How would you rate this video?</p>
+    <div class="review-card">
+        <h5 class="text-center fw-bold mb-1" id="revTitle">Video Title</h5>
+        <p class="text-center text-muted small mb-0">Rate the cinematography & sound</p>
         
         <form method="POST">
             <input type="hidden" name="video_id" id="revVideoId">
@@ -368,19 +385,19 @@ $videos = mysqli_query($conn, $query);
                 <input type="radio" name="rating" value="2" id="s2"><label for="s2">★</label>
                 <input type="radio" name="rating" value="1" id="s1"><label for="s1">★</label>
             </div>
-            <textarea name="comment" class="form-control bg-dark text-white border-secondary mb-3" rows="3" placeholder="Write a comment..." required></textarea>
-            <div class="row g-2">
-                <div class="col-6"><button type="button" class="btn btn-secondary w-100" onclick="closeReview()">CANCEL</button></div>
-                <div class="col-6"><button type="submit" name="submit_review" class="btn btn-primary w-100" style="background: var(--accent); border:none;">SUBMIT</button></div>
+            <textarea name="comment" class="form-control bg-dark text-white border-secondary mb-4" rows="3" placeholder="What did you think of this visual?" required></textarea>
+            <div class="d-flex gap-2">
+                <button type="button" class="btn btn-dark flex-grow-1" style="border-radius:12px;" onclick="closeReview()">DISMISS</button>
+                <button type="submit" name="submit_review" class="btn flex-grow-1" style="background: var(--accent); color:white; border-radius:12px; font-weight:600;">SUBMIT REVIEW</button>
             </div>
         </form>
     </div>
 </div>
 
-<footer>&copy; 2026 Video Studio Pro &bull; Optimized for Performance</footer>
+<footer>&copy; 2026 VIDEO STUDIO PRO &bull; MOTION GRAPHICS UNIT</footer>
 
 <script>
-    // Search Filter
+    // 1. Live Search
     document.getElementById("search").addEventListener("input", function() {
         let val = this.value.toLowerCase();
         document.querySelectorAll(".video-card").forEach(card => {
@@ -388,39 +405,42 @@ $videos = mysqli_query($conn, $query);
         });
     });
 
-    // Play/Pause + Thumbnail Toggle
-    function handleMedia(id, btn) {
+    // 2. Playback Engine
+    function togglePlayback(id, btn) {
         const video = document.getElementById('vid-' + id);
         const thumb = document.getElementById('thumb-' + id);
         const icon = btn.querySelector('i');
 
-        // Stop other videos
+        // Stop all other playing videos
         document.querySelectorAll('video').forEach(v => {
-            if (v !== video) {
+            if (v !== video && !v.paused) {
                 v.pause();
-                v.closest('.media-wrapper').querySelector('.thumb-img').style.opacity = '1';
-                v.closest('.media-wrapper').querySelector('.play-btn i').className = 'bi bi-play-fill';
+                const otherWrapper = v.closest('.media-wrapper');
+                otherWrapper.querySelector('.thumb-img').style.opacity = '1';
+                otherWrapper.querySelector('.play-btn i').className = 'bi bi-play-fill';
             }
         });
 
         if (video.paused) {
             video.play();
-            thumb.style.opacity = '0';
+            thumb.style.opacity = '0'; // Hide thumbnail
             icon.className = 'bi bi-pause-fill';
         } else {
             video.pause();
-            thumb.style.opacity = '1';
+            thumb.style.opacity = '1'; // Show thumbnail
             icon.className = 'bi bi-play-fill';
         }
     }
 
-    // Video Progress Bar
+    // 3. Progress Bar Sync
     document.querySelectorAll('video').forEach(video => {
         const wrapper = video.closest('.media-wrapper');
-        const progress = wrapper.querySelector('.progress');
+        const progress = wrapper.querySelector('.video-progress');
         
         video.addEventListener('timeupdate', () => {
-            progress.value = (video.currentTime / video.duration) * 100;
+            if(video.duration) {
+                progress.value = (video.currentTime / video.duration) * 100;
+            }
         });
 
         progress.addEventListener('input', () => {
@@ -428,18 +448,23 @@ $videos = mysqli_query($conn, $query);
         });
     });
 
+    // 4. Sound & Screen Controls
     function toggleMute(id, btn) {
         const video = document.getElementById('vid-' + id);
         video.muted = !video.muted;
         btn.innerHTML = video.muted ? '<i class="bi bi-volume-mute"></i>' : '<i class="bi bi-volume-up"></i>';
     }
 
-    function toggleFS(id) {
+    function goFullscreen(id) {
         const video = document.getElementById('vid-' + id);
-        if (video.requestFullscreen) video.requestFullscreen();
+        if (video.requestFullscreen) {
+            video.requestFullscreen();
+        } else if (video.webkitRequestFullscreen) { /* Safari */
+            video.webkitRequestFullscreen();
+        }
     }
 
-    // Modal Control
+    // 5. Review Modal Management
     function openReview(id, title) {
         document.getElementById('revVideoId').value = id;
         document.getElementById('revTitle').innerText = title;
