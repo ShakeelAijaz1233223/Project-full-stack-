@@ -745,9 +745,9 @@ if (isset($_SESSION['email']) && isset($conn)) {
 
             <nav class="nav-links">
                 <a href="#home" class="active">Home</a>
-                <a href="#about">About</a>
-                <a href="#music">Music</a>
-                <a href="#videos">Videos</a>
+                <a href="about.php">About</a>
+                <a href="user_music_view.php">Music</a>
+                <a href="user_video_view.php">Videos</a>
                 <a href="user_albums_view.php">Albums</a>
                 <a href="#features">Features</a>
                 <a href="contact.php">Contact</a>
