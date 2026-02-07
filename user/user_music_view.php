@@ -104,6 +104,7 @@ footer { text-align:center; padding:40px; font-size:0.7rem; color:#444; }
             <div class="disc-wrapper">
                 <i class="bi bi-disc-fill text-muted" style="font-size:4rem;"></i>
                 <button class="play-btn"><i class="bi bi-play-fill"></i></button>
+                <img src="" alt="">
             </div>
             <div class="custom-controls">
                 <input type="range" class="progress" min="0" max="100" value="0">
