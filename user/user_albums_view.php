@@ -253,6 +253,61 @@ $albums = mysqli_query($conn, $query);
             background: var(--accent);
         }
 
+        /* --- Meta Info Container --- */
+.meta-info {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;          /* space between items */
+    margin: 8px 0 12px;
+    font-size: 0.75rem;
+    color: var(--text-muted);
+}
+
+/* --- Individual Field Badges --- */
+.meta-info span {
+    background: rgba(255, 255, 255, 0.05);
+    padding: 3px 6px;
+    border-radius: 6px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    transition: 0.3s;
+}
+
+/* Hover effect for better visibility */
+.meta-info span:hover {
+    background: rgba(255, 51, 102, 0.15); /* accent hover */
+    color: var(--text-main);
+}
+
+/* Optional: Highlight important fields */
+.meta-info .title-tag,
+.meta-info .artist-tag,
+.meta-info .album-tag {
+    font-weight: 600;
+    color: #fff;
+}
+
+/* Smaller fields like ID, album-id, file */
+.meta-info .id-tag,
+.meta-info .album-id-tag,
+.meta-info .file-tag,
+.meta-info .full-cover-tag {
+    color: var(--text-muted);
+}
+
+/* Optional: make description slightly truncated */
+.meta-info .desc-tag {
+    max-width: 150px;
+}
+
+/* Optional: make year and duration distinct */
+.meta-info .year-tag,
+.meta-info .duration-tag {
+    font-style: italic;
+    color: #ccc;
+}
+
         /* --- Review Modal --- */
         #reviewOverlay {
             display: none;
