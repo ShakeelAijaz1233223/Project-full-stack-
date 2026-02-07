@@ -374,9 +374,8 @@ $albums = mysqli_query($conn, $query);
             <h4 class="m-0 fw-bold">Album<span style="color: var(--accent);">Studio</span></h4>
             <div class="d-flex gap-2">
                 <input type="text" id="search" class="search-box" placeholder="Search by album or artist...">
-<a href="index.php" class="btn btn-outline-light btn-sm rounded-pill px-4">
-            <i class="bi bi-house-door me-2"></i>Home
-        </a>            </div>
+                <a href="index.php" class="btn-back"><i class="bi bi-house"></i> Home</a>
+            </div>
         </div>
 
         <div class="grid" id="albumGrid">
