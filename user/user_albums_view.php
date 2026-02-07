@@ -316,10 +316,11 @@ $albums = mysqli_query($conn, $query);
 
                 <p class="title"><?= htmlspecialchars($row['title']) ?></p>
                 
-                <div class="meta-info">
-                    <span class="artist-tag"><?= htmlspecialchars($row['artist']) ?></span>
-                    <span>Album</span>
-                </div>
+               <div class="meta-info">
+    <span class="artist-tag"><?= htmlspecialchars($row['artist']) ?></span>
+    <span><?= htmlspecialchars($row['title']) ?></span>
+</div>
+
 
                 <div class="stars-display">
                     <?php for ($i = 1; $i <= 5; $i++) echo ($i <= $avg) ? '★' : '☆'; ?>
