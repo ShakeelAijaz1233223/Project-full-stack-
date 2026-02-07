@@ -302,7 +302,7 @@ $videos = mysqli_query($conn, $query);
 
 <div class="studio-wrapper">
     <div class="header-section">
-        <h4 class="m-0 fw-bold">PRO<span style="color: var(--accent);">STUDIO</span></h4>
+        <h4 class="m-0 fw-bold">My<span style="color: var(--accent);">Viodes</span></h4>
         <div class="d-flex gap-2">
             <input type="text" id="search" class="search-box" placeholder="Search by title or artist...">
             <a href="index.php" class="btn-back"><i class="bi bi-house"></i> Home</a>
