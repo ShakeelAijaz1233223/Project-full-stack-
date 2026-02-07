@@ -11,7 +11,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit_review'])) {
         INSERT INTO video_reviews (video_id, rating, comment)
         VALUES ($video_id, $rating, '$comment')
     ");
-    header("Location: ".$_SERVER['PHP_SELF']);
+    header("Location: ".$_SERVER['PHP_SELF']."?status=success");
     exit;
 }
 
@@ -28,7 +28,7 @@ $videos = mysqli_query($conn, "
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Video Studio Pro</title>
+<title>Video Studio | Pro Dashboard</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -37,157 +37,236 @@ $videos = mysqli_query($conn, "
 
 <style>
 :root{
-    --bg:#0b0b0b;
-    --card:#151515;
-    --accent:#ff3366;
-    --grad:linear-gradient(135deg,#ff3366,#ff9933);
-    --text:#f5f5f5;
-    --muted:#888;
+    --bg: #0d0d0d;
+    --card: #1b1b1b;
+    --accent: #ff3366;
+    --accent-grad: linear-gradient(135deg, #ff3366, #ff9933);
+    --text-main: #f5f5f5;
+    --text-muted: #999;
+    --shadow: rgba(0, 0, 0, 0.8);
 }
+
 body{
-    margin:0;
-    background:var(--bg);
-    color:var(--text);
-    font-family:'Inter',sans-serif;
-}
-.wrapper{
-    width:95%;
-    margin:auto;
-    padding:30px 0;
-}
-.header{
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    margin-bottom:30px;
-}
-.search{
-    background:#1e1e1e;
-    border:1px solid #333;
-    color:#fff;
-    padding:8px 14px;
-    border-radius:10px;
-    width:260px;
-}
-.grid{
-    display:grid;
-    grid-template-columns:repeat(auto-fill,minmax(260px,1fr));
-    gap:25px;
+    margin: 0;
+    background: var(--bg);
+    color: var(--text-main);
+    font-family: 'Inter', sans-serif;
+    overflow-x: hidden;
 }
 
-/* ===== Card ===== */
-.cardx{
-    background:var(--card);
-    border-radius:20px;
-    padding:12px;
-    transition:.3s;
-}
-.cardx:hover{transform:translateY(-6px);}
-
-/* ===== Media (IMAGE STYLE) ===== */
-.media{
-    position:relative;
-    aspect-ratio:1/1;
-    border-radius:18px;
-    overflow:hidden;
-    background:#000;
-    margin-bottom:12px;
-}
-.media img,
-.media video{
-    width:100%;
-    height:100%;
-    object-fit:cover;
-    position:absolute;
-}
-.media img{z-index:2;transition:.4s;}
-.play{
-    position:absolute;
-    z-index:5;
-    inset:0;
-    margin:auto;
-    width:65px;
-    height:65px;
-    border-radius:50%;
-    border:none;
-    background:var(--grad);
-    color:#fff;
-    font-size:2rem;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    box-shadow:0 0 30px rgba(255,51,102,.7);
+.studio-wrapper {
+    width: 95%;
+    margin: 0 auto;
+    padding: 25px 0;
 }
 
-/* ===== Text ===== */
-.title{
-    font-weight:700;
-    margin:0;
+/* --- Header Section (Same as Album/Music) --- */
+.header-section {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #222;
+    padding-bottom: 15px;
+    margin-bottom: 30px;
 }
-.meta{
-    font-size:.75rem;
-    color:var(--muted);
-    display:flex;
-    flex-wrap:wrap;
-    gap:6px;
-    margin:6px 0;
-}
-.meta span{
-    background:#222;
-    padding:3px 6px;
-    border-radius:6px;
-}
-.stars{color:#ffd700;font-size:.8rem}
 
-/* ===== Button ===== */
-.btn-review{
-    width:100%;
-    background:#222;
-    border:none;
-    color:#fff;
-    padding:8px;
-    border-radius:10px;
-    font-size:.8rem;
+.search-box {
+    background: #1f1f1f;
+    border: 1px solid #333;
+    color: var(--text-main);
+    border-radius: 10px;
+    padding: 8px 16px;
+    width: 280px;
+    transition: 0.3s;
 }
-.btn-review:hover{background:var(--accent)}
 
-/* ===== Review Modal ===== */
-#overlay{
-    display:none;
-    position:fixed;
-    inset:0;
-    background:rgba(0,0,0,.9);
-    backdrop-filter:blur(8px);
-    z-index:999;
-    align-items:center;
-    justify-content:center;
+.search-box:focus {
+    outline: none;
+    border-color: var(--accent);
+    box-shadow: 0 0 12px rgba(255, 51, 102, 0.3);
 }
-.review-box{
-    background:#151515;
-    padding:25px;
-    border-radius:20px;
-    width:90%;
-    max-width:400px;
+
+.btn-back {
+    background: #222;
+    border: none;
+    color: var(--text-main);
+    padding: 7px 18px;
+    border-radius: 10px;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.9rem;
+    transition: 0.3s;
 }
-.star-rating{
-    display:flex;
-    flex-direction:row-reverse;
-    justify-content:center;
-    font-size:2.5rem;
+
+.btn-back:hover {
+    background: var(--accent);
+    color: #fff;
 }
-.star-rating input{display:none}
-.star-rating label{color:#333;cursor:pointer}
-.star-rating input:checked~label,
+
+/* --- Grid & Card Design --- */
+.grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 25px;
+}
+
+.card-video {
+    background: var(--card);
+    border-radius: 20px;
+    padding: 12px;
+    border: 1px solid #2a2a2a;
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.card-video:hover {
+    transform: translateY(-8px);
+    border-color: var(--accent);
+    box-shadow: 0 10px 20px var(--shadow);
+}
+
+/* --- Media Wrapper (1:1 Cinematic Style) --- */
+.media-container {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    border-radius: 15px;
+    overflow: hidden;
+    background: #000;
+    margin-bottom: 15px;
+}
+
+.media-container img,
+.media-container video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    position: absolute;
+    top: 0; left: 0;
+}
+
+.media-container img {
+    z-index: 2;
+    transition: opacity 0.5s ease;
+}
+
+.play-trigger {
+    position: absolute;
+    z-index: 5;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    border: none;
+    background: var(--accent-grad);
+    color: #fff;
+    font-size: 1.8rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 0 20px rgba(255, 51, 102, 0.5);
+    transition: 0.3s;
+}
+
+.play-trigger:hover { transform: translate(-50%, -50%) scale(1.1); }
+
+/* --- Content Styling --- */
+.v-title {
+    font-size: 1rem;
+    font-weight: 700;
+    margin-bottom: 5px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.v-meta {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-bottom: 12px;
+}
+
+.v-meta span {
+    background: rgba(255, 255, 255, 0.05);
+    padding: 3px 8px;
+    border-radius: 6px;
+}
+
+.artist-tag {
+    color: var(--accent) !important;
+    font-weight: 600;
+    background: rgba(255, 51, 102, 0.1) !important;
+}
+
+.stars { color: #ffd700; font-size: 0.8rem; margin-bottom: 12px; }
+
+.rev-btn {
+    width: 100%;
+    background: #222;
+    border: none;
+    color: #fff;
+    padding: 10px;
+    border-radius: 12px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    transition: 0.3s;
+}
+
+.rev-btn:hover { background: var(--accent); }
+
+/* --- Modal Styling --- */
+#overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.9);
+    backdrop-filter: blur(10px);
+    z-index: 9999;
+    align-items: center;
+    justify-content: center;
+}
+
+.review-box {
+    background: #151515;
+    padding: 30px;
+    border-radius: 25px;
+    width: 90%;
+    max-width: 400px;
+    border: 1px solid #333;
+}
+
+.star-rating {
+    display: flex;
+    flex-direction: row-reverse;
+    justify-content: center;
+    gap: 8px;
+}
+
+.star-rating input { display: none; }
+.star-rating label { font-size: 2.5rem; color: #333; cursor: pointer; transition: 0.2s; }
+.star-rating input:checked ~ label,
 .star-rating label:hover,
-.star-rating label:hover~label{color:#ffd700}
+.star-rating label:hover ~ label { color: #ffd700; }
+
+footer { text-align: center; padding: 50px; color: #444; font-size: 0.8rem; }
 </style>
 </head>
 
 <body>
-<div class="wrapper">
-    <div class="header">
-        <h4>Video<span style="color:var(--accent)">Studio</span></h4>
-        <input id="search" class="search" placeholder="Search...">
+
+<div class="studio-wrapper">
+    <div class="header-section">
+        <h4 class="m-0 fw-bold">Video<span style="color:var(--accent)">Studio</span></h4>
+        <div class="d-flex gap-2">
+            <input id="search" class="search-box" placeholder="Search videos, artists...">
+            <a href="index.php" class="btn-back"><i class="bi bi-house"></i> Home</a>
+        </div>
     </div>
 
     <div class="grid" id="grid">
@@ -197,98 +276,110 @@ body{
             : "../assets/img/default.jpg";
         $avg = round($v['avg_rating']);
     ?>
-    <div class="cardx" data-search="<?= strtolower($v['title'].' '.$v['artist']) ?>">
-        <div class="media">
+    <div class="card-video" data-search="<?= strtolower($v['title'].' '.$v['artist']) ?>">
+        <div class="media-container">
             <img src="<?= $thumb ?>" id="t<?= $v['id'] ?>">
-            <video id="v<?= $v['id'] ?>" loop muted>
-                <source src="../admin/uploads/videos/<?= $v['file'] ?>">
+            <video id="v<?= $v['id'] ?>" loop playsinline>
+                <source src="../admin/uploads/videos/<?= $v['file'] ?>" type="video/mp4">
             </video>
-            <button class="play" onclick="playVid(<?= $v['id'] ?>,this)">
+            <button class="play-trigger" onclick="playVid(<?= $v['id'] ?>, this)">
                 <i class="bi bi-play-fill"></i>
             </button>
         </div>
 
-        <p class="title"><?= htmlspecialchars($v['title']) ?></p>
-        <div class="meta">
-            <span><?= $v['artist'] ?></span>
-            <span><?= $v['album'] ?></span>
-            <span><?= $v['year'] ?></span>
+        <p class="v-title"><?= htmlspecialchars($v['title']) ?></p>
+        
+        <div class="v-meta">
+            <span class="artist-tag"><?= htmlspecialchars($v['artist']) ?></span>
+            <span><?= htmlspecialchars($v['album']) ?></span>
+            <span><i class="bi bi-calendar3 me-1"></i> <?= $v['year'] ?></span>
         </div>
 
         <div class="stars">
             <?php for($i=1;$i<=5;$i++) echo $i<=$avg?'★':'☆'; ?>
-            (<?= $v['total_reviews'] ?>)
+            <span style="color: #555; font-size: 0.7rem;">(<?= $v['total_reviews'] ?>)</span>
         </div>
 
-        <button class="btn-review mt-2"
-            onclick="openReview(<?= $v['id'] ?>,'<?= addslashes($v['title']) ?>')">
-            ADD REVIEW
+        <button class="rev-btn" 
+                onclick="openReview(<?= $v['id'] ?>,'<?= addslashes($v['title']) ?>')">
+            <i class="bi bi-plus-circle me-2"></i>ADD REVIEW
         </button>
     </div>
     <?php endwhile; ?>
     </div>
 </div>
 
-<!-- ===== Review ===== -->
 <div id="overlay">
-<div class="review-box">
-<h5 id="rvTitle" class="text-center"></h5>
-<form method="post">
-<input type="hidden" name="video_id" id="rvId">
-<div class="star-rating my-3">
-<input id="s5" type="radio" name="rating" value="5" required><label for="s5">★</label>
-<input id="s4" type="radio" name="rating" value="4"><label for="s4">★</label>
-<input id="s3" type="radio" name="rating" value="3"><label for="s3">★</label>
-<input id="s2" type="radio" name="rating" value="2"><label for="s2">★</label>
-<input id="s1" type="radio" name="rating" value="1"><label for="s1">★</label>
-</div>
-<textarea name="comment" class="form-control bg-dark text-white mb-3" required></textarea>
-<div class="d-flex gap-2">
-<button type="button" class="btn btn-secondary w-50" onclick="closeReview()">Cancel</button>
-<button type="submit" name="submit_review" class="btn w-50" style="background:var(--accent)">Post</button>
-</div>
-</form>
-</div>
+    <div class="review-box">
+        <h5 id="rvTitle" class="text-center mb-1"></h5>
+        <p class="text-center text-muted small mb-4">Rate your cinematic experience</p>
+        
+        <form method="post">
+            <input type="hidden" name="video_id" id="rvId">
+            <div class="star-rating mb-4">
+                <input id="s5" type="radio" name="rating" value="5" required><label for="s5">★</label>
+                <input id="s4" type="radio" name="rating" value="4"><label for="s4">★</label>
+                <input id="s3" type="radio" name="rating" value="3"><label for="s3">★</label>
+                <input id="s2" type="radio" name="rating" value="2"><label for="s2">★</label>
+                <input id="s1" type="radio" name="rating" value="1"><label for="s1">★</label>
+            </div>
+            <textarea name="comment" class="form-control bg-dark text-white border-secondary mb-3" rows="3" placeholder="Write your review..." required></textarea>
+            <div class="row g-2">
+                <div class="col-6"><button type="button" class="btn btn-secondary w-100" onclick="closeReview()">Cancel</button></div>
+                <div class="col-6"><button type="submit" name="submit_review" class="btn btn-primary w-100" style="background:var(--accent); border:none;">Post</button></div>
+            </div>
+        </form>
+    </div>
 </div>
 
+<footer>&copy; 2026 Video Studio Pro &bull; Next-Gen Entertainment</footer>
+
 <script>
-/* Search */
-search.oninput=()=> {
-    let v=search.value.toLowerCase();
-    document.querySelectorAll('.cardx').forEach(c=>{
-        c.style.display=c.dataset.search.includes(v)?'block':'none';
+/* Real-time Search */
+document.getElementById('search').oninput = function() {
+    let val = this.value.toLowerCase();
+    document.querySelectorAll('.card-video').forEach(card => {
+        card.style.display = card.dataset.search.includes(val) ? 'block' : 'none';
     });
 };
 
-/* Play Logic */
-function playVid(id,btn){
-    let v=document.getElementById('v'+id);
-    let t=document.getElementById('t'+id);
-    document.querySelectorAll('video').forEach(x=>{
-        if(x!==v){
-            x.pause();
-            x.closest('.media').querySelector('img').style.opacity=1;
-            x.closest('.media').querySelector('.play i').className='bi bi-play-fill';
+/* Video Control Logic */
+function playVid(id, btn) {
+    let video = document.getElementById('v' + id);
+    let thumb = document.getElementById('t' + id);
+    let icon = btn.querySelector('i');
+
+    // Pause all other videos first
+    document.querySelectorAll('video').forEach(v => {
+        if (v !== video) {
+            v.pause();
+            let otherThumb = v.closest('.media-container').querySelector('img');
+            let otherBtnIcon = v.closest('.media-container').querySelector('.play-trigger i');
+            otherThumb.style.opacity = 1;
+            otherBtnIcon.className = 'bi bi-play-fill';
         }
     });
-    if(v.paused){
-        v.play();
-        t.style.opacity=0;
-        btn.innerHTML='<i class="bi bi-pause-fill"></i>';
-    }else{
-        v.pause();
-        t.style.opacity=1;
-        btn.innerHTML='<i class="bi bi-play-fill"></i>';
+
+    // Toggle Current Video
+    if (video.paused) {
+        video.play();
+        thumb.style.opacity = 0;
+        icon.className = 'bi bi-pause-fill';
+    } else {
+        video.pause();
+        thumb.style.opacity = 1;
+        icon.className = 'bi bi-play-fill';
     }
 }
 
-/* Review */
-function openReview(id,title){
-    rvId.value=id;
-    rvTitle.innerText=title;
-    overlay.style.display='flex';
+/* Review Functions */
+function openReview(id, title) {
+    document.getElementById('rvId').value = id;
+    document.getElementById('rvTitle').innerText = title;
+    document.getElementById('overlay').style.display = 'flex';
 }
-function closeReview(){overlay.style.display='none';}
+function closeReview() { document.getElementById('overlay').style.display = 'none'; }
 </script>
+
 </body>
 </html>
