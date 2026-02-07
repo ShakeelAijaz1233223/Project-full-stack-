@@ -979,6 +979,7 @@ if (isset($_SESSION['email']) && isset($conn)) {
         });
 
         document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+        
     </script>
 </body>
 
