@@ -174,7 +174,7 @@ $music = mysqli_query($conn, $query);
                         <span class="artist-tag"><i class="bi bi-person me-1"></i><?= htmlspecialchars($row['artist']) ?></span>
                         <span class="album-tag"><i class="bi bi-disc me-1"></i><?= htmlspecialchars($row['album']) ?></span>
                         <span class="year-tag"><i class="bi bi-calendar-event me-1"></i><?= htmlspecialchars($row['year']) ?></span>
-                        <span class="id-tag"><i class="bi bi-hash me-1"></i>ID: <?= htmlspecialchars($row['id']) ?></span>
+                        
                     </div>
 
                     <div class="stars-display">
