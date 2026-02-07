@@ -1,225 +1,258 @@
 <?php
+session_start();
 include "../config/db.php";
 
-// Fetch Music with Average Ratings
-$query = "SELECT music.*, 
-          (SELECT AVG(rating) FROM reviews WHERE reviews.music_id = music.id) as avg_rating,
-          (SELECT COUNT(*) FROM reviews WHERE reviews.music_id = music.id) as total_reviews
-          FROM music ORDER BY id DESC";
-$music = mysqli_query($conn, $query);
+/* ===============================
+   ADMIN AUTH
+================================ */
+if (!isset($_SESSION['email']) || !isset($_SESSION['admin_id'])) {
+    header("Location: login.php");
+    exit();
+}
 
-// Fetch filter options dynamically
-$years = mysqli_query($conn, "SELECT DISTINCT year FROM music ORDER BY year DESC");
-$artists = mysqli_query($conn, "SELECT DISTINCT artist FROM music ORDER BY artist ASC");
-$albums = mysqli_query($conn, "SELECT DISTINCT album FROM music ORDER BY album ASC");
+$success = "";
+$error = "";
+
+if (isset($_POST['upload'])) {
+    if (!$conn) {
+        $error = "Database connection failed.";
+    } else {
+        // Sanitize all inputs including new categories
+        $title  = mysqli_real_escape_string($conn, $_POST['title']);
+        $artist = mysqli_real_escape_string($conn, $_POST['artist']);
+        $album  = mysqli_real_escape_string($conn, $_POST['album']);
+        $year   = mysqli_real_escape_string($conn, $_POST['year']);
+
+        // Files Info
+        $musicFile = $_FILES['music']['name'];
+        $musicTmp  = $_FILES['music']['tmp_name'];
+        $imageFile = $_FILES['cover_image']['name'];
+        $imageTmp  = $_FILES['cover_image']['tmp_name'];
+
+        // Folders setup
+        $musicFolder = "uploads/music/";
+        $imageFolder = "uploads/music_covers/";
+
+        if (!is_dir($musicFolder)) mkdir($musicFolder, 0777, true);
+        if (!is_dir($imageFolder)) mkdir($imageFolder, 0777, true);
+
+        // Extensions check
+        $musicExt = strtolower(pathinfo($musicFile, PATHINFO_EXTENSION));
+        $imageExt = strtolower(pathinfo($imageFile, PATHINFO_EXTENSION));
+
+        $allowedMusic = ['mp3', 'wav', 'ogg', 'm4a'];
+        $allowedImage = ['jpg', 'jpeg', 'png', 'webp'];
+
+        if (!in_array($musicExt, $allowedMusic)) {
+            $error = "Invalid audio format. Use MP3, WAV, or OGG.";
+        } elseif (!in_array($imageExt, $allowedImage)) {
+            $error = "Invalid image format. Use JPG, PNG, or WEBP.";
+        } else {
+            // Unique Names
+            $newMusicName = time() . "_" . uniqid() . "." . $musicExt;
+            $newImageName = time() . "_" . uniqid() . "." . $imageExt;
+
+            if (
+                move_uploaded_file($musicTmp, $musicFolder . $newMusicName) &&
+                move_uploaded_file($imageTmp, $imageFolder . $newImageName)
+            ) {
+                // INSERT query with added categories: artist, album, year
+                $query = "INSERT INTO music (title, artist, album, year, file, cover_image) 
+                          VALUES ('$title', '$artist', '$album', '$year', '$newMusicName', '$newImageName')";
+
+                if (mysqli_query($conn, $query)) {
+                    $adminName = $_SESSION['name'] ?? 'Admin';
+                    $success = "Music published successfully by " . $adminName . "!";
+                } else {
+                    $error = "Database error: " . mysqli_error($conn);
+                }
+            } else {
+                $error = "Upload failed. Check folder permissions.";
+            }
+        }
+    }
+}
 ?>
 
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Music Library | Studio</title>
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
-<style>
-:root {
-    --bg: #0d0d0d;
-    --card: #1b1b1b;
-    --accent: #ff3366;
-    --accent-grad: linear-gradient(135deg, #ff3366, #ff9933);
-    --text-main: #f5f5f5;
-    --text-muted: #999;
-    --shadow: rgba(0,0,0,0.6);
-}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upload Music | Admin Studio</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --accent-color: #e14eca;
+            --glass-bg: rgba(255, 255, 255, 0.05);
+            --glass-border: rgba(255, 255, 255, 0.1);
+        }
 
-body { background: var(--bg); color: var(--text-main); font-family: 'Inter', sans-serif; margin:0; }
-.studio-wrapper { width: 95%; margin:0 auto; padding:25px 0; }
-.header-section { display:flex; flex-wrap:wrap; justify-content:space-between; align-items:center; border-bottom:1px solid #222; padding-bottom:15px; margin-bottom:30px; gap:10px; }
-.search-box { background:#1f1f1f; border:1px solid #333; color:var(--text-main); border-radius:10px; padding:8px 16px; width:200px; transition:0.3s; }
-.search-box:focus { outline:none; border-color:var(--accent); box-shadow:0 0 8px var(--accent); }
-.form-select { background:#1f1f1f; color:var(--text-main); border:1px solid #333; }
-.btn-back { background:#222; border:none; color:var(--text-main); padding:7px 15px; border-radius:12px; display:flex; align-items:center; gap:6px; text-decoration:none; transition:0.3s; }
-.btn-back:hover { background:var(--accent); color:#fff; }
-.grid { display:grid; grid-template-columns: repeat(auto-fill, minmax(240px,1fr)); gap:25px; }
-.album-card { background:var(--card); border-radius:20px; overflow:hidden; padding:12px; position:relative; border:1px solid #2a2a2a; box-shadow:0 4px 15px var(--shadow); transition: transform 0.3s, box-shadow 0.3s, border-color 0.3s; }
-.album-card:hover { transform:translateY(-6px); border-color:var(--accent); box-shadow:0 8px 20px var(--shadow); }
-.disc-wrapper { position:relative; width:100%; aspect-ratio:16/9; background:#000; border-radius:15px; overflow:hidden; margin-bottom:12px; display:flex; align-items:center; justify-content:center; }
-.play-btn { width:50px; height:50px; font-size:1.5rem; border-radius:50%; border:none; background:var(--accent-grad); color:#fff; display:flex; align-items:center; justify-content:center; cursor:pointer; position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); box-shadow:0 0 20px var(--accent); opacity:0; transition:transform 0.3s, opacity 0.3s; }
-.album-card:hover .play-btn { opacity:1; }
-.play-btn:hover { transform:translate(-50%,-50%) scale(1.2); }
-.custom-controls { position:absolute; bottom:6px; left:6px; right:6px; display:flex; align-items:center; justify-content:space-between; padding:5px 12px; background: rgba(30,30,30,0.75); backdrop-filter:blur(6px); opacity:0; border-radius:0 0 12px 12px; transition:opacity 0.3s; }
-.disc-wrapper:hover .custom-controls { opacity:1; }
-.custom-controls button { background:none; border:none; color:#fff; cursor:pointer; font-size:1.2rem; transition:0.25s; }
-.custom-controls button:hover { color:var(--accent); transform:scale(1.25); }
-.custom-controls input[type="range"] { flex:1; margin:0 6px; accent-color:var(--accent); background: rgba(255,255,255,0.12); border-radius:4px; }
-.title { font-weight:600; font-size:0.88rem; margin:6px 0 2px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-.artist { font-size:0.78rem; color:var(--text-muted); margin-bottom:8px; }
-.stars-display { font-size:0.78rem; color:#ffd700; margin-bottom:10px; text-align:center; }
-.rev-btn { background:#222; color:#fff; border:none; font-size:0.78rem; width:100%; padding:8px; border-radius:10px; cursor:pointer; transition:0.3s; }
-.rev-btn:hover { background:var(--accent); }
-.download-btn { display:block; text-align:center; font-size:0.85rem; padding:7px; border-radius:10px; transition:0.3s; }
-.download-btn:hover { background:var(--accent); color:#fff; }
-#reviewOverlay { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.95); backdrop-filter:blur(6px); z-index:9999; align-items:center; justify-content:center; }
-.review-box { background:var(--card); width:90%; max-width:420px; padding:35px; border-radius:22px; border:1px solid #2a2a2a; }
-.star-rating { display:flex; flex-direction:row-reverse; justify-content:center; gap:10px; margin-bottom:18px; }
-.star-rating input { display:none; }
-.star-rating label { font-size:2.2rem; color:#333; cursor:pointer; transition:0.3s; }
-.star-rating label:hover, .star-rating label:hover~label, .star-rating input:checked~label { color:#ffd700; }
-footer { text-align:center; padding:50px 0; font-size:0.75rem; color:#555; }
-</style>
+        body {
+            margin: 0;
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #fff;
+            padding: 40px 10px;
+        }
+
+        #pageLoader {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: #1e1e2f; display: flex; justify-content: center;
+            align-items: center; z-index: 9999; transition: opacity 0.5s ease;
+        }
+
+        .loader {
+            width: 50px; height: 50px; border: 5px solid rgba(255, 255, 255, 0.1);
+            border-top: 5px solid var(--accent-color); border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+
+        .upload-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(15px);
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
+            width: 100%;
+            max-width: 600px;
+            border: 1px solid var(--glass-border);
+        }
+
+        .back-btn {
+            position: absolute; top: 15px; left: 15px;
+            background: var(--glass-bg); color: #fff;
+            padding: 8px 15px; border-radius: 12px;
+            text-decoration: none; font-weight: 600;
+            border: 1px solid var(--glass-border);
+            transition: 0.3s; font-size: 14px; z-index: 1000;
+        }
+        .back-btn:hover { background: var(--accent-color); color: #fff; transform: translateX(-5px); }
+
+        h2 { text-align: center; margin-bottom: 25px; font-weight: 600; }
+        h2 i { color: var(--accent-color); margin-right: 10px; }
+
+        label { font-size: 12px; color: #aaa; margin-bottom: 5px; display: block; text-transform: uppercase; letter-spacing: 1px; }
+
+        .form-control {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid var(--glass-border);
+            border-radius: 10px;
+            color: #fff; margin-bottom: 20px; font-size: 14px;
+        }
+        .form-control:focus {
+            background: rgba(255, 255, 255, 0.12); border-color: var(--accent-color);
+            box-shadow: none; color: #fff;
+        }
+
+        .btn-primary {
+            width: 100%; background: var(--accent-color); border: none;
+            padding: 14px; font-weight: 600; border-radius: 12px;
+        }
+
+        #preview-container {
+            width: 100%; height: 180px; border: 2px dashed var(--glass-border);
+            border-radius: 15px; margin-bottom: 15px;
+            display: flex; justify-content: center; align-items: center;
+            overflow: hidden; background: rgba(0, 0, 0, 0.2);
+        }
+        #preview-img { width: 100%; height: 100%; object-fit: cover; display: none; }
+        
+        .row-gap { display: flex; gap: 15px; }
+        .row-gap > div { flex: 1; }
+    </style>
 </head>
 <body>
 
-<div class="studio-wrapper">
-    <div class="header-section">
-        <h4 class="m-0 fw-bold">MUSIC<span style="color: var(--accent);">LIBRARY</span></h4>
-
-        <div class="d-flex align-items-center gap-2 flex-wrap">
-            <input type="text" id="search" class="search-box" placeholder="Search music...">
-
-            <select id="filterYear" class="form-select form-select-sm" style="width:auto;">
-                <option value="">All Years</option>
-                <?php while($y = mysqli_fetch_assoc($years)) echo "<option value='{$y['year']}'>{$y['year']}</option>"; ?>
-            </select>
-
-            <select id="filterArtist" class="form-select form-select-sm" style="width:auto;">
-                <option value="">All Artists</option>
-                <?php while($a = mysqli_fetch_assoc($artists)) echo "<option value='".strtolower($a['artist'])."'>{$a['artist']}</option>"; ?>
-            </select>
-
-            <select id="filterAlbum" class="form-select form-select-sm" style="width:auto;">
-                <option value="">All Albums</option>
-                <?php while($al = mysqli_fetch_assoc($albums)) echo "<option value='".strtolower($al['album'])."'>{$al['album']}</option>"; ?>
-            </select>
+    <div id="pageLoader">
+        <div class="text-center">
+            <div class="loader mb-3"></div>
+            <p class="text-muted small fw-bold">Studio Database Syncing...</p>
         </div>
     </div>
 
-    <div class="grid" id="musicGrid">
-        <?php while($row = mysqli_fetch_assoc($music)):
-            $avg = round($row['avg_rating'],1);
-        ?>
-        <div class="album-card" 
-             data-title="<?= strtolower($row['title']); ?>" 
-             data-artist="<?= strtolower($row['artist']); ?>" 
-             data-album="<?= strtolower($row['album']); ?>" 
-             data-year="<?= $row['year']; ?>">
+    <a href="dashboard.php" class="back-btn"><i class="fa fa-chevron-left me-2"></i> Dashboard</a>
 
-            <div class="disc-wrapper">
-                <button class="play-btn"><i class="bi bi-play-fill"></i></button>
-                <div class="custom-controls">
-                    <input type="range" class="progress" min="0" max="100" value="0">
-                    <button class="mute-btn"><i class="bi bi-volume-up"></i></button>
+    <div class="upload-card">
+        <h2><i class="fa fa-music"></i> Studio Publisher</h2>
+
+        <?php if ($error): ?>
+            <div class="alert alert-danger py-2 small border-0 bg-danger text-white"><i class="fa fa-circle-xmark me-2"></i> <?php echo $error; ?></div>
+        <?php endif; ?>
+
+        <?php if ($success): ?>
+            <div class="alert alert-success py-2 small border-0 bg-success text-white"><i class="fa fa-circle-check me-2"></i> <?php echo $success; ?></div>
+        <?php endif; ?>
+
+        <form method="POST" enctype="multipart/form-data">
+            <div class="row">
+                <div class="col-md-12">
+                    <label>Song Title</label>
+                    <input class="form-control" type="text" name="title" placeholder="e.g. Blinding Lights" required>
                 </div>
             </div>
 
-            <div class="title"><?= htmlspecialchars($row['title']); ?></div>
-            <div class="artist"><?= htmlspecialchars($row['artist']); ?></div>
-            <div class="stars-display">
-                <?php for($i=1;$i<=5;$i++) echo ($i<=$avg)? '★':'☆'; ?>
-                <span class="text-white opacity-50 ms-1">(<?= $row['total_reviews']; ?>)</span>
+            <div class="row-gap">
+                <div>
+                    <label>Artist Name</label>
+                    <input class="form-control" type="text" name="artist" placeholder="e.g. The Weeknd" required>
+                </div>
+                <div>
+                    <label>Album Name</label>
+                    <input class="form-control" type="text" name="album" placeholder="e.g. After Hours" required>
+                </div>
             </div>
-            <button class="rev-btn" onclick="openReview('<?= $row['id']; ?>','<?= addslashes($row['title']); ?>')">REVIEW</button>
 
-            <?php if(!empty($row['video'])): ?>
-            <a href="../admin/uploads/music/<?= $row['video']; ?>" download class="btn w-100 mt-2 download-btn">
-                <i class="bi bi-download"></i> Download Video
-            </a>
-            <?php endif; ?>
-
-            <audio id="audio-<?= $row['id']; ?>">
-                <source src="../admin/uploads/music/<?= $row['file']; ?>" type="audio/mpeg">
-            </audio>
-        </div>
-        <?php endwhile; ?>
-    </div>
-</div>
-
-<div id="reviewOverlay">
-    <div class="review-box">
-        <div class="text-center mb-4">
-            <h5 class="fw-bold m-0" id="revTitle">Music Name</h5>
-            <small class="text-muted">How was your listening experience?</small>
-        </div>
-        <form method="POST" action="submit_review.php">
-            <input type="hidden" name="music_id" id="revMusicId">
-            <div class="star-rating">
-                <input type="radio" name="rating" value="5" id="r5" required><label for="r5">★</label>
-                <input type="radio" name="rating" value="4" id="r4"><label for="r4">★</label>
-                <input type="radio" name="rating" value="3" id="r3"><label for="r3">★</label>
-                <input type="radio" name="rating" value="2" id="r2"><label for="r2">★</label>
-                <input type="radio" name="rating" value="1" id="r1"><label for="r1">★</label>
+            <div class="row">
+                <div class="col-md-6">
+                    <label>Release Year</label>
+                    <input class="form-control" type="number" name="year" placeholder="2024" required>
+                </div>
+                <div class="col-md-6">
+                    <label>Audio File</label>
+                    <input class="form-control" type="file" name="music" accept="audio/*" required>
+                </div>
             </div>
-            <textarea name="comment" class="form-control bg-dark text-white border-secondary mb-3" placeholder="Write your review..." required></textarea>
-            <div class="d-flex gap-2">
-                <button type="button" class="btn btn-dark w-100" onclick="closeReview()">CANCEL</button>
-                <button type="submit" name="submit_review" class="btn w-100" style="background: var(--accent); color:white;">POST NOW</button>
+
+            <label>Cover Art Preview</label>
+            <div id="preview-container">
+                <span id="placeholder-text" class="text-muted small">Select cover image</span>
+                <img id="preview-img" src="" alt="Preview">
             </div>
+            <input class="form-control" type="file" name="cover_image" id="imageInput" accept="image/*" required>
+
+            <button class="btn btn-primary" name="upload">
+                <i class="fa fa-rocket me-2"></i> Publish to Music Library
+            </button>
         </form>
     </div>
-</div>
 
-<footer>&copy; 2026 MUSIC STUDIO &bull; SOUND SYSTEM</footer>
+    <script>
+        window.addEventListener('load', () => {
+            const loader = document.getElementById('pageLoader');
+            loader.style.opacity = '0';
+            setTimeout(() => { loader.style.display = 'none'; }, 500);
+        });
 
-<script>
-const audios = document.querySelectorAll('audio');
-const albumCards = document.querySelectorAll('.album-card');
+        const imageInput = document.getElementById('imageInput');
+        const previewImg = document.getElementById('preview-img');
+        const placeholderText = document.getElementById('placeholder-text');
 
-albumCards.forEach(card=>{
-    const btn = card.querySelector('.play-btn');
-    const audio = card.querySelector('audio');
-    const progress = card.querySelector('.progress');
-    const muteBtn = card.querySelector('.mute-btn');
-
-    btn.addEventListener('click',()=>{
-        audios.forEach(a=>{ if(a!==audio){ a.pause(); a.closest('.album-card').classList.remove('playing'); a.closest('.album-card').querySelector('.play-btn i').className='bi bi-play-fill'; }});
-        if(audio.paused){ audio.play(); card.classList.add('playing'); btn.querySelector('i').className='bi bi-pause-fill'; }
-        else{ audio.pause(); card.classList.remove('playing'); btn.querySelector('i').className='bi bi-play-fill'; }
-
-        audio.addEventListener('timeupdate',()=>{ progress.value=(audio.currentTime/audio.duration)*100; });
-    });
-
-    progress.addEventListener('input',()=>{ audio.currentTime=(progress.value/100)*audio.duration; });
-    muteBtn.addEventListener('click',()=>{ audio.muted=!audio.muted; muteBtn.innerHTML=audio.muted ? '<i class="bi bi-volume-mute"></i>' : '<i class="bi bi-volume-up"></i>'; });
-});
-
-const searchInput = document.getElementById('search');
-const filterYear = document.getElementById('filterYear');
-const filterArtist = document.getElementById('filterArtist');
-const filterAlbum = document.getElementById('filterAlbum');
-
-function applyFilters(){
-    const searchVal = searchInput.value.toLowerCase();
-    const yearVal = filterYear.value;
-    const artistVal = filterArtist.value;
-    const albumVal = filterAlbum.value;
-
-    albumCards.forEach(card=>{
-        const title = card.dataset.title;
-        const artist = card.dataset.artist;
-        const album = card.dataset.album;
-        const year = card.dataset.year;
-
-        const matches = (yearVal===''||year===yearVal) &&
-                        (artistVal===''||artist.includes(artistVal)) &&
-                        (albumVal===''||album.includes(albumVal)) &&
-                        (title+' '+artist).includes(searchVal);
-        card.style.display = matches?'block':'none';
-    });
-}
-
-searchInput.addEventListener('input',applyFilters);
-filterYear.addEventListener('change',applyFilters);
-filterArtist.addEventListener('change',applyFilters);
-filterAlbum.addEventListener('change',applyFilters);
-
-function openReview(id,title){
-    document.getElementById('revMusicId').value=id;
-    document.getElementById('revTitle').innerText=title;
-    document.getElementById('reviewOverlay').style.display='flex';
-}
-function closeReview(){ document.getElementById('reviewOverlay').style.display='none'; }
-</script>
-
+        imageInput.onchange = evt => {
+            const [file] = imageInput.files;
+            if (file) {
+                previewImg.src = URL.createObjectURL(file);
+                previewImg.style.display = 'block';
+                placeholderText.style.display = 'none';
+            }
+        }
+    </script>
 </body>
 </html>
