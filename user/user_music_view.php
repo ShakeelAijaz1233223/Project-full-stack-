@@ -29,196 +29,225 @@ $music = mysqli_query($conn, $query);
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
     <style>
-:root {
-    --bg: #080808;
-    --card: #111;
-    --accent: #ff0055;
-    --accent-grad: linear-gradient(45deg, #ff0055, #ff5e00);
-    --text-muted: #888;
-}
+        :root {
+            --bg-dark: #080808;
+            --card-bg: #121212;
+            --accent: #ff0055;
+            --accent-gradient: linear-gradient(45deg, #ff0055, #ff5e00);
+            --text-muted: #888888;
+        }
 
-body {
-    background: var(--bg);
-    color: #fff;
-    font-family: 'Inter', sans-serif;
-    margin: 0;
-}
+        body {
+            background: var(--bg-dark);
+            color: #fff;
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+        }
 
-.studio-wrapper {
-    width: 95%;
-    margin: 0 auto;
-    padding: 20px 0;
-}
+        .studio-wrapper {
+            width: 95%;
+            margin: 0 auto;
+            padding: 20px 0;
+        }
 
-/* --- Header --- */
-.header-section {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 25px;
-    border-bottom: 1px solid #1a1a1a;
-    padding-bottom: 15px;
-}
-.search-box {
-    background: #151515;
-    border: 1px solid #333;
-    color: white;
-    border-radius: 6px;
-    padding: 6px 15px;
-    width: 250px;
-}
-.btn-back {
-    background: #1a1a1a;
-    border: 1px solid #222;
-    color: #fff;
-    padding: 6px 12px;
-    border-radius: 8px;
-    display: flex;
-    align-items: center;
-    gap: 5px;
-    text-decoration: none;
-}
+        .header-section {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            border-bottom: 1px solid #1a1a1a;
+            padding-bottom: 15px;
+        }
 
-/* --- Grid & Cards --- */
-.grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-    gap: 20px;
-}
-.album-card {
-    background: var(--card);
-    border-radius: 15px;
-    padding: 12px;
-    border: 1px solid #1a1a1a;
-    transition: 0.3s;
-    position: relative;
-    text-align: center;
-}
-.album-card:hover {
-    transform: translateY(-5px);
-    border-color: var(--accent);
-}
+        .search-box {
+            background: #1a1a1a;
+            border: 1px solid #222;
+            color: white;
+            border-radius: 4px;
+            padding: 6px 15px;
+            width: 250px;
+            font-size: 0.85rem;
+        }
 
-/* --- Disc / Media --- */
-.disc-wrapper {
-    position: relative;
-    width: 100%;
-    aspect-ratio: 16/9;
-    background: #000;
-    border-radius: 10px;
-    overflow: hidden;
-    margin-bottom: 10px;
-}
-.disc-wrapper img, .disc-wrapper video, .disc-wrapper audio {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    transition: transform 0.5s ease;
-}
-.album-card:hover .disc-wrapper img,
-.album-card:hover .disc-wrapper video {
-    transform: scale(1.05);
-}
+        /* Grid & Cards */
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+            gap: 12px;
+        }
 
-/* --- Play Button --- */
-.play-btn {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 40px;
-    height: 40px;
-    background: var(--accent-grad);
-    border-radius: 50%;
-    border: none;
-    color: white;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    opacity: 0;
-    cursor: pointer;
-    z-index: 5;
-    transition: 0.3s;
-}
-.album-card:hover .play-btn { opacity: 1; }
+        .card {
+            background: var(--card-bg);
+            border: 1px solid transparent;
+            border-radius: 12px;
+            padding: 12px;
+            position: relative;
+            text-align: center;
+            transition: 0.3s;
+        }
 
-/* --- Custom Controls --- */
-.custom-controls {
-    position: absolute;
-    bottom: 5px;
-    left: 0;
-    right: 0;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0 10px;
-    background: rgba(0,0,0,0.6);
-    backdrop-filter: blur(4px);
-    opacity: 0;
-    transition: opacity 0.3s ease;
-    border-radius: 0 0 8px 8px;
-}
-.album-card:hover .custom-controls { opacity: 1; }
-.custom-controls button { background: none; border: none; color: white; cursor: pointer; font-size: 1rem; }
-.custom-controls input[type="range"] { flex: 1; margin: 0 5px; accent-color: var(--accent); }
+        .card:hover {
+            transform: translateY(-5px);
+            border-color: var(--accent);
+        }
 
-/* --- Title & Stars --- */
-.title { font-weight: 600; font-size: 0.85rem; margin: 5px 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.artist { font-size: 0.75rem; color: var(--text-muted); margin-bottom: 5px; }
-.stars-display { color: #ffca08; font-size: 0.75rem; margin-bottom: 8px; }
+        .disc-wrapper {
+            position: relative;
+            width: 70px;
+            height: 70px;
+            margin: 0 auto 10px;
+            border-radius: 50%;
+            background: #000;
+            border: 3px solid #222;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: border-color 0.3s;
+        }
 
-/* --- Review Button --- */
-.rev-btn {
-    background: #222;
-    color: #fff;
-    border: none;
-    font-size: 0.7rem;
-    width: 100%;
-    padding: 6px;
-    border-radius: 6px;
-    transition: 0.3s;
-}
-.rev-btn:hover { background: var(--accent); }
+        .disc-wrapper i {
+            font-size: 1.8rem;
+            color: var(--accent);
+        }
 
-/* --- Review Overlay --- */
-#reviewOverlay {
-    display: none;
-    position: fixed;
-    top:0; left:0; width:100%; height:100%;
-    background: rgba(0,0,0,0.9);
-    backdrop-filter: blur(5px);
-    z-index: 9999;
-    align-items:center; justify-content:center;
-}
-.review-box {
-    background: #151515;
-    width: 90%;
-    max-width: 400px;
-    padding: 30px;
-    border-radius: 20px;
-    border: 1px solid #333;
-}
+        .play-trigger {
+            position: absolute;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            border: none;
+            background: var(--accent-gradient);
+            color: #fff;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            opacity: 0;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: 0.3s;
+        }
 
-/* --- Star Rating --- */
-.star-rating {
-    display: flex;
-    flex-direction: row-reverse;
-    justify-content: center;
-    gap: 8px;
-    margin-bottom: 15px;
-}
-.star-rating input { display: none; }
-.star-rating label { font-size: 2.5rem; color: #222; cursor: pointer; transition: 0.2s; }
-.star-rating label:hover,
-.star-rating label:hover~label,
-.star-rating input:checked~label { color: #ffca08; }
+        .card:hover .play-trigger {
+            opacity: 1;
+        }
 
-/* --- Footer --- */
-footer { text-align:center; padding:40px; font-size:0.7rem; color:#444; }
+        .playing .disc-wrapper {
+            animation: rotate 3s linear infinite;
+            border-color: var(--accent);
+        }
 
-audio { width: 100%; display:none; } /* hide default audio player */
-</style>
+        @keyframes rotate {
+            from {
+                transform: rotate(0deg);
+            }
 
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .title {
+            font-weight: 600;
+            font-size: 0.85rem;
+            margin: 0;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .artist {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-bottom: 5px;
+        }
+
+        .stars-row {
+            color: #ffca08;
+            font-size: 0.7rem;
+            margin: 4px 0;
+        }
+
+        .btn-rev-pop {
+            background: #000;
+            color: #ccc;
+            border: 1px solid #222;
+            font-size: 0.65rem;
+            width: 100%;
+            padding: 5px;
+            border-radius: 5px;
+            margin-top: 5px;
+            font-weight: 600;
+            transition: 0.3s;
+        }
+
+        .btn-rev-pop:hover {
+            background: var(--accent);
+            color: white;
+        }
+
+        /* Review Modal */
+        #reviewOverlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 10000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .review-modal {
+            background: #111;
+            width: 90%;
+            max-width: 380px;
+            padding: 30px;
+            border-radius: 20px;
+            border: 1px solid #222;
+        }
+
+        .star-input {
+            display: flex;
+            flex-direction: row-reverse;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .star-input input {
+            display: none;
+        }
+
+        .star-input label {
+            font-size: 2.5rem;
+            color: #222;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .star-input label:hover,
+        .star-input label:hover~label,
+        .star-input input:checked~label {
+            color: #ffca08;
+        }
+
+        footer {
+            padding: 40px;
+            text-align: center;
+            font-size: 0.7rem;
+            color: #444;
+        }
+
+        audio {
+            width: 100%;
+            margin-top: 10px;
+            border-radius: 5px;
+        }
+    </style>
 </head>
 
 <body>
