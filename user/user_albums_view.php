@@ -157,7 +157,7 @@ body {
 }
 .album-card:hover .play-btn { opacity: 1; }
 
-/* --- Custom Controls --- */
+/* --- Custom Controls Overlay --- */
 .custom-controls {
     position: absolute;
     bottom: 5px;
@@ -167,24 +167,65 @@ body {
     align-items: center;
     justify-content: space-between;
     padding: 0 10px;
-    background: rgba(0,0,0,0.6);
-    backdrop-filter: blur(4px);
+    background: rgba(0, 0, 0, 0.65);
+    backdrop-filter: blur(5px);
     opacity: 0;
-    transition: opacity 0.3s ease;
-    border-radius: 0 0 8px 8px;
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    border-radius: 0 0 10px 10px;
 }
-.media-wrapper:hover .custom-controls { opacity: 1; }
+.disc-wrapper:hover .custom-controls {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Buttons inside controls */
 .custom-controls button {
     background: none;
     border: none;
-    color: white;
+    color: #fff;
     cursor: pointer;
+    font-size: 1.1rem;
+    transition: color 0.2s, transform 0.2s;
 }
+.custom-controls button:hover {
+    color: var(--accent);
+    transform: scale(1.2);
+}
+
+/* Progress Slider */
 .custom-controls input[type="range"] {
     flex: 1;
-    margin: 0 5px;
+    margin: 0 8px;
+    height: 6px;
+    border-radius: 5px;
     accent-color: var(--accent);
+    cursor: pointer;
+    background: rgba(255, 255, 255, 0.15);
+    transition: background 0.3s;
 }
+.custom-controls input[type="range"]:hover {
+    background: rgba(255, 255, 255, 0.25);
+}
+.custom-controls input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: var(--accent);
+    border: 2px solid #111;
+    transition: transform 0.2s;
+}
+.custom-controls input[type="range"]::-webkit-slider-thumb:hover {
+    transform: scale(1.3);
+}
+.custom-controls input[type="range"]::-moz-range-thumb {
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: var(--accent);
+    border: 2px solid #111;
+}
+
 
 /* --- Titles & Artists --- */
 .title {
