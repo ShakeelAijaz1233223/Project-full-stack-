@@ -366,6 +366,18 @@ $music = mysqli_query($conn, $query);
                 $avg = round($row['avg_rating'], 1);
             ?>
                 <div class="music-card" data-search="<?= strtolower($row['title'] . ' ' . $row['artist']); ?>">
+                    <div class="media-wrapper">
+                        <div class="vinyl-disc"></div>
+                        <button class="play-btn" onclick="toggleAudio('<?= $row['id'] ?>', this)">
+                            <i class="bi bi-play-fill"></i>
+                        </button>
+                        <div class="custom-controls">
+                            <input type="range" class="progress" min="0" max="100" value="0">
+                            <button class="btn btn-sm text-white border-0" onclick="muteAudio('<?= $row['id'] ?>', this)">
+                                <i class="bi bi-volume-up"></i>
+                            </button>
+                        </div>
+                    </div>
                      <div class="media-wrapper">
     <?php 
         // Safe cover path
@@ -389,7 +401,7 @@ $music = mysqli_query($conn, $query);
             <i class="bi bi-volume-up"></i>
         </button>
     </div>  
-</div>
+</div>  
 
                     <p class="title"><?= htmlspecialchars($row['title']) ?></p>
 
