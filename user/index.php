@@ -268,6 +268,37 @@ if (isset($_SESSION['email']) && isset($conn)) {
             background: url('https://images.unsplash.com/photo-1514525253440-b393452e23f9?q=80&w=1920&auto=format&fit=crop') no-repeat center center/cover;
         }
 
+        .hero-title {
+            font-size: 3rem;
+            font-weight: 700;
+            color: #fff;
+            font-family: sans-serif;
+        }
+
+        #animated-text {
+            display: inline-block;
+            white-space: nowrap;
+            overflow: hidden;
+            border-right: 3px solid #fff;
+            /* Cursor effect */
+            padding-right: 5px;
+            animation: blink-cursor 0.7s steps(1) infinite;
+        }
+
+        @keyframes blink-cursor {
+
+            0%,
+            50%,
+            100% {
+                border-color: transparent;
+            }
+
+            25%,
+            75% {
+                border-color: #fff;
+            }
+        }
+
         .hero-overlay {
             position: absolute;
             inset: 0;
@@ -955,6 +986,37 @@ if (isset($_SESSION['email']) && isset($conn)) {
         });
 
         document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+        const texts = ["VISUAL AUDIO", "REVOLUTION"];
+const animatedText = document.getElementById("animated-text");
+let textIndex = 0;
+let charIndex = 0;
+
+function type() {
+  if (charIndex < texts[textIndex].length) {
+    animatedText.textContent += texts[textIndex].charAt(charIndex);
+    charIndex++;
+    setTimeout(type, 150);
+  } else {
+    // Wait 1 second then delete
+    setTimeout(deleteText, 1000);
+  }
+}
+
+function deleteText() {
+  if (charIndex > 0) {
+    animatedText.textContent = texts[textIndex].substring(0, charIndex - 1);
+    charIndex--;
+    setTimeout(deleteText, 100);
+  } else {
+    // Move to next text
+    textIndex = (textIndex + 1) % texts.length;
+    setTimeout(type, 500); // small delay before typing next word
+  }
+}
+
+// Start the animation
+type();
     </script>
 </body>
 
