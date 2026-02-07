@@ -144,12 +144,12 @@ $albums = mysqli_query($conn, $query);
         }
 
         video {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    border-radius: 8px;
-    display: block;
-}
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 8px;
+            display: block;
+        }
 
 
         .play-overlay {
@@ -212,55 +212,56 @@ $albums = mysqli_query($conn, $query);
             background: var(--accent);
             color: white;
         }
+
         .media-wrapper {
-    position: relative;
-    width: 100%;
-    aspect-ratio: 1/1;
-    background: #000;
-    border-radius: 8px;
-    overflow: hidden;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
+            position: relative;
+            width: 100%;
+            aspect-ratio: 1/1;
+            background: #000;
+            border-radius: 8px;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
 
-video {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
+        video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
 
-.custom-controls {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    background: rgba(0,0,0,0.5);
-    display: flex;
-    align-items: center;
-    padding: 5px 8px;
-    gap: 5px;
-    border-top-left-radius: 8px;
-    border-top-right-radius: 8px;
-    opacity: 0;
-    transition: opacity 0.3s;
-}
+        .custom-controls {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            padding: 5px 8px;
+            gap: 5px;
+            border-top-left-radius: 8px;
+            border-top-right-radius: 8px;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
 
-.media-wrapper:hover .custom-controls {
-    opacity: 1;
-}
+        .media-wrapper:hover .custom-controls {
+            opacity: 1;
+        }
 
-.custom-controls button {
-    background: none;
-    border: none;
-    color: #fff;
-    font-size: 16px;
-    cursor: pointer;
-}
+        .custom-controls button {
+            background: none;
+            border: none;
+            color: #fff;
+            font-size: 16px;
+            cursor: pointer;
+        }
 
-.custom-controls input[type="range"] {
-    flex: 1;
-}
+        .custom-controls input[type="range"] {
+            flex: 1;
+        }
 
 
         /* Review Modal */
@@ -352,22 +353,22 @@ video {
                     </div>
 
                     <div class="media-wrapper">
-    <?php if (!empty($row['video'])): ?>
-        <video id="vid-<?= $row['id']; ?>" preload="metadata" poster="../admin/uploads/albums/<?= $row['cover']; ?>">
-            <source src="../admin/uploads/albums/<?= $row['video']; ?>" type="video/mp4">
-        </video>
+                        <?php if (!empty($row['video'])): ?>
+                            <video id="vid-<?= $row['id']; ?>" preload="metadata" poster="../admin/uploads/albums/<?= $row['cover']; ?>">
+                                <source src="../admin/uploads/albums/<?= $row['video']; ?>" type="video/mp4">
+                            </video>
 
-        <!-- Custom overlay controls -->
-        <div class="custom-controls" id="controls-<?= $row['id']; ?>">
-            <button class="play-btn"><i class="bi bi-play-fill"></i></button>
-            <input type="range" class="progress" min="0" max="100" value="0">
-            <button class="mute-btn"><i class="bi bi-volume-up"></i></button>
-            <button class="fullscreen-btn"><i class="bi bi-arrows-fullscreen"></i></button>
-        </div>
-    <?php else: ?>
-        <img src="../admin/uploads/albums/<?= $row['cover']; ?>" style="width:100%; height:100%; object-fit:cover; border-radius:8px;">
-    <?php endif; ?>
-</div>
+                            <!-- Custom overlay controls -->
+                            <div class="custom-controls" id="controls-<?= $row['id']; ?>">
+                                <button class="play-btn"><i class="bi bi-play-fill"></i></button>
+                                <input type="range" class="progress" min="0" max="100" value="0">
+                                <button class="mute-btn"><i class="bi bi-volume-up"></i></button>
+                                <button class="fullscreen-btn"><i class="bi bi-arrows-fullscreen"></i></button>
+                            </div>
+                        <?php else: ?>
+                            <img src="../admin/uploads/albums/<?= $row['cover']; ?>" style="width:100%; height:100%; object-fit:cover; border-radius:8px;">
+                        <?php endif; ?>
+                    </div>
 
 
                     <div class="card-body">
@@ -415,112 +416,111 @@ video {
     </div>
 
     <footer>&copy; 2026 ALBUMS STUDIO &bull; SOUND SYSTEM</footer>
-<script>
-    // Search
-    document.getElementById("search").addEventListener("input", function() {
-        let val = this.value.toLowerCase().trim();
-        document.querySelectorAll(".album-card").forEach(card => {
-            let text = card.dataset.title + card.dataset.artist;
-            card.style.display = text.includes(val) ? "block" : "none";
+    <script>
+        // Search
+        document.getElementById("search").addEventListener("input", function() {
+            let val = this.value.toLowerCase().trim();
+            document.querySelectorAll(".album-card").forEach(card => {
+                let text = card.dataset.title + card.dataset.artist;
+                card.style.display = text.includes(val) ? "block" : "none";
+            });
         });
-    });
 
-    // Review Modal Functions
-    function popReview(id, title) {
-        document.getElementById('popId').value = id;
-        document.getElementById('popTitle').innerText = title;
-        document.getElementById('reviewOverlay').style.display = 'flex';
-    }
+        // Review Modal Functions
+        function popReview(id, title) {
+            document.getElementById('popId').value = id;
+            document.getElementById('popTitle').innerText = title;
+            document.getElementById('reviewOverlay').style.display = 'flex';
+        }
 
-    function closePop() {
-        document.getElementById('reviewOverlay').style.display = 'none';
-    }
+        function closePop() {
+            document.getElementById('reviewOverlay').style.display = 'none';
+        }
 
-    // Fixed Media Toggle
-    function togglePlay(id, btn) {
-        const video = document.getElementById('vid-' + id);
-        const audio = document.getElementById('aud-' + id);
-        const icon = btn.querySelector('i');
+        // Fixed Media Toggle
+        function togglePlay(id, btn) {
+            const video = document.getElementById('vid-' + id);
+            const audio = document.getElementById('aud-' + id);
+            const icon = btn.querySelector('i');
 
-        // Pause all other videos and audios
-        document.querySelectorAll('video, audio').forEach(media => {
-            if (media !== video && media !== audio) {
-                media.pause();
+            // Pause all other videos and audios
+            document.querySelectorAll('video, audio').forEach(media => {
+                if (media !== video && media !== audio) {
+                    media.pause();
+                }
+            });
+
+            // Play/Pause logic
+            if (video && video.paused) {
+                video.muted = false; // allow sound
+                video.play();
+                if (audio) audio.play();
+                icon.className = 'bi bi-pause-fill';
+            } else if (video) {
+                video.pause();
+                if (audio) audio.pause();
+                icon.className = 'bi bi-play-fill';
             }
+        }
+
+
+        // Single video player logic
+        document.querySelectorAll('.media-wrapper').forEach(wrapper => {
+            const video = wrapper.querySelector('video');
+            const playBtn = wrapper.querySelector('.play-btn');
+            const progress = wrapper.querySelector('.progress');
+            const muteBtn = wrapper.querySelector('.mute-btn');
+            const fullscreenBtn = wrapper.querySelector('.fullscreen-btn');
+
+            if (!video) return;
+
+            // Play/Pause
+            playBtn.addEventListener('click', () => {
+                // Pause all other videos
+                document.querySelectorAll('video').forEach(v => {
+                    if (v !== video) v.pause();
+                });
+
+                if (video.paused) {
+                    video.play();
+                    playBtn.innerHTML = '<i class="bi bi-pause-fill"></i>';
+                } else {
+                    video.pause();
+                    playBtn.innerHTML = '<i class="bi bi-play-fill"></i>';
+                }
+            });
+
+            // Update progress
+            video.addEventListener('timeupdate', () => {
+                progress.value = (video.currentTime / video.duration) * 100;
+            });
+
+            // Seek
+            progress.addEventListener('input', () => {
+                video.currentTime = (progress.value / 100) * video.duration;
+            });
+
+            // Mute toggle
+            muteBtn.addEventListener('click', () => {
+                video.muted = !video.muted;
+                muteBtn.innerHTML = video.muted ? '<i class="bi bi-volume-mute"></i>' : '<i class="bi bi-volume-up"></i>';
+            });
+
+            // Fullscreen toggle
+            fullscreenBtn.addEventListener('click', () => {
+                if (!document.fullscreenElement) {
+                    video.parentElement.requestFullscreen();
+                } else {
+                    document.exitFullscreen();
+                }
+            });
+
+            // Pause video when clicking outside
+            video.addEventListener('ended', () => {
+                playBtn.innerHTML = '<i class="bi bi-play-fill"></i>';
+            });
         });
-
-        // Play/Pause logic
-        if (video && video.paused) {
-            video.muted = false; // allow sound
-            video.play();
-            if (audio) audio.play();
-            icon.className = 'bi bi-pause-fill';
-        } else if (video) {
-            video.pause();
-            if (audio) audio.pause();
-            icon.className = 'bi bi-play-fill';
-        }
-    }
-    
-
-    // Single video player logic
-document.querySelectorAll('.media-wrapper').forEach(wrapper => {
-    const video = wrapper.querySelector('video');
-    const playBtn = wrapper.querySelector('.play-btn');
-    const progress = wrapper.querySelector('.progress');
-    const muteBtn = wrapper.querySelector('.mute-btn');
-    const fullscreenBtn = wrapper.querySelector('.fullscreen-btn');
-
-    if (!video) return;
-
-    // Play/Pause
-    playBtn.addEventListener('click', () => {
-        // Pause all other videos
-        document.querySelectorAll('video').forEach(v => {
-            if (v !== video) v.pause();
-        });
-
-        if (video.paused) {
-            video.play();
-            playBtn.innerHTML = '<i class="bi bi-pause-fill"></i>';
-        } else {
-            video.pause();
-            playBtn.innerHTML = '<i class="bi bi-play-fill"></i>';
-        }
-    });
-
-    // Update progress
-    video.addEventListener('timeupdate', () => {
-        progress.value = (video.currentTime / video.duration) * 100;
-    });
-
-    // Seek
-    progress.addEventListener('input', () => {
-        video.currentTime = (progress.value / 100) * video.duration;
-    });
-
-    // Mute toggle
-    muteBtn.addEventListener('click', () => {
-        video.muted = !video.muted;
-        muteBtn.innerHTML = video.muted ? '<i class="bi bi-volume-mute"></i>' : '<i class="bi bi-volume-up"></i>';
-    });
-
-    // Fullscreen toggle
-    fullscreenBtn.addEventListener('click', () => {
-        if (!document.fullscreenElement) {
-            video.parentElement.requestFullscreen();
-        } else {
-            document.exitFullscreen();
-        }
-    });
-
-    // Pause video when clicking outside
-    video.addEventListener('ended', () => {
-        playBtn.innerHTML = '<i class="bi bi-play-fill"></i>';
-    });
-});
-
-</script>
+    </script>
 
 </body>
 
