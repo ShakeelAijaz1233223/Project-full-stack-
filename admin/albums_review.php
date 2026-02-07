@@ -50,9 +50,20 @@ $result = mysqli_query($conn, $query);
         }
 
         /* Container & Header */
-        .admin-wrapper { padding: 40px 0; }
-        .page-title { font-weight: 800; font-size: 1.8rem; letter-spacing: -1px; }
-        .accent-glow { color: var(--accent); text-shadow: 0 0 15px var(--accent-glow); }
+        .admin-wrapper {
+            padding: 40px 0;
+        }
+
+        .page-title {
+            font-weight: 800;
+            font-size: 1.8rem;
+            letter-spacing: -1px;
+        }
+
+        .accent-glow {
+            color: var(--accent);
+            text-shadow: 0 0 15px var(--accent-glow);
+        }
 
         /* Modern Dashboard Button */
         .dash-btn {
@@ -66,7 +77,12 @@ $result = mysqli_query($conn, $query);
             font-size: 0.85rem;
             font-weight: 600;
         }
-        .dash-btn:hover { border-color: var(--accent); color: var(--accent); background: #1a1a1a; }
+
+        .dash-btn:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+            background: #1a1a1a;
+        }
 
         /* Alert Styling */
         .alert-modern {
@@ -84,10 +100,13 @@ $result = mysqli_query($conn, $query);
             border: 1px solid var(--border);
             border-radius: 24px;
             overflow: hidden;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
         }
 
-        .table { margin-bottom: 0; }
+        .table {
+            margin-bottom: 0;
+        }
+
         .table thead th {
             background: #161616;
             color: #666;
@@ -105,7 +124,9 @@ $result = mysqli_query($conn, $query);
             transition: 0.2s;
         }
 
-        .table tbody tr:hover td { background: #141414; }
+        .table tbody tr:hover td {
+            background: #141414;
+        }
 
         /* Album Item */
         .album-img {
@@ -115,18 +136,25 @@ $result = mysqli_query($conn, $query);
             object-fit: cover;
             margin-right: 15px;
             border: 1px solid #333;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
         }
 
         /* Rating Stars */
-        .stars { color: #ffca08; font-size: 0.9rem; }
-        .star-off { color: #222; }
-        .rating-num { 
-            background: #1a1a1a; 
-            color: #888; 
-            font-size: 0.7rem; 
-            padding: 2px 8px; 
-            border-radius: 5px; 
+        .stars {
+            color: #ffca08;
+            font-size: 0.9rem;
+        }
+
+        .star-off {
+            color: #222;
+        }
+
+        .rating-num {
+            background: #1a1a1a;
+            color: #888;
+            font-size: 0.7rem;
+            padding: 2px 8px;
+            border-radius: 5px;
             margin-top: 5px;
             display: inline-block;
         }
@@ -145,6 +173,7 @@ $result = mysqli_query($conn, $query);
             transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             text-decoration: none;
         }
+
         .btn-trash:hover {
             background: #ff4444;
             color: #fff;
@@ -158,7 +187,6 @@ $result = mysqli_query($conn, $query);
             line-height: 1.6;
             max-width: 320px;
         }
-
     </style>
 </head>
 
@@ -212,8 +240,8 @@ $result = mysqli_query($conn, $query);
                                     </td>
                                     <td>
                                         <div class="stars">
-                                            <?php for ($i = 1; $i <= 5; $i++) 
-                                                echo ($i <= $row['rating']) ? '★' : '<span class="star-off">★</span>'; 
+                                            <?php for ($i = 1; $i <= 5; $i++)
+                                                echo ($i <= $row['rating']) ? '★' : '<span class="star-off">★</span>';
                                             ?>
                                         </div>
                                         <span class="rating-num"><?= $row['rating'] ?>.0 / 5.0</span>
@@ -231,8 +259,8 @@ $result = mysqli_query($conn, $query);
                                     </td>
                                     <td class="text-center">
                                         <a href="<?= basename($_SERVER['PHP_SELF']) ?>?delete=<?= $row['id'] ?>"
-                                           class="btn-trash"
-                                           onclick="return confirm('Purge this review from database?')">
+                                            class="btn-trash"
+                                            onclick="return confirm('Purge this review from database?')">
                                             <i class="bi bi-trash3-fill"></i>
                                         </a>
                                     </td>
