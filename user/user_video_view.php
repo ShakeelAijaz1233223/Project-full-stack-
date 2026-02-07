@@ -336,10 +336,22 @@ $videos = mysqli_query($conn, $query);
                 <p class="title"><?= htmlspecialchars($row['title']) ?></p>
                 
                 <div class="meta-info">
-                    <span class="artist-tag"><?= htmlspecialchars($row['artist']) ?></span>
-                    <span><?= htmlspecialchars($row['album']) ?></span>
-                    <span><?= htmlspecialchars($row['year']) ?></span>
-                </div>
+    <span class="id-tag">ID: <?= htmlspecialchars($row['id']) ?></span>
+    <span class="title-tag">Title: <?= htmlspecialchars($row['title']) ?></span>
+    <span class="artist-tag">Artist: <?= htmlspecialchars($row['artist']) ?></span>
+    <span class="album-tag">Album: <?= htmlspecialchars($row['album']) ?></span>
+    <span class="year-tag">Year: <?= htmlspecialchars($row['year']) ?></span>
+    <span class="file-tag">File: <?= htmlspecialchars($row['file']) ?></span>
+    <span class="album-id-tag">Album ID: <?= htmlspecialchars($row['album_id']) ?></span>
+    <span class="genre-tag">Genre: <?= htmlspecialchars($row['genre']) ?></span>
+    <span class="duration-tag">Duration: <?= htmlspecialchars($row['duration']) ?></span>
+    <span class="desc-tag">Description: <?= htmlspecialchars($row['description']) ?></span>
+    <span class="created-tag">Uploaded: <?= date('d M Y', strtotime($row['created_at'])) ?></span>
+    <span class="thumb-tag">Thumbnail: <?= htmlspecialchars($row['thumbnail']) ?></span>
+    <span class="full-thumb-tag">Full Path: <?= htmlspecialchars($row['full_thumbnail_path']) ?></span>
+    <span class="file-path-tag">File Path: <?= htmlspecialchars($row['file_path']) ?></span>
+</div>
+
 
                 <div class="stars-display">
                     <?php for ($i = 1; $i <= 5; $i++) echo ($i <= $avg) ? '★' : '☆'; ?>
