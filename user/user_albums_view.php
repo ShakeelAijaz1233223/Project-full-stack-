@@ -86,77 +86,94 @@ $albums = mysqli_query($conn, $query);
         }
 
         /* New Album Card Styling */
-      .grid {
+      /* Grid layout */
+.grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-    gap: 20px;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); /* Bigger cards */
+    gap: 30px; /* More spacing */
+    padding: 20px;
 }
 
+/* Album card styling */
 .album-card {
-    background: var(--card-bg) !important;
-    backdrop-filter: blur(10px);
-    border: 1px solid var(--glass-border) !important;
-    border-radius: 20px !important;
-    padding: 15px;
-    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    background: rgba(255, 255, 255, 0.05) !important; /* Glassy effect */
+    backdrop-filter: blur(15px); /* Stronger blur */
+    border: 1px solid rgba(255, 255, 255, 0.2) !important;
+    border-radius: 25px !important; /* Bigger round corners */
+    padding: 20px;
+    transition: transform 0.5s ease, box-shadow 0.5s ease, border-color 0.5s ease, background 0.5s ease;
     position: relative;
     overflow: hidden;
-    height: 100%;
     width: 100%;
-    display: flex;             /* Added for centering button */
-    flex-direction: column;    /* Stack media and button vertically */
-    align-items: center;       /* Center everything horizontally */
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
 }
 
+/* Hover effect */
 .album-card:hover {
-    transform: translateY(-10px) scale(1.02);
-    background: rgba(255, 255, 255, 0.07) !important;
-    border-color: rgba(255, 0, 85, 0.5) !important;
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
+    transform: translateY(-15px) scale(1.05);
+    background: rgba(255, 255, 255, 0.08) !important;
+    border-color: rgba(255, 0, 85, 0.6) !important;
+    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.6);
 }
 
-/* Media Wrapper */
+/* Media wrapper (image/video container) */
 .media-wrapper {
-    border-radius: 3px !important;
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.4);
+    border-radius: 15px !important;
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.5);
     position: relative;
-    aspect-ratio: 1/1;
+    aspect-ratio: 16/9; /* Wider video look */
     overflow: hidden;
     background: #000;
-    width: 100%;   /* Ensure full width inside card */
-    margin-bottom: 15px; /* Space between media and button */
+    margin-bottom: 15px;
 }
 
-.media-wrapper img, .media-wrapper video {
+/* Media inside card */
+.media-wrapper img,
+.media-wrapper video {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    transition: transform 0.5s ease;
+    transition: transform 0.6s ease;
 }
 
-.album-card:hover .media-wrapper img, 
+/* Hover zoom for media */
+.album-card:hover .media-wrapper img,
 .album-card:hover .media-wrapper video {
-    transform: scale(1.1);
+    transform: scale(1.15); /* Bigger zoom on hover */
 }
 
-/* Center RATE ALBUM button */
-.album-card .rate-btn {
-    display: inline-block;
-    margin-top: 10px;          /* Space between media and button */
-    padding: 12px 25px;
-    background: linear-gradient(90deg, #ff0080, #7928ca);
+/* Album title & info */
+.album-card h3 {
     color: #fff;
-    font-weight: bold;
+    font-size: 1.7rem; /* Bigger font */
+    margin: 10px 0 5px;
+}
+
+.album-card p {
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 1.05rem;
+}
+
+/* Play button centered */
+.album-card .play-btn {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(255, 0, 85, 0.3);
     border: none;
-    border-radius: 8px;
+    padding: 16px 20px; /* Slightly bigger */
+    border-radius: 50%;
+    color: #fff;
     cursor: pointer;
-    text-align: center;
     transition: transform 0.3s ease, background 0.3s ease;
 }
 
-.album-card .rate-btn:hover {
-    transform: scale(1.05);
-    background: linear-gradient(90deg, #ff3399, #a14dd9);
+.album-card .play-btn:hover {
+    background: rgba(255, 0, 85, 0.6);
+    transform: scale(1.3); /* Pop effect */
 }
 
 
