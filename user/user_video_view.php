@@ -336,16 +336,10 @@ $videos = mysqli_query($conn, $query);
                 <p class="title"><?= htmlspecialchars($row['title']) ?></p>
                 
                 <div class="meta-info">
-    <span class="album-tag">Album: <?= htmlspecialchars($row['album']) ?></span>
-    <span class="year-tag">Year: <?= htmlspecialchars($row['year']) ?></span>
-    <span class="album-id-tag">Album ID: <?= htmlspecialchars($row['album_id']) ?></span>
-    <span class="genre-tag">Genre: <?= htmlspecialchars($row['genre']) ?></span>
-    <span class="duration-tag">Duration: <?= htmlspecialchars($row['duration']) ?></span>
-    <span class="desc-tag">Description: <?= htmlspecialchars($row['description']) ?></span>
-    <span class="created-tag">Uploaded: <?= date('d M Y', strtotime($row['created_at'])) ?></span>
-    
-</div>
-
+                    <span class="artist-tag"><?= htmlspecialchars($row['artist']) ?></span>
+                    <span><?= htmlspecialchars($row['album']) ?></span>
+                    <span><?= htmlspecialchars($row['year']) ?></span>
+                </div>
 
                 <div class="stars-display">
                     <?php for ($i = 1; $i <= 5; $i++) echo ($i <= $avg) ? '★' : '☆'; ?>
