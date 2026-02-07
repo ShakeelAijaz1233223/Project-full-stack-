@@ -158,7 +158,6 @@ $albums = mysqli_query($conn, $query);
             padding: 9px;
             border-radius: 50%;
             color: #fff;
-            font-size: 24px;
             cursor: pointer;
             transition: transform 0.3s ease, background 0.3s ease;
             z-index: 5;
