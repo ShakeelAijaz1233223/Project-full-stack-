@@ -159,8 +159,9 @@ $albums = mysqli_query($conn, $query);
 /* Optional: Play button overlay */
 .album-card .play-btn {
     position: absolute;
-    bottom: 20px;
-    right: 20px;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%); /* perfectly centers it */
     background: rgba(255, 0, 85, 0.3);
     border: none;
     padding: 12px 16px;
@@ -169,6 +170,7 @@ $albums = mysqli_query($conn, $query);
     cursor: pointer;
     transition: transform 0.3s ease, background 0.3s ease;
 }
+
 
 .album-card .play-btn:hover {
     background: rgba(255, 0, 85, 0.6);
