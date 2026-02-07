@@ -1,300 +1,272 @@
 <?php
 include "../config/db.php";
 
-// 1. DYNAMIC DELETE LOGIC
+// DELETE LOGIC
 if (isset($_GET['delete'])) {
     $id = (int)$_GET['delete'];
-    $delete_query = mysqli_query($conn, "DELETE FROM reviews WHERE id = $id");
+    $delete = mysqli_query($conn, "DELETE FROM reviews WHERE id = $id");
 
-    if ($delete_query) {
-        $current_page = basename($_SERVER['PHP_SELF']);
-        header("Location: $current_page?status=deleted");
+    if ($delete) {
+        $current_file = basename($_SERVER['PHP_SELF']);
+        header("Location: $current_file?status=deleted");
         exit();
     }
 }
 
-// 2. FETCH REVIEWS
-$query = "SELECT reviews.*, music.title as music_title 
+// FETCH MUSIC REVIEWS
+$query = "SELECT reviews.*, music.title AS music_title 
           FROM reviews 
           JOIN music ON reviews.music_id = music.id 
-          ORDER BY reviews.id DESC";
-$res = mysqli_query($conn, $query);
+          ORDER BY reviews.created_at DESC";
+$result = mysqli_query($conn, $query);
 ?>
 
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Premium Admin | Manage Reviews</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;700&display=swap');
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin | Music Reviews</title>
 
-        :root {
-            --bg-dark: #050505;
-            --card-bg: #0f0f0f;
-            --accent: #ff0055;
-            --accent-glow: rgba(255, 0, 85, 0.4);
-            --border: #222;
-        }
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
 
-        body {
-            background: var(--bg-dark);
-            color: #eee;
-            font-family: 'Plus Jakarta Sans', sans-serif;
-            padding: 40px 20px;
-            -webkit-font-smoothing: antialiased;
-        }
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;700&display=swap');
 
-        /* Header Section */
-        .page-header {
-            margin-bottom: 40px;
-        }
+:root {
+    --bg-dark: #050505;
+    --card-bg: #0f0f0f;
+    --accent: #ff0055;
+    --accent-glow: rgba(255, 0, 85, 0.4);
+    --border: #222;
+}
 
-        .page-title {
-            font-weight: 800;
-            letter-spacing: -1px;
-            font-size: 1.85rem;
-        }
+body {
+    background-color: var(--bg-dark);
+    color: #e0e0e0;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+}
 
-        .accent-text {
-            color: var(--accent);
-            text-shadow: 0 0 20px var(--accent-glow);
-        }
+/* Header */
+.admin-wrapper {
+    padding: 40px 0;
+}
 
-        /* Card & Table Styling */
-        .admin-card {
-            background: var(--card-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 24px;
-            overflow: hidden;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.8);
-        }
+.page-title {
+    font-weight: 800;
+    font-size: 1.8rem;
+    letter-spacing: -1px;
+}
 
-        .table {
-            margin-bottom: 0;
-            border-collapse: separate;
-            border-spacing: 0;
-        }
+.accent-glow {
+    color: var(--accent);
+    text-shadow: 0 0 15px var(--accent-glow);
+}
 
-        .table thead th {
-            background: #181818;
-            color: #666;
-            font-size: 0.72rem;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 1.8px;
-            padding: 22px;
-            border: none;
-        }
+.dash-btn {
+    background: #151515;
+    border: 1px solid var(--border);
+    color: #fff;
+    padding: 8px 20px;
+    border-radius: 12px;
+    transition: 0.3s;
+    text-decoration: none;
+    font-size: 0.85rem;
+    font-weight: 600;
+}
 
-        .table tbody td {
-            padding: 24px 22px;
-            border-bottom: 1px solid var(--border-color);
-            vertical-align: middle;
-            transition: all 0.2s ease-in-out;
-        }
+.dash-btn:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+}
 
-        .table tbody tr:hover td {
-            background: #161616;
-        }
+/* Alert */
+.alert-modern {
+    background: rgba(25, 135, 84, 0.1);
+    border: 1px solid rgba(25, 135, 84, 0.2);
+    color: #2ecc71;
+    border-radius: 14px;
+    font-size: 0.9rem;
+}
 
-        /* Rating Stars */
-        .rating-star {
-            color: #ffca08;
-            font-size: 1rem;
-            letter-spacing: 2px;
-            text-shadow: 0 0 10px rgba(255, 202, 8, 0.2);
-        }
+/* Card */
+.glass-card {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 24px;
+    overflow: hidden;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+}
 
-        .star-empty {
-            color: #2a2a2a;
-        }
+.table thead th {
+    background: #161616;
+    color: #666;
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 1.2px;
+    padding: 20px;
+    border: none;
+}
 
-        .rating-badge {
-            background: rgba(255, 202, 8, 0.08);
-            color: #ffca08;
-            font-weight: 700;
-            border: 1px solid rgba(255, 202, 8, 0.15);
-            border-radius: 6px;
-            padding: 4px 10px;
-        }
+.table tbody td {
+    padding: 20px;
+    border-bottom: 1px solid #1a1a1a;
+    vertical-align: middle;
+}
 
-        /* Action Buttons */
-        .btn-delete {
-            height: 42px;
-            width: 42px;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            background: rgba(255, 68, 68, 0.05);
-            color: #ff4444;
-            border: 1px solid rgba(255, 68, 68, 0.15);
-            border-radius: 14px;
-            transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            cursor: pointer;
-        }
+.table tbody tr:hover td {
+    background: #141414;
+}
 
-        .btn-delete:hover {
-            background: #ff4444;
-            color: #fff;
-            transform: translateY(-3px) scale(1.05);
-            box-shadow: 0 10px 20px rgba(255, 68, 68, 0.3);
-        }
+/* Rating */
+.stars {
+    color: #ffca08;
+    font-size: 0.9rem;
+}
 
-        /* Modern Success Alert */
-        .status-alert {
-            background: rgba(40, 167, 69, 0.08);
-            border: 1px solid rgba(40, 167, 69, 0.2);
-            color: #28a745;
-            padding: 18px 26px;
-            border-radius: 18px;
-            margin-bottom: 35px;
-            display: flex;
-            align-items: center;
-            backdrop-filter: blur(12px);
-            animation: slideDown 0.5s cubic-bezier(0.23, 1, 0.32, 1);
-        }
+.star-off {
+    color: #222;
+}
 
-        @keyframes slideDown {
-            from {
-                opacity: 0;
-                transform: translateY(-20px);
-            }
+.rating-num {
+    background: #1a1a1a;
+    color: #888;
+    font-size: 0.7rem;
+    padding: 2px 8px;
+    border-radius: 5px;
+    margin-top: 5px;
+    display: inline-block;
+}
 
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
+/* Comment */
+.comment-box {
+    color: #999;
+    font-size: 0.85rem;
+    line-height: 1.6;
+    max-width: 340px;
+}
 
-        .dashboard-btn {
-            background: #1a1a1a;
-            border: 1px solid var(--border-color);
-            color: #999;
-            padding: 12px 24px;
-            border-radius: 14px;
-            font-weight: 600;
-            font-size: 0.9rem;
-            transition: all 0.3s ease;
-        }
+/* Delete Button */
+.btn-trash {
+    width: 40px;
+    height: 40px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 68, 68, 0.05);
+    color: #ff4444;
+    border: 1px solid rgba(255, 68, 68, 0.15);
+    border-radius: 12px;
+    transition: 0.3s;
+    text-decoration: none;
+}
 
-        .dashboard-btn:hover {
-            background: #fff;
-            color: #000;
-            border-color: #fff;
-            transform: translateY(-2px);
-        }
-
-        .track-title {
-            color: #fff;
-            font-size: 1rem;
-            font-weight: 600;
-            margin-bottom: 2px;
-        }
-
-        .track-uid {
-            font-family: 'Courier New', Courier, monospace;
-            letter-spacing: 0.5px;
-            opacity: 0.6;
-        }
-    </style>
+.btn-trash:hover {
+    background: #ff4444;
+    color: #fff;
+    transform: translateY(-3px);
+    box-shadow: 0 10px 20px rgba(255,68,68,0.3);
+}
+</style>
 </head>
 
 <body>
 
-    <div class="container-fluid px-lg-5">
-        <div class="page-header d-flex justify-content-between align-items-center">
-            <div>
-                <h1 class="page-title m-0 text-uppercase">User <span class="accent-text">Reviews</span></h1>
-                <p class="text-muted small mt-2">Moderation panel for music feedback and ratings.</p>
-            </div>
-            <a href="dashboard.php" class="dashboard-btn text-decoration-none">
-                <i class="bi bi-grid-1x2-fill me-2 small"></i> Admin Panel
-            </a>
+<div class="container admin-wrapper">
+
+    <div class="d-flex justify-content-between align-items-center mb-5">
+        <div>
+            <h3 class="page-title m-0">USER <span class="accent-glow">REVIEWS</span></h3>
+            <p class="text-muted small m-0 mt-1">Moderation panel for music feedback and ratings.</p>
         </div>
+        <a href="dashboard.php" class="dash-btn">
+            <i class="bi bi-grid-fill me-2"></i>Dashboard
+        </a>
+    </div>
 
-        <?php if (isset($_GET['status']) && $_GET['status'] == 'deleted'): ?>
-            <div class="status-alert shadow-sm alert-dismissible fade show" role="alert">
-                <i class="bi bi-shield-check fs-4 me-3"></i>
-                <div>
-                    <span class="fw-bold">Database Updated</span> &mdash; The specific review record has been purged.
-                </div>
-                <button type="button" class="btn-close btn-close-white ms-auto" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
-        <?php endif; ?>
+    <?php if (isset($_GET['status']) && $_GET['status'] == 'deleted'): ?>
+        <div class="alert alert-modern alert-dismissible fade show mb-4">
+            <i class="bi bi-shield-check me-2"></i>
+            Review record has been purged successfully.
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="alert"></button>
+        </div>
+    <?php endif; ?>
 
-        <div class="admin-card">
-            <div class="table-responsive">
-                <table class="table table-dark">
-                    <thead>
-                        <tr>
-                            <th style="width: 25%;">Music Track</th>
-                            <th style="width: 15%;">Rating Analysis</th>
-                            <th style="width: 35%;">Commentary</th>
-                            <th style="width: 15%;">Publication Date</th>
-                            <th style="width: 10%;" class="text-center">Action</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <?php if (mysqli_num_rows($res) > 0): ?>
-                            <?php while ($row = mysqli_fetch_assoc($res)): ?>
-                                <tr>
-                                    <td>
-                                        <div class="track-title"><?= htmlspecialchars($row['music_title']) ?></div>
-                                        <code class="track-uid text-muted small">ID: #<?= str_pad($row['id'], 4, '0', STR_PAD_LEFT) ?></code>
-                                    </td>
-                                    <td>
-                                        <div class="rating-star mb-2">
-                                            <?php
-                                            for ($i = 1; $i <= 5; $i++) {
-                                                if ($i <= $row['rating']) echo '★';
-                                                else echo '<span class="star-empty">★</span>';
-                                            }
-                                            ?>
-                                        </div>
-                                        <span class="rating-badge small"><?= $row['rating'] ?>.0 / 5.0</span>
-                                    </td>
-                                    <td>
-                                        <div style="max-width: 400px; font-size: 0.9rem; line-height: 1.7; color: #bbb; font-weight: 300;">
-                                            <i class="bi bi-chat-left-text me-2 opacity-25"></i>
-                                            "<?= htmlspecialchars($row['comment']) ?>"
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <div class="text-muted small d-flex align-items-center">
-                                            <i class="bi bi-calendar4-event me-2 text-secondary"></i>
-                                            <?= date('M d, Y', strtotime($row['created_at'])) ?>
-                                        </div>
-                                    </td>
-                                    <td class="text-center">
-                                        <a href="<?= basename($_SERVER['PHP_SELF']) ?>?delete=<?= $row['id'] ?>"
-                                            onclick="return confirm('Attention: Are you sure you want to delete this feedback permanently?')"
-                                            class="btn-delete text-decoration-none"
-                                            title="Delete Review">
-                                            <i class="bi bi-trash3-fill"></i>
-                                        </a>
-                                    </td>
-                                </tr>
-                            <?php endwhile; ?>
-                        <?php else: ?>
-                            <tr>
-                                <td colspan="5" class="text-center py-5">
-                                    <div class="opacity-10 mb-3"><i class="bi bi-database-exclamation display-2"></i></div>
-                                    <p class="text-muted fw-light">The moderation queue is currently empty.</p>
-                                </td>
-                            </tr>
-                        <?php endif; ?>
-                    </tbody>
-                </table>
-            </div>
+    <div class="glass-card">
+        <div class="table-responsive">
+            <table class="table table-dark mb-0">
+                <thead>
+                    <tr>
+                        <th>Music Track</th>
+                        <th>Rating Analysis</th>
+                        <th>Commentary</th>
+                        <th>Publication Date</th>
+                        <th class="text-center">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+
+                <?php if (mysqli_num_rows($result) > 0): ?>
+                <?php while ($row = mysqli_fetch_assoc($result)): ?>
+
+                <tr>
+                    <td>
+                        <div class="fw-bold text-white"><?= htmlspecialchars($row['music_title']) ?></div>
+                        <code class="text-muted small">REF: #<?= $row['id'] ?></code>
+                    </td>
+
+                    <td>
+                        <div class="stars">
+                            <?php
+                            for ($i=1; $i<=5; $i++)
+                                echo ($i <= $row['rating']) ? '★' : '<span class="star-off">★</span>';
+                            ?>
+                        </div>
+                        <span class="rating-num"><?= $row['rating'] ?>.0 / 5.0</span>
+                    </td>
+
+                    <td>
+                        <div class="comment-box text-truncate" title="<?= htmlspecialchars($row['comment']) ?>">
+                            <i class="bi bi-chat-left-text me-1 opacity-25"></i>
+                            <?= htmlspecialchars($row['comment']) ?>
+                        </div>
+                    </td>
+
+                    <td>
+                        <div class="text-muted small">
+                            <i class="bi bi-calendar3 me-2"></i>
+                            <?= date('d M, Y', strtotime($row['created_at'])) ?>
+                        </div>
+                    </td>
+
+                    <td class="text-center">
+                        <a href="<?= basename($_SERVER['PHP_SELF']) ?>?delete=<?= $row['id'] ?>"
+                           class="btn-trash"
+                           onclick="return confirm('Purge this review from database?')">
+                            <i class="bi bi-trash3-fill"></i>
+                        </a>
+                    </td>
+                </tr>
+
+                <?php endwhile; ?>
+                <?php else: ?>
+
+                <tr>
+                    <td colspan="5" class="text-center py-5 text-muted">
+                        No music reviews available to moderate.
+                    </td>
+                </tr>
+
+                <?php endif; ?>
+
+                </tbody>
+            </table>
         </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-</body>
+</div>
 
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
 </html>
