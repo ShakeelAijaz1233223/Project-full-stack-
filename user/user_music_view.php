@@ -83,6 +83,48 @@ body { background: var(--bg); color: #fff; font-family: 'Inter', sans-serif; mar
 .star-rating label:hover, .star-rating label:hover~label, .star-rating input:checked~label { color:#ffca08; }
 
 footer { text-align:center; padding:40px; font-size:0.7rem; color:#444; }
+.disc-wrapper {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 16/9; /* Keeps 16:9 shape */
+    border-radius: 10px;
+    overflow: hidden;
+    background: #000;
+}
+
+.album-cover {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Makes the image fully cover the wrapper */
+    object-position: center; /* Center the image */
+    display: block;
+}
+
+.play-btn {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    border: none;
+    background: linear-gradient(45deg, #ff0055, #ff5e00);
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 0 15px #ff0055;
+    opacity: 0;
+    transition: transform 0.3s, opacity 0.3s;
+}
+
+.disc-wrapper:hover .play-btn {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1.1);
+}
+
 </style>
 </head>
 <body>
