@@ -268,9 +268,12 @@ $music = mysqli_query($conn, $query);
 
         <div class="grid" id="musicGrid">
             <?php while ($row = mysqli_fetch_assoc($music)): 
-                $avg = round((float)$row['avg_rating'], 1);
-                $coverPath = "../admin/uploads/music_covers/" . ($row['cover'] ? $row['cover'] : 'default.jpg');
-            ?>
+    $avg = round((float)$row['avg_rating'], 1);
+    $coverPath = "../admin/uploads/music_covers/" . ($row['cover'] ?? 'default.jpg');
+?>
+    <img src="<?= $coverPath ?>" alt="Music Cover">
+<?php endwhile; ?>
+
                 <div class="music-card" data-search="<?= strtolower($row['title'] . ' ' . $row['artist']); ?>">
                     <div class="media-wrapper">
                         <img src="<?= $coverPath ?>" class="cover-img" alt="Cover">
