@@ -302,7 +302,7 @@ if (isset($_SESSION['email']) && isset($conn)) {
         .hero-overlay {
             position: absolute;
             inset: 0;
-            background: linear-gradient(to bottom, rgba(5, 5, 5, 0.3), var(--bg-dark));
+            background: url("music_img.jpg");
         }
 
         .hero-content {
