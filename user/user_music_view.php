@@ -120,10 +120,10 @@ footer { text-align:center; padding:40px; font-size:0.7rem; color:#444; }
     transition: transform 0.3s, opacity 0.3s;
 }
 
-.disc-wrapper:hover .play-btn {
+/* .disc-wrapper:hover .play-btn {
     opacity: 1;
     transform: translate(-50%, -50%) scale(1.1);
-}
+} */
 
 </style>
 </head>
@@ -148,7 +148,7 @@ footer { text-align:center; padding:40px; font-size:0.7rem; color:#444; }
                 <button class="play-btn"><i class="bi bi-play-fill"></i></button>
                 <div class="disc-wrapper">
     <div class="disc-wrapper">
-    <img src="/mnt/data/4aff8e5a-1a82-4eb5-8a90-96634f72fee0.png" alt="Music Cover" class="album-cover">
+    <img src="music_img.jpg" alt="Music Cover" class="album-cover">
     <button class="play-btn"><i class="bi bi-play-fill"></i></button>
 </div>
 
