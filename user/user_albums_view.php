@@ -357,52 +357,54 @@ $albums = mysqli_query($conn, $query);
     </div>
 
     <footer>&copy; 2026 ALBUMS STUDIO &bull; SOUND SYSTEM</footer>
+<script>
+    // Search
+    document.getElementById("search").addEventListener("input", function() {
+        let val = this.value.toLowerCase().trim();
+        document.querySelectorAll(".album-card").forEach(card => {
+            let text = card.dataset.title + card.dataset.artist;
+            card.style.display = text.includes(val) ? "block" : "none";
+        });
+    });
 
-    <script>
-        // Search
-        document.getElementById("search").addEventListener("input", function() {
-            let val = this.value.toLowerCase().trim();
-            document.querySelectorAll(".album-card").forEach(card => {
-                let text = card.dataset.title + card.dataset.artist;
-                card.style.display = text.includes(val) ? "block" : "none";
-            });
+    // Review Modal Functions
+    function popReview(id, title) {
+        document.getElementById('popId').value = id;
+        document.getElementById('popTitle').innerText = title;
+        document.getElementById('reviewOverlay').style.display = 'flex';
+    }
+
+    function closePop() {
+        document.getElementById('reviewOverlay').style.display = 'none';
+    }
+
+    // Fixed Media Toggle
+    function togglePlay(id, btn) {
+        const video = document.getElementById('vid-' + id);
+        const audio = document.getElementById('aud-' + id);
+        const icon = btn.querySelector('i');
+
+        // Pause all other videos and audios
+        document.querySelectorAll('video, audio').forEach(media => {
+            if (media !== video && media !== audio) {
+                media.pause();
+            }
         });
 
-        // Review Modal Functions
-        function popReview(id, title) {
-            document.getElementById('popId').value = id;
-            document.getElementById('popTitle').innerText = title;
-            document.getElementById('reviewOverlay').style.display = 'flex';
+        // Play/Pause logic
+        if (video && video.paused) {
+            video.muted = false; // allow sound
+            video.play();
+            if (audio) audio.play();
+            icon.className = 'bi bi-pause-fill';
+        } else if (video) {
+            video.pause();
+            if (audio) audio.pause();
+            icon.className = 'bi bi-play-fill';
         }
+    }
+</script>
 
-        function closePop() {
-            document.getElementById('reviewOverlay').style.display = 'none';
-        }
-
-        // Media Toggle
-        function togglePlay(id, btn) {
-            const audio = document.getElementById('aud-' + id);
-            const video = document.getElementById('vid-' + id);
-            const icon = btn.querySelector('i');
-
-            document.querySelectorAll('audio, video').forEach(m => {
-                if (m !== audio && m !== video) m.pause();
-            });
-
-            if (audio.paused) {
-                audio.play();
-                if (video) {
-                    video.muted = true;
-                    video.play();
-                }
-                icon.className = 'bi bi-pause-fill';
-            } else {
-                audio.pause();
-                if (video) video.pause();
-                icon.className = 'bi bi-play-fill';
-            }
-        }
-    </script>
 </body>
 
 </html>
