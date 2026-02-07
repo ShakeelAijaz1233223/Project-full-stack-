@@ -255,6 +255,12 @@ footer {
                         <video id="vid-<?= $row['id'] ?>" loop muted playsinline>
                             <source src="../admin/uploads/videos/<?= $row['file'] ?>" type="video/mp4">
                         </video>
+                        <button class="play-btn"><i class="bi bi-play-fill"></i></button>
+                            <div class="custom-controls">
+                                <input type="range" class="progress" min="0" max="100" value="0">
+                                <button class="mute-btn"><i class="bi bi-volume-up"></i></button>
+                                <button class="fullscreen-btn"><i class="bi bi-arrows-fullscreen"></i></button>
+                            </div>
                         <button class="play-btn" onclick="toggleVideo('<?= $row['id'] ?>', this)">
                             <i class="bi bi-play-fill"></i>
                         </button>
