@@ -107,6 +107,30 @@ $videos = mysqli_query($conn, $query);
             object-fit: cover;
         }
 
+          .btn-back,
+        .btn-delete,
+        .btn-edit {
+            background: #1a1a1a;
+            border: 1px solid #222;
+            color: #fff;
+            padding: 6px 12px;
+            border-radius: 4px;
+            font-size: 0.85rem;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            transition: 0.3s ease;
+        }
+
+        .btn-back:hover,
+        .btn-delete:hover,
+        .btn-edit:hover {
+            background: #222;
+            border-color: var(--accent);
+            color: #fff;
+        }
+
         .play-btn {
             position: absolute;
             top: 50%;
