@@ -1,5 +1,5 @@
 <?php
-session_start();
+// session_start();
 include "../config/db.php";
 
 // 1. Handle Delete Review
