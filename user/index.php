@@ -12,11 +12,11 @@ function getMediaImage($fileName, $type)
     // Define base paths
     $musicPath = "../admin/uploads/music_covers/";
     $videoPath = "../admin/uploads/video_thumbnails/";
-    
+
     if ($type == 'music') {
         $fullPath = $musicPath . $fileName;
         // Fallback for music
-        $default = "https://images.unsplash.com/photo-1614613535308-eb5fbd3d2c17?q=80&w=600&auto=format&fit=crop"; 
+        $default = "https://images.unsplash.com/photo-1614613535308-eb5fbd3d2c17?q=80&w=600&auto=format&fit=crop";
     } else {
         $fullPath = $videoPath . $fileName;
         // Fallback for video
@@ -60,17 +60,21 @@ if (isset($_SESSION['email']) && isset($conn)) {
     <!-- Icons & Fonts -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Syncopate:wght@400;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    
+
     <!-- Animate.css for entrance animations -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
 
     <style>
         :root {
-            --primary: #ff0055;       /* Neon Pink */
+            --primary: #ff0055;
+            /* Neon Pink */
             --primary-hover: #d90049;
-            --secondary: #00d4ff;     /* Cyan */
-            --bg-dark: #050505;       /* Deep Black */
-            --bg-card: #0f0f0f;       /* Dark Grey */
+            --secondary: #00d4ff;
+            /* Cyan */
+            --bg-dark: #050505;
+            /* Deep Black */
+            --bg-card: #0f0f0f;
+            /* Dark Grey */
             --text-main: #ffffff;
             --text-muted: #888888;
             --glass: rgba(255, 255, 255, 0.05);
@@ -80,45 +84,97 @@ if (isset($_SESSION['email']) && isset($conn)) {
         }
 
         /* --- GLOBAL RESET --- */
-        * { margin: 0; padding: 0; box-sizing: border-box; scroll-behavior: smooth; }
-        
-        body { 
-            background-color: var(--bg-dark); 
-            color: var(--text-main); 
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            scroll-behavior: smooth;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-main);
             font-family: var(--font-body);
             overflow-x: hidden;
         }
 
         /* Scrollbar Styling */
-        ::-webkit-scrollbar { width: 8px; }
-        ::-webkit-scrollbar-track { background: var(--bg-dark); }
-        ::-webkit-scrollbar-thumb { background: var(--primary); border-radius: 4px; }
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
 
-        a { text-decoration: none; color: inherit; transition: 0.3s; }
-        ul { list-style: none; }
+        ::-webkit-scrollbar-track {
+            background: var(--bg-dark);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--primary);
+            border-radius: 4px;
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+            transition: 0.3s;
+        }
+
+        ul {
+            list-style: none;
+        }
 
         /* --- UTILITIES --- */
-        .container { max-width: 1400px; margin: 0 auto; padding: 0 5%; }
-        .section-padding { padding: 100px 0; }
-        .text-center { text-align: center; }
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 5%;
+        }
+
+        .section-padding {
+            padding: 100px 0;
+        }
+
+        .text-center {
+            text-align: center;
+        }
+
         .gradient-text {
             background: linear-gradient(to right, #fff, #888);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
-        .highlight { color: var(--primary); }
-        
+
+        .highlight {
+            color: var(--primary);
+        }
+
         /* Flashing Animation for New Items (Requirement) */
         @keyframes flash {
-            0% { opacity: 1; transform: scale(1); }
-            50% { opacity: 0.5; transform: scale(1.1); }
-            100% { opacity: 1; transform: scale(1); }
+            0% {
+                opacity: 1;
+                transform: scale(1);
+            }
+
+            50% {
+                opacity: 0.5;
+                transform: scale(1.1);
+            }
+
+            100% {
+                opacity: 1;
+                transform: scale(1);
+            }
         }
+
         .flash-badge {
-            position: absolute; top: 10px; right: 10px;
-            background: var(--primary); color: white;
-            padding: 4px 10px; border-radius: 4px;
-            font-size: 10px; font-weight: 800;
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: var(--primary);
+            color: white;
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 10px;
+            font-weight: 800;
             z-index: 10;
             animation: flash 2s infinite;
             box-shadow: 0 0 10px var(--primary);
@@ -126,126 +182,342 @@ if (isset($_SESSION['email']) && isset($conn)) {
 
         /* Scroll Reveal Animation */
         .reveal {
-            opacity: 0; transform: translateY(30px); transition: all 0.8s ease-out;
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s ease-out;
         }
-        .reveal.active { opacity: 1; transform: translateY(0); }
+
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
 
         /* --- HEADER --- */
         header {
-            position: fixed; top: 0; width: 100%; z-index: 1000;
-            background: rgba(5, 5, 5, 0.85); backdrop-filter: blur(20px);
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+            background: rgba(5, 5, 5, 0.85);
+            backdrop-filter: blur(20px);
             border-bottom: 1px solid var(--border-glass);
-            padding: 20px 0; transition: 0.3s;
+            padding: 20px 0;
+            transition: 0.3s;
         }
-        .nav-wrapper { display: flex; justify-content: space-between; align-items: center; }
-        
-        .logo { font-family: var(--font-head); font-size: 24px; font-weight: 700; letter-spacing: 2px; }
-        .logo span { color: var(--primary); }
 
-        .nav-links { display: flex; gap: 30px; }
-        .nav-links a { 
-            font-size: 12px; font-weight: 600; text-transform: uppercase; 
-            letter-spacing: 1px; color: rgba(255,255,255,0.7); 
+        .nav-wrapper {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
-        .nav-links a:hover, .nav-links a.active { color: var(--primary); }
+
+        .logo {
+            font-family: var(--font-head);
+            font-size: 24px;
+            font-weight: 700;
+            letter-spacing: 2px;
+        }
+
+        .logo span {
+            color: var(--primary);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 30px;
+        }
+
+        .nav-links a {
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .nav-links a:hover,
+        .nav-links a.active {
+            color: var(--primary);
+        }
 
         .user-btn {
-            padding: 8px 20px; background: var(--glass); 
-            border: 1px solid var(--border-glass); border-radius: 50px;
-            font-size: 12px; font-weight: 700; display: flex; align-items: center; gap: 8px;
+            padding: 8px 20px;
+            background: var(--glass);
+            border: 1px solid var(--border-glass);
+            border-radius: 50px;
+            font-size: 12px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
-        .user-btn:hover { background: var(--primary); border-color: var(--primary); }
+
+        .user-btn:hover {
+            background: var(--primary);
+            border-color: var(--primary);
+        }
 
         /* --- HERO SECTION --- */
         .hero {
-            height: 100vh; position: relative; overflow: hidden;
-            display: flex; align-items: center; justify-content: center;
+            height: 100vh;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             background: url('https://images.unsplash.com/photo-1514525253440-b393452e23f9?q=80&w=1920&auto=format&fit=crop') no-repeat center center/cover;
         }
+
         .hero-overlay {
-            position: absolute; inset: 0;
-            background: linear-gradient(to bottom, rgba(5,5,5,0.3), var(--bg-dark));
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to bottom, rgba(5, 5, 5, 0.3), var(--bg-dark));
         }
-        .hero-content { position: relative; z-index: 2; text-align: center; max-width: 800px; }
-        
-        .hero-subtitle { 
-            font-size: 14px; text-transform: uppercase; letter-spacing: 6px; 
-            color: var(--secondary); margin-bottom: 20px; display: block;
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+            max-width: 800px;
         }
+
+        .hero-subtitle {
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 6px;
+            color: var(--secondary);
+            margin-bottom: 20px;
+            display: block;
+        }
+
         .hero-title {
-            font-family: var(--font-head); font-size: clamp(40px, 8vw, 80px);
-            line-height: 1.1; margin-bottom: 30px; text-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            font-family: var(--font-head);
+            font-size: clamp(40px, 8vw, 80px);
+            line-height: 1.1;
+            margin-bottom: 30px;
+            text-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
         }
+
         .hero-desc {
-            font-size: 18px; color: rgba(255,255,255,0.8); margin-bottom: 40px; line-height: 1.6;
+            font-size: 18px;
+            color: rgba(255, 255, 255, 0.8);
+            margin-bottom: 40px;
+            line-height: 1.6;
         }
-        .cta-group { display: flex; gap: 20px; justify-content: center; }
-        
+
+        .cta-group {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+        }
+
         .btn {
-            padding: 15px 40px; border-radius: 50px; font-weight: 700; 
-            text-transform: uppercase; font-size: 12px; letter-spacing: 2px;
-            transition: 0.3s; cursor: pointer; border: none;
+            padding: 15px 40px;
+            border-radius: 50px;
+            font-weight: 700;
+            text-transform: uppercase;
+            font-size: 12px;
+            letter-spacing: 2px;
+            transition: 0.3s;
+            cursor: pointer;
+            border: none;
         }
-        .btn-primary { background: var(--primary); color: #fff; box-shadow: 0 10px 20px rgba(255,0,85,0.3); }
-        .btn-primary:hover { transform: translateY(-3px); box-shadow: 0 15px 30px rgba(255,0,85,0.5); }
-        .btn-outline { background: transparent; border: 1px solid rgba(255,255,255,0.3); color: #fff; }
-        .btn-outline:hover { background: #fff; color: #000; }
+
+        .btn-primary {
+            background: var(--primary);
+            color: #fff;
+            box-shadow: 0 10px 20px rgba(255, 0, 85, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 30px rgba(255, 0, 85, 0.5);
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: #fff;
+        }
+
+        .btn-outline:hover {
+            background: #fff;
+            color: #000;
+        }
 
         /* --- ABOUT / MISSION (From Doc) --- */
-        .about-section { position: relative; background: #080808; }
-        .about-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: center; }
-        .about-img { 
-            width: 100%; height: 500px; border-radius: 20px; overflow: hidden; 
-            position: relative; border: 1px solid var(--border-glass);
+        .about-section {
+            position: relative;
+            background: #080808;
         }
-        .about-img img { width: 100%; height: 100%; object-fit: cover; transition: 0.5s; }
-        .about-img:hover img { transform: scale(1.05); }
 
-        .section-header h2 { font-family: var(--font-head); font-size: 32px; margin-bottom: 20px; }
-        .section-header p { color: var(--text-muted); line-height: 1.8; margin-bottom: 20px; font-size: 15px; }
-        
-        /* --- FEATURES GRID (From Problem Statement) --- */
-        .features-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 30px; margin-top: 50px; }
-        .feature-box {
-            background: var(--glass); padding: 30px; border-radius: 15px;
-            border: 1px solid var(--border-glass); transition: 0.3s;
+        .about-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+            align-items: center;
         }
-        .feature-box:hover { background: rgba(255,255,255,0.08); transform: translateY(-10px); }
-        .feature-icon { font-size: 30px; color: var(--secondary); margin-bottom: 20px; }
-        .feature-box h4 { font-size: 18px; margin-bottom: 10px; font-weight: 700; }
-        .feature-box p { font-size: 13px; color: var(--text-muted); line-height: 1.6; }
+
+        .about-img {
+            width: 100%;
+            height: 500px;
+            border-radius: 20px;
+            overflow: hidden;
+            position: relative;
+            border: 1px solid var(--border-glass);
+        }
+
+        .about-img img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: 0.5s;
+        }
+
+        .about-img:hover img {
+            transform: scale(1.05);
+        }
+
+        .section-header h2 {
+            font-family: var(--font-head);
+            font-size: 32px;
+            margin-bottom: 20px;
+        }
+
+        .section-header p {
+            color: var(--text-muted);
+            line-height: 1.8;
+            margin-bottom: 20px;
+            font-size: 15px;
+        }
+
+        /* --- FEATURES GRID (From Problem Statement) --- */
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+            margin-top: 50px;
+        }
+
+        .feature-box {
+            background: var(--glass);
+            padding: 30px;
+            border-radius: 15px;
+            border: 1px solid var(--border-glass);
+            transition: 0.3s;
+        }
+
+        .feature-box:hover {
+            background: rgba(255, 255, 255, 0.08);
+            transform: translateY(-10px);
+        }
+
+        .feature-icon {
+            font-size: 30px;
+            color: var(--secondary);
+            margin-bottom: 20px;
+        }
+
+        .feature-box h4 {
+            font-size: 18px;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .feature-box p {
+            font-size: 13px;
+            color: var(--text-muted);
+            line-height: 1.6;
+        }
 
         /* --- MUSIC & VIDEO CARDS --- */
         .media-scroller {
-            display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 30px;
-        }
-        .media-card {
-            background: var(--bg-card); border-radius: 16px; overflow: hidden;
-            transition: 0.4s; position: relative; group;
-        }
-        .media-card:hover { transform: translateY(-10px); box-shadow: 0 20px 40px rgba(0,0,0,0.4); }
-        
-        .card-img { position: relative; aspect-ratio: 1/1; overflow: hidden; }
-        .card-img.video { aspect-ratio: 16/9; }
-        
-        .card-img img { width: 100%; height: 100%; object-fit: cover; transition: 0.5s; }
-        .media-card:hover .card-img img { transform: scale(1.1); }
-        
-        .play-overlay {
-            position: absolute; inset: 0; background: rgba(0,0,0,0.5);
-            display: flex; align-items: center; justify-content: center;
-            opacity: 0; transition: 0.3s;
-        }
-        .media-card:hover .play-overlay { opacity: 1; }
-        .play-btn {
-            width: 50px; height: 50px; background: var(--primary); border-radius: 50%;
-            display: flex; align-items: center; justify-content: center; color: #fff;
-            font-size: 18px; box-shadow: 0 0 20px var(--primary);
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 30px;
         }
 
-        .card-info { padding: 15px; }
-        .card-title { font-weight: 700; font-size: 16px; margin-bottom: 5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .card-meta { font-size: 12px; color: var(--text-muted); display: flex; justify-content: space-between; }
+        .media-card {
+            background: var(--bg-card);
+            border-radius: 16px;
+            overflow: hidden;
+            transition: 0.4s;
+            position: relative;
+            group;
+        }
+
+        .media-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+        }
+
+        .card-img {
+            position: relative;
+            aspect-ratio: 1/1;
+            overflow: hidden;
+        }
+
+        .card-img.video {
+            aspect-ratio: 16/9;
+        }
+
+        .card-img img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: 0.5s;
+        }
+
+        .media-card:hover .card-img img {
+            transform: scale(1.1);
+        }
+
+        .play-overlay {
+            position: absolute;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+           
+        }
+
+        .media-card:hover .play-overlay {
+            opacity: 1;
+        }
+
+        .play-btn {
+            width: 50px;
+            height: 50px;
+            background: var(--primary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-size: 18px;
+            box-shadow: 0 0 20px var(--primary);
+        }
+
+        .card-info {
+            padding: 15px;
+        }
+
+        .card-title {
+            font-weight: 700;
+            font-size: 16px;
+            margin-bottom: 5px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .card-meta {
+            font-size: 12px;
+            color: var(--text-muted);
+            display: flex;
+            justify-content: space-between;
+        }
 
         /* --- STATS SECTION --- */
         .stats-section {
@@ -253,34 +525,106 @@ if (isset($_SESSION['email']) && isset($conn)) {
             border-top: 1px solid var(--border-glass);
             border-bottom: 1px solid var(--border-glass);
         }
-        .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
-        .stat-item h3 { font-family: var(--font-head); font-size: 40px; color: var(--secondary); margin-bottom: 5px; }
-        .stat-item p { font-size: 12px; letter-spacing: 2px; text-transform: uppercase; color: var(--text-muted); }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+        }
+
+        .stat-item h3 {
+            font-family: var(--font-head);
+            font-size: 40px;
+            color: var(--secondary);
+            margin-bottom: 5px;
+        }
+
+        .stat-item p {
+            font-size: 12px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: var(--text-muted);
+        }
 
         /* --- FOOTER --- */
-        footer { background: #020202; padding-top: 80px; border-top: 1px solid var(--border-glass); }
-        .footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr 1.5fr; gap: 40px; margin-bottom: 60px; }
-        .footer-brand p { color: var(--text-muted); font-size: 14px; margin-top: 20px; line-height: 1.6; max-width: 300px; }
-        .footer-col h4 { font-family: var(--font-head); font-size: 14px; margin-bottom: 25px; }
-        .footer-col ul li { margin-bottom: 15px; }
-        .footer-col ul li a { color: var(--text-muted); font-size: 13px; }
-        .footer-col ul li a:hover { color: var(--primary); padding-left: 5px; }
-        
+        footer {
+            background: #020202;
+            padding-top: 80px;
+            border-top: 1px solid var(--border-glass);
+        }
+
+        .footer-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1.5fr;
+            gap: 40px;
+            margin-bottom: 60px;
+        }
+
+        .footer-brand p {
+            color: var(--text-muted);
+            font-size: 14px;
+            margin-top: 20px;
+            line-height: 1.6;
+            max-width: 300px;
+        }
+
+        .footer-col h4 {
+            font-family: var(--font-head);
+            font-size: 14px;
+            margin-bottom: 25px;
+        }
+
+        .footer-col ul li {
+            margin-bottom: 15px;
+        }
+
+        .footer-col ul li a {
+            color: var(--text-muted);
+            font-size: 13px;
+        }
+
+        .footer-col ul li a:hover {
+            color: var(--primary);
+            padding-left: 5px;
+        }
+
         .newsletter input {
-            width: 100%; padding: 12px; background: rgba(255,255,255,0.05);
-            border: 1px solid var(--border-glass); color: #fff; border-radius: 6px;
+            width: 100%;
+            padding: 12px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border-glass);
+            color: #fff;
+            border-radius: 6px;
             margin-bottom: 10px;
         }
+
         .copyright {
-            text-align: center; padding: 20px; border-top: 1px solid var(--border-glass);
-            font-size: 12px; color: var(--text-muted);
+            text-align: center;
+            padding: 20px;
+            border-top: 1px solid var(--border-glass);
+            font-size: 12px;
+            color: var(--text-muted);
         }
 
         /* Responsive */
         @media (max-width: 992px) {
-            .about-grid, .footer-grid, .stats-grid { grid-template-columns: 1fr; gap: 40px; }
-            .hero-title { font-size: 40px; }
-            .nav-links { display: none; } /* Add mobile toggle if needed */
+
+            .about-grid,
+            .footer-grid,
+            .stats-grid {
+                grid-template-columns: 1fr;
+                gap: 40px;
+            }
+
+            .hero-title {
+                font-size: 40px;
+            }
+
+            .nav-links {
+                display: none;
+            }
+
+            /* Add mobile toggle if needed */
         }
     </style>
 </head>
@@ -291,7 +635,7 @@ if (isset($_SESSION['email']) && isset($conn)) {
     <header id="header">
         <div class="container nav-wrapper">
             <a href="index.php" class="logo">SOU<span>N</span>D</a>
-            
+
             <nav class="nav-links">
                 <a href="#home" class="active">Home</a>
                 <a href="#about">About</a>
@@ -305,7 +649,7 @@ if (isset($_SESSION['email']) && isset($conn)) {
             <div class="auth-area">
                 <?php if ($user): ?>
                     <a href="user_profile.php" class="user-btn">
-                        <i class="fas fa-user-circle"></i> 
+                        <i class="fas fa-user-circle"></i>
                         <?= htmlspecialchars(substr($user['name'], 0, 10)) ?>
                     </a>
                 <?php else: ?>
@@ -367,7 +711,7 @@ if (isset($_SESSION['email']) && isset($conn)) {
                         <h4 style="color:var(--primary); letter-spacing:2px; margin-bottom:10px;">WHO WE ARE</h4>
                         <h2>BRIDGE THE GAP</h2>
                         <p>
-                            The thirst for learning, upgrading technical skills, and applying concepts in a real-life environment is what the industry demands today. However, busy schedules and far-flung locations pose barriers. 
+                            The thirst for learning, upgrading technical skills, and applying concepts in a real-life environment is what the industry demands today. However, busy schedules and far-flung locations pose barriers.
                         </p>
                         <p>
                             SOUND is the answer. An electronic, live juncture that allows you to practice step-by-step. We are revolutionizing the way you consume and rate entertainment.
@@ -400,49 +744,52 @@ if (isset($_SESSION['email']) && isset($conn)) {
             </div>
 
             <div class="media-scroller reveal">
-                <?php 
+                <?php
                 if ($latestMusic && mysqli_num_rows($latestMusic) > 0) {
-                    while ($row = mysqli_fetch_assoc($latestMusic)) { 
+                    while ($row = mysqli_fetch_assoc($latestMusic)) {
                         $img = getMediaImage($row['cover_image'] ?? 'default.jpg', 'music');
                 ?>
-                    <div class="media-card">
-                        <!-- Flashing Badge for New Additions -->
-                        <div class="flash-badge">NEW</div>
-                        
-                        <div class="card-img">
-                            <img src="<?= $img ?>" alt="Cover">
-                            <a href="user_play_music.php?id=<?= $row['id'] ?>" class="play-overlay">
-                                <div class="play-btn"><i class="fas fa-play"></i></div>
-                            </a>
-                        </div>
-                        <div class="card-info">
-                            <h3 class="card-title"><?= htmlspecialchars($row['title'] ?? 'Unknown Track') ?></h3>
-                            <div class="card-meta">
-                                <span><i class="fas fa-microphone"></i> <?= htmlspecialchars($row['artist'] ?? 'Artist') ?></span>
-                                <span><i class="fas fa-star" style="color:gold;"></i> 4.5</span>
+                        <div class="media-card">
+                            <!-- Flashing Badge for New Additions -->
+                            <div class="flash-badge">NEW</div>
+
+                            <div class="card-img">
+                                <img src="<?= $img ?>" alt="Cover">
+                                <a href="user_play_music.php?id=<?= $row['id'] ?>" class="play-overlay">
+                                    <div class="play-btn"><i class="fas fa-play"></i></div>
+                                </a>
+                            </div>
+                            <div class="card-info">
+                                <h3 class="card-title"><?= htmlspecialchars($row['title'] ?? 'Unknown Track') ?></h3>
+                                <div class="card-meta">
+                                    <span><i class="fas fa-microphone"></i> <?= htmlspecialchars($row['artist'] ?? 'Artist') ?></span>
+                                    <span><i class="fas fa-star" style="color:gold;"></i> 4.5</span>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                <?php 
-                    } 
+                    <?php
+                    }
                 } else {
                     // FALLBACK DATA FOR PREVIEW IF DB EMPTY
-                    for($i=1; $i<=5; $i++) {
-                ?>
-                    <div class="media-card">
-                        <div class="flash-badge">NEW</div>
-                        <div class="card-img">
-                            <img src="https://images.unsplash.com/photo-1470225620780-dba8ba36b745?q=80&w=600&auto=format&fit=crop" alt="Cover">
-                            <div class="play-overlay"><div class="play-btn"><i class="fas fa-play"></i></div></div>
+                    for ($i = 1; $i <= 5; $i++) {
+                    ?>
+                        <div class="media-card">
+                            <div class="flash-badge">NEW</div>
+                            <div class="card-img">
+                                <img src="https://images.unsplash.com/photo-1470225620780-dba8ba36b745?q=80&w=600&auto=format&fit=crop" alt="Cover">
+                                <div class="play-overlay">
+                                    <div class="play-btn"><i class="fas fa-play"></i></div>
+                                </div>
+                            </div>
+                            <div class="card-info">
+                                <h3 class="card-title">Demo Track #<?= $i ?></h3>
+                                <div class="card-meta"><span>Artist Name</span><span>2026</span></div>
+                            </div>
                         </div>
-                        <div class="card-info">
-                            <h3 class="card-title">Demo Track #<?= $i ?></h3>
-                            <div class="card-meta"><span>Artist Name</span><span>2026</span></div>
-                        </div>
-                    </div>
-                <?php }} ?>
+                <?php }
+                } ?>
             </div>
-            
+
             <div class="text-center" style="margin-top:40px;">
                 <a href="user_music_view.php" class="btn btn-outline" style="border-radius:4px; font-size:11px;">VIEW ALL LIBRARY</a>
             </div>
@@ -459,45 +806,48 @@ if (isset($_SESSION['email']) && isset($conn)) {
             </div>
 
             <div class="media-scroller reveal" style="grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));">
-                <?php 
+                <?php
                 if ($latestVideos && mysqli_num_rows($latestVideos) > 0) {
-                    while ($vid = mysqli_fetch_assoc($latestVideos)) { 
+                    while ($vid = mysqli_fetch_assoc($latestVideos)) {
                         $thumb = getMediaImage($vid['thumbnail'] ?? 'default_vid.jpg', 'video');
                 ?>
-                    <div class="media-card">
-                        <div class="flash-badge" style="background:var(--secondary); box-shadow:0 0 10px var(--secondary);">HD</div>
-                        <div class="card-img video">
-                            <img src="<?= $thumb ?>" alt="Thumb">
-                            <a href="user_play_video.php?id=<?= $vid['id'] ?>" class="play-overlay">
-                                <div class="play-btn" style="background:var(--secondary); box-shadow:0 0 20px var(--secondary);"><i class="fas fa-play"></i></div>
-                            </a>
-                        </div>
-                        <div class="card-info">
-                            <h3 class="card-title"><?= htmlspecialchars($vid['title'] ?? 'Unknown Video') ?></h3>
-                            <div class="card-meta">
-                                <span><?= htmlspecialchars($vid['artist'] ?? 'Artist') ?></span>
-                                <span><?= htmlspecialchars($vid['album'] ?? 'Single') ?></span>
+                        <div class="media-card">
+                            <div class="flash-badge" style="background:var(--secondary); box-shadow:0 0 10px var(--secondary);">HD</div>
+                            <div class="card-img video">
+                                <img src="<?= $thumb ?>" alt="Thumb">
+                                <a href="user_play_video.php?id=<?= $vid['id'] ?>" class="play-overlay">
+                                    <div class="play-btn" style="background:var(--secondary); box-shadow:0 0 20px var(--secondary);"><i class="fas fa-play"></i></div>
+                                </a>
+                            </div>
+                            <div class="card-info">
+                                <h3 class="card-title"><?= htmlspecialchars($vid['title'] ?? 'Unknown Video') ?></h3>
+                                <div class="card-meta">
+                                    <span><?= htmlspecialchars($vid['artist'] ?? 'Artist') ?></span>
+                                    <span><?= htmlspecialchars($vid['album'] ?? 'Single') ?></span>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                <?php 
-                    } 
+                    <?php
+                    }
                 } else {
                     // FALLBACK
-                    for($j=1; $j<=5; $j++) {
-                ?>
-                     <div class="media-card">
-                        <div class="flash-badge" style="background:var(--secondary);">HD</div>
-                        <div class="card-img video">
-                            <img src="https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?q=80&w=600&auto=format&fit=crop" alt="Thumb">
-                            <div class="play-overlay"><div class="play-btn" style="background:var(--secondary);"><i class="fas fa-play"></i></div></div>
+                    for ($j = 1; $j <= 5; $j++) {
+                    ?>
+                        <div class="media-card">
+                            <div class="flash-badge" style="background:var(--secondary);">HD</div>
+                            <div class="card-img video">
+                                <img src="https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?q=80&w=600&auto=format&fit=crop" alt="Thumb">
+                                <div class="play-overlay">
+                                    <div class="play-btn" style="background:var(--secondary);"><i class="fas fa-play"></i></div>
+                                </div>
+                            </div>
+                            <div class="card-info">
+                                <h3 class="card-title">Demo Video Clip #<?= $j ?></h3>
+                                <div class="card-meta"><span>Director Cut</span><span>4K</span></div>
+                            </div>
                         </div>
-                        <div class="card-info">
-                            <h3 class="card-title">Demo Video Clip #<?= $j ?></h3>
-                            <div class="card-meta"><span>Director Cut</span><span>4K</span></div>
-                        </div>
-                    </div>
-                <?php }} ?>
+                <?php }
+                } ?>
             </div>
         </div>
     </section>
@@ -597,9 +947,12 @@ if (isset($_SESSION['email']) && isset($conn)) {
                     entry.target.classList.add('active');
                 }
             });
-        }, { threshold: 0.1 });
+        }, {
+            threshold: 0.1
+        });
 
         document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
     </script>
 </body>
+
 </html>
