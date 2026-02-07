@@ -1,22 +1,51 @@
 <?php
-// session_start();
+session_start();
 include "../config/db.php";
 
-// 1. Handle Delete Review
-if (isset($_GET['delete'])) {
-    $id = (int)$_GET['delete'];
-    mysqli_query($conn, "DELETE FROM album_reviews WHERE id = $id");
-    header("Location: /admin/album_review.php?status=deleted");
-
+/* ===============================
+    1. ADMIN AUTH
+================================ */
+if (!isset($_SESSION['email']) || !isset($_SESSION['admin_id'])) {
+    header("Location: login.php");
     exit();
 }
 
-// 2. Fetch all reviews with Album Titles
-$query = "SELECT album_reviews.*, albums.title as album_name, albums.cover 
-          FROM album_reviews 
-          JOIN albums ON album_reviews.album_id = albums.id 
-          ORDER BY album_reviews.created_at DESC";
-$result = mysqli_query($conn, $query);
+/* ===============================
+    2. UPDATE ADMIN LAST SEEN
+================================ */
+$admin_id = (int)$_SESSION['admin_id'];
+$stmt = $conn->prepare("UPDATE admin_users SET last_seen = NOW() WHERE id = ?");
+$stmt->bind_param("i", $admin_id);
+$stmt->execute();
+
+/* ===============================
+    3. DELETE VIDEO (POST Method)
+================================ */
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_id'])) {
+    $id = (int)$_POST['delete_id'];
+    
+    $stmt = $conn->prepare("SELECT file FROM videos WHERE id = ?");
+    $stmt->bind_param("i", $id);
+    $stmt->execute();
+    $res = $stmt->get_result();
+    
+    if ($row = $res->fetch_assoc()) {
+        $filepath = "../uploads/videos/" . $row['file'];
+        if (!empty($row['file']) && file_exists($filepath)) {
+            unlink($filepath); 
+        }
+        
+        $del = $conn->prepare("DELETE FROM videos WHERE id = ?");
+        $del->bind_param("i", $id);
+        $del->execute();
+    }
+    // PHP_SELF use karne se "Not Found" error kabhi nahi aayega
+    header("Location: " . $_SERVER['PHP_SELF'] . "?status=deleted");
+    exit;
+}
+
+// Fetch videos for display
+$videos = mysqli_query($conn, "SELECT * FROM videos ORDER BY id DESC");
 ?>
 
 <!DOCTYPE html>
