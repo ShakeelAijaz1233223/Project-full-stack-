@@ -158,9 +158,8 @@ $albums = mysqli_query($conn, $query);
 
 /* Play button centered */
 .album-card .play-btn {
-    position: sticky;
-    top: 50%;
-    left: 50%;
+    position: relative;
+  padding-bottom: 100px;
     transform: translate(-50%, -50%);
     background: rgba(255, 0, 85, 0.3);
     border: none;
