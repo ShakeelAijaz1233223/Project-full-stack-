@@ -987,16 +987,25 @@ if (isset($_SESSION['email']) && isset($conn)) {
 
         document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
 
-        const texts = ["VISUAL AUDIO", "REVOLUTION"];
+
+        // Animation Text
+
+       const texts = ["VISUAL AUDIO", "REVOLUTION"];
 const animatedText = document.getElementById("animated-text");
 let textIndex = 0;
 let charIndex = 0;
 
 function type() {
+  // Set color based on word
+  if (texts[textIndex] === "REVOLUTION") {
+    animatedText.style.color = "#ff0055"; // Primary color
+  } else {
+    animatedText.style.color = "#fff"; // Default color
+  }
+
   if (charIndex < texts[textIndex].length) {
     animatedText.textContent += texts[textIndex].charAt(charIndex);
     charIndex++;
-    textIndex.style.color = "red";
     setTimeout(type, 150);
   } else {
     // Wait 1 second then delete
@@ -1018,6 +1027,7 @@ function deleteText() {
 
 // Start the animation
 type();
+
     </script>
 </body>
 
