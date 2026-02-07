@@ -155,7 +155,7 @@ $albums = mysqli_query($conn, $query);
             transform: translate(-50%, -50%);
             background: rgba(255, 0, 85, 0.7);
             border: none;
-            padding: 20px;
+            padding: 9px;
             border-radius: 50%;
             color: #fff;
             font-size: 24px;
