@@ -36,254 +36,53 @@ $music = mysqli_query($conn, $query);
     --accent-grad: linear-gradient(45deg,#ff0055,#ff5e00);
     --text-muted: #888;
 }
-
-body {
-    background: var(--bg);
-    color: #fff;
-    font-family: 'Inter', sans-serif;
-    margin:0;
-}
-
+body { background: var(--bg); color: #fff; font-family: 'Inter', sans-serif; margin:0; }
 .studio-wrapper { width:95%; margin:0 auto; padding:20px 0; }
 
 /* Header */
-.header-section {
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    border-bottom:1px solid #222;
-    padding-bottom:15px;
-    margin-bottom:25px;
-}
-
-.search-box {
-    background:#151515;
-    border:1px solid #333;
-    color:#fff;
-    border-radius:6px;
-    padding:6px 15px;
-    width:250px;
-}
-
-.btn-back {
-    background:#1a1a1a;
-    border:1px solid #222;
-    color:#fff;
-    padding:6px 12px;
-    border-radius:8px;
-    display:flex;
-    align-items:center;
-    gap:5px;
-    text-decoration:none;
-}
+.header-section { display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid #222; padding-bottom:15px; margin-bottom:25px; }
+.search-box { background:#151515; border:1px solid #333; color:#fff; border-radius:6px; padding:6px 15px; width:250px; }
+.btn-back { background:#1a1a1a; border:1px solid #222; color:#fff; padding:6px 12px; border-radius:8px; display:flex; align-items:center; gap:5px; text-decoration:none; }
 
 /* Grid & Cards */
-.grid {
-    display:grid;
-    grid-template-columns:repeat(auto-fill,minmax(220px,1fr));
-    gap:20px;
-}
-
-.album-card {
-    background: var(--card);
-    border-radius: 15px;
-    padding:12px;
-    border:1px solid #1a1a1a;
-    transition:0.3s;
-    position:relative;
-}
-
+.grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(220px,1fr)); gap:20px; }
+.album-card { background: var(--card); border-radius: 15px; padding:12px; border:1px solid #1a1a1a; transition:0.3s; position:relative; }
 .album-card:hover { transform:translateY(-5px); border-color: var(--accent); }
 
 /* Disc / Media wrapper */
-.disc-wrapper {
-    position:relative;
-    width:100%;
-    aspect-ratio:16/9;
-    background:#000;
-    border-radius:10px;
-    overflow:hidden;
-    margin-bottom:10px;
-}
-
+.disc-wrapper { position:relative; width:100%; aspect-ratio:16/9; background:#000; border-radius:10px; overflow:hidden; margin-bottom:10px; display:flex; align-items:center; justify-content:center; }
 .album-card audio { display:none; }
 
 /* Play Button */
-.play-btn {
-    position:absolute;
-    top:50%;
-    left:50%;
-    transform:translate(-50%,-50%);
-    width:40px;
-    height:40px;
-    border-radius:50%;
-    border:none;
-    background:var(--accent-grad);
-    color:#fff;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    opacity:0;
-    cursor:pointer;
-    transition:0.3s;
-}
+.play-btn { width:50px; height:50px; font-size:1.5rem; border-radius:50%; border:none; background: var(--accent-grad); color:#fff; display:flex; align-items:center; justify-content:center; cursor:pointer; position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); box-shadow:0 0 15px var(--accent); transition: transform 0.3s, opacity 0.3s; opacity:0; }
 .album-card:hover .play-btn { opacity:1; }
-
+.play-btn:hover { transform:translate(-50%,-50%) scale(1.2); }
 
 /* Titles & stars */
 .title { font-weight:600; font-size:0.85rem; margin:5px 0; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
 .artist { font-size:0.75rem; color:var(--text-muted); margin-bottom:5px; }
 .stars-display { color:#ffca08; font-size:0.75rem; margin-bottom:8px; }
-
-/* Review Button */
-.rev-btn {
-    background:#222;
-    color:#fff;
-    border:none;
-    font-size:0.7rem;
-    width:100%;
-    padding:6px;
-    border-radius:6px;
-    transition:0.3s;
-}
+.rev-btn { background:#222; color:#fff; border:none; font-size:0.7rem; width:100%; padding:6px; border-radius:6px; transition:0.3s; }
 .rev-btn:hover { background:var(--accent); }
 
 /* Custom controls */
-/* Custom Controls Container */
-.custom-controls {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    margin-top: 10px;
-    padding: 5px 0;
-}
-
-/* Progress Bar */
-.custom-controls input[type="range"] {
-    -webkit-appearance: none;
-    width: 100%;
-    height: 6px;
-    background: #222;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background 0.3s;
-}
-.custom-controls input[type="range"]::-webkit-slider-thumb {
-    -webkit-appearance: none;
-    width: 14px;
-    height: 14px;
-    background: var(--accent);
-    border-radius: 50%;
-    border: 2px solid #111;
-    transition: transform 0.2s;
-}
-.custom-controls input[type="range"]::-webkit-slider-thumb:hover {
-    transform: scale(1.2);
-}
-.custom-controls input[type="range"]::-moz-range-thumb {
-    width: 14px;
-    height: 14px;
-    background: var(--accent);
-    border-radius: 50%;
-    border: 2px solid #111;
-}
-
-/* Buttons */
-.custom-controls button {
-    background: #1a1a1a;
-    border: 1px solid #333;
-    color: #fff;
-    padding: 6px 10px;
-    border-radius: 8px;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: all 0.3s;
-    font-size: 1rem;
-}
-.custom-controls button:hover {
-    background: var(--accent);
-    transform: scale(1.1);
-    color: #fff;
-}
-
-/* Play Button on Disc */
-.play-btn {
-    width: 50px;
-    height: 50px;
-    font-size: 1.5rem;
-    border-radius: 50%;
-    border: none;
-    background: var(--accent-grad);
-    color: #fff;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    box-shadow: 0 0 15px var(--accent);
-    transition: transform 0.3s, opacity 0.3s;
-    opacity: 0;
-}
-.album-card:hover .play-btn { opacity: 1; }
-.play-btn:hover { transform: translate(-50%, -50%) scale(1.2); }
-
-/* Fullscreen Highlight */
-.album-card.fullscreen .disc-wrapper {
-    border: 3px solid var(--accent);
-    box-shadow: 0 0 25px var(--accent);
-    transform: scale(1.05);
-    transition: transform 0.3s, box-shadow 0.3s;
-}
-
-
+.custom-controls { display:flex; align-items:center; gap:10px; margin-top:10px; padding:5px 0; }
+.custom-controls input[type="range"] { -webkit-appearance:none; width:100%; height:6px; background:#222; border-radius:5px; cursor:pointer; }
+.custom-controls input[type="range"]::-webkit-slider-thumb { -webkit-appearance:none; width:14px; height:14px; background:var(--accent); border-radius:50%; border:2px solid #111; transition:transform 0.2s; }
+.custom-controls input[type="range"]::-webkit-slider-thumb:hover { transform:scale(1.2); }
+.custom-controls input[type="range"]::-moz-range-thumb { width:14px; height:14px; background:var(--accent); border-radius:50%; border:2px solid #111; }
+.custom-controls button { background:#1a1a1a; border:1px solid #333; color:#fff; padding:6px 10px; border-radius:8px; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:all 0.3s; font-size:1rem; }
+.custom-controls button:hover { background:var(--accent); transform:scale(1.1); color:#fff; }
 
 /* Review overlay */
-#reviewOverlay {
-    display:none;
-    position:fixed;
-    top:0; left:0;
-    width:100%; height:100%;
-    background:rgba(0,0,0,0.9);
-    backdrop-filter: blur(5px);
-    z-index:9999;
-    align-items:center;
-    justify-content:center;
-}
-
-.review-box {
-    background:#151515;
-    width:90%; max-width:400px;
-    padding:30px;
-    border-radius:20px;
-    border:1px solid #333;
-}
-
-/* Star rating */
-.star-rating {
-    display:flex;
-    flex-direction:row-reverse;
-    justify-content:center;
-    gap:8px;
-    margin-bottom:15px;
-}
+#reviewOverlay { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.9); backdrop-filter:blur(5px); z-index:9999; align-items:center; justify-content:center; }
+.review-box { background:#151515; width:90%; max-width:400px; padding:30px; border-radius:20px; border:1px solid #333; }
+.star-rating { display:flex; flex-direction:row-reverse; justify-content:center; gap:8px; margin-bottom:15px; }
 .star-rating input { display:none; }
-.star-rating label {
-    font-size:2.5rem;
-    color:#222;
-    cursor:pointer;
-    transition:0.2s;
-}
-.star-rating label:hover,
-.star-rating label:hover~label,
-.star-rating input:checked~label { color:#ffca08; }
+.star-rating label { font-size:2.5rem; color:#222; cursor:pointer; transition:0.2s; }
+.star-rating label:hover, .star-rating label:hover~label, .star-rating input:checked~label { color:#ffca08; }
 
 footer { text-align:center; padding:40px; font-size:0.7rem; color:#444; }
-
 </style>
 </head>
 <body>
@@ -303,12 +102,11 @@ footer { text-align:center; padding:40px; font-size:0.7rem; color:#444; }
         ?>
         <div class="album-card" data-title="<?= strtolower($row['title']); ?>" data-artist="<?= strtolower($row['artist']); ?>">
             <div class="disc-wrapper">
-                <i class="bi bi-disc-fill"></i>
-                <button class="play-btn" onclick="togglePlay(this)"><i class="bi bi-play-fill"></i></button>
+                <i class="bi bi-disc-fill text-muted" style="font-size:4rem;"></i>
+                <button class="play-btn"><i class="bi bi-play-fill"></i></button>
                 <div class="custom-controls">
                     <input type="range" class="progress" min="0" max="100" value="0">
                     <button class="mute-btn"><i class="bi bi-volume-up"></i></button>
-                   
                 </div>
             </div>
             <div class="title"><?= htmlspecialchars($row['title']); ?></div>
@@ -318,8 +116,6 @@ footer { text-align:center; padding:40px; font-size:0.7rem; color:#444; }
                 <span class="text-white opacity-50 ms-1">(<?= $row['total_reviews']; ?>)</span>
             </div>
             <button class="rev-btn" onclick="openReview('<?= $row['id']; ?>','<?= addslashes($row['title']); ?>')">REVIEW</button>
-
-            <!-- Custom controls -->
 
             <audio id="audio-<?= $row['id']; ?>">
                 <source src="../admin/uploads/music/<?= $row['file']; ?>" type="audio/mpeg">
@@ -357,60 +153,58 @@ footer { text-align:center; padding:40px; font-size:0.7rem; color:#444; }
 
 <script>
 const audios = document.querySelectorAll('audio');
+const albumCards = document.querySelectorAll('.album-card');
 
-function togglePlay(btn){
-    const card=btn.closest('.album-card');
-    const audio=card.querySelector('audio');
-    // Pause all others
-    audios.forEach(a=>{
-        if(a!==audio){ a.pause(); a.closest('.album-card').classList.remove('playing'); }
-    });
-    if(audio.paused){ audio.play(); card.classList.add('playing'); btn.querySelector('i').className='bi bi-pause-fill'; }
-    else{ audio.pause(); card.classList.remove('playing'); btn.querySelector('i').className='bi bi-play-fill'; }
+albumCards.forEach(card=>{
+    const btn = card.querySelector('.play-btn');
+    const audio = card.querySelector('audio');
+    const progress = card.querySelector('.progress');
+    const muteBtn = card.querySelector('.mute-btn');
 
-    // Update progress
-    audio.addEventListener('timeupdate', ()=>{
-        const progress = card.querySelector('.progress');
-        progress.value = (audio.currentTime/audio.duration)*100;
+    btn.addEventListener('click', ()=>{
+        // Pause others
+        audios.forEach(a=>{
+            if(a!==audio){ a.pause(); a.closest('.album-card').classList.remove('playing'); a.closest('.album-card').querySelector('.play-btn i').className='bi bi-play-fill'; }
+        });
+
+        if(audio.paused){ audio.play(); card.classList.add('playing'); btn.querySelector('i').className='bi bi-pause-fill'; }
+        else{ audio.pause(); card.classList.remove('playing'); btn.querySelector('i').className='bi bi-play-fill'; }
+
+        // Update progress
+        audio.addEventListener('timeupdate', ()=>{
+            progress.value = (audio.currentTime/audio.duration)*100;
+        });
     });
 
     // Progress seek
-    const progress = card.querySelector('.progress');
-    progress.oninput = ()=>{
+    progress.addEventListener('input', ()=>{
         audio.currentTime = (progress.value/100)*audio.duration;
-    }
+    });
 
     // Mute toggle
-    const muteBtn = card.querySelector('.mute-btn');
-    muteBtn.onclick = ()=>{
+    muteBtn.addEventListener('click', ()=>{
         audio.muted = !audio.muted;
         muteBtn.innerHTML = audio.muted ? '<i class="bi bi-volume-mute"></i>' : '<i class="bi bi-volume-up"></i>';
-    }
-
-    // Fullscreen pseudo (just highlight disc)
-    const fsBtn = card.querySelector('.fullscreen-btn');
-    fsBtn.onclick = ()=>{
-        card.classList.toggle('fullscreen');
-        card.style.zIndex = card.classList.contains('fullscreen') ? 999 : 1;
-    }
-}
+    });
+});
 
 // Search filter
 document.getElementById('search').addEventListener('input',function(){
     const val = this.value.toLowerCase();
-    document.querySelectorAll('.album-card').forEach(card=>{
-        let txt=card.dataset.title+' '+card.dataset.artist;
-        card.style.display=txt.includes(val)?'block':'none';
+    albumCards.forEach(card=>{
+        let txt = card.dataset.title+' '+card.dataset.artist;
+        card.style.display = txt.includes(val) ? 'block' : 'none';
     });
 });
 
+// Review overlay
 function openReview(id,title){
     document.getElementById('revMusicId').value=id;
     document.getElementById('revTitle').innerText=title;
     document.getElementById('reviewOverlay').style.display='flex';
 }
 function closeReview(){ document.getElementById('reviewOverlay').style.display='none'; }
-
 </script>
+
 </body>
 </html>
