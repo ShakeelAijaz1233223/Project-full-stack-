@@ -1,247 +1,422 @@
 <?php
+session_start();
 include "../config/db.php";
 
-// 1. DYNAMIC DELETE LOGIC
+// 1. Handle Delete
 if (isset($_GET['delete'])) {
-    $id = (int)$_GET['delete'];
-    // Foreign key check se bachne ke liye table name 'albums' use kiya hai
-    $delete_query = mysqli_query($conn, "DELETE FROM albums WHERE id = $id");
-    
-    if($delete_query) {
-        $current_page = basename($_SERVER['PHP_SELF']);
-        header("Location: $current_page?status=deleted");
-        exit();
+    $delete_id = (int)$_GET['delete'];
+    $album = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM albums WHERE id=$delete_id"));
+    if ($album) {
+        @unlink("../admin/uploads/albums/" . $album['cover']);
+        @unlink("../admin/uploads/albums/" . $album['audio']);
+        @unlink("../admin/uploads/albums/" . $album['video']);
+        mysqli_query($conn, "DELETE FROM albums WHERE id=$delete_id");
+        $msg = "Album deleted successfully!";
     }
 }
 
-// 2. FETCH ALBUMS
-$query = "SELECT * FROM albums ORDER BY id DESC";
-$res = mysqli_query($conn, $query);
+// 2. Handle Review Submission
+if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['submit_review'])) {
+    $album_id = $_POST['album_id'];
+    $rating = $_POST['rating'];
+    $comment = mysqli_real_escape_string($conn, $_POST['comment']);
+    mysqli_query($conn, "INSERT INTO album_reviews (album_id, rating, comment) VALUES ('$album_id', '$rating', '$comment')");
+    header("Location: " . $_SERVER['PHP_SELF'] . "?status=reviewed");
+    exit();
+}
+
+// 3. Fetch albums with Average Ratings
+$query = "SELECT albums.*, 
+          (SELECT AVG(rating) FROM album_reviews WHERE album_reviews.album_id = albums.id) as avg_rating,
+          (SELECT COUNT(*) FROM album_reviews WHERE album_reviews.album_id = albums.id) as total_reviews
+          FROM albums ORDER BY created_at DESC";
+$albums = mysqli_query($conn, $query);
 ?>
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Premium Admin | Manage Albums</title>
+    <title>Albums Studio | Pro Admin</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;700&display=swap');
+   <style>
+:root {
+    --bg: #080808;
+    --card: #111;
+    --accent: #ff0055;
+    --accent-grad: linear-gradient(45deg, #ff0055, #ff5e00);
+    --text-main: #fff;
+    --text-muted: #aaa;
+}
 
-        :root { 
-            --bg-dark: #060606; 
-            --card-bg: #111111; 
-            --accent: #ff0055; 
-            --accent-glow: rgba(255, 0, 85, 0.3);
-            --border-color: #222222;
-        }
+/* --- Body & Wrapper --- */
+body {
+    background: var(--bg);
+    color: var(--text-main);
+    font-family: 'Inter', sans-serif;
+    margin: 0;
+}
+.studio-wrapper {
+    width: 95%;
+    margin: 0 auto;
+    padding: 20px 0;
+}
 
-        body { 
-            background: var(--bg-dark); 
-            color: #eee; 
-            font-family: 'Plus Jakarta Sans', sans-serif; 
-            padding: 40px 20px; 
-            -webkit-font-smoothing: antialiased;
-        }
-
-        /* Header Section */
-        .page-header { margin-bottom: 40px; }
-        .page-title { font-weight: 800; letter-spacing: -1px; font-size: 1.85rem; }
-        .accent-text { color: var(--accent); text-shadow: 0 0 20px var(--accent-glow); }
-
-        /* Card & Table Styling */
-        .admin-card { 
-            background: var(--card-bg); 
-            border: 1px solid var(--border-color); 
-            border-radius: 24px; 
-            overflow: hidden; 
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.8); 
-        }
-
-        .table { margin-bottom: 0; border-collapse: separate; border-spacing: 0; }
-        .table thead th { 
-            background: #181818; 
-            color: #666; 
-            font-size: 0.72rem; 
-            font-weight: 700;
-            text-transform: uppercase; 
-            letter-spacing: 1.8px; 
-            padding: 22px;
-            border: none;
-        }
-
-        .table tbody td { 
-            padding: 24px 22px; 
-            border-bottom: 1px solid var(--border-color); 
-            vertical-align: middle; 
-            transition: all 0.2s ease-in-out;
-        }
-
-        .table tbody tr:hover td { background: #161616; }
-
-        /* Album Artwork */
-        .album-artwork {
-            width: 50px;
-            height: 50px;
-            border-radius: 12px;
-            object-fit: cover;
-            border: 1px solid var(--border-color);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-        }
-
-        /* Action Buttons */
-        .btn-delete { 
-            height: 42px;
-            width: 42px;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            background: rgba(255, 68, 68, 0.05);
-            color: #ff4444; 
-            border: 1px solid rgba(255, 68, 68, 0.15); 
-            border-radius: 14px; 
-            transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            cursor: pointer;
-        }
-
-        .btn-delete:hover { 
-            background: #ff4444; 
-            color: #fff; 
-            transform: translateY(-3px) scale(1.05);
-            box-shadow: 0 10px 20px rgba(255, 68, 68, 0.3); 
-        }
-
-        /* Modern Success Alert */
-        .status-alert { 
-            background: rgba(40, 167, 69, 0.08); 
-            border: 1px solid rgba(40, 167, 69, 0.2);
-            color: #28a745; 
-            padding: 18px 26px; 
-            border-radius: 18px; 
-            margin-bottom: 35px; 
+/* --- Header --- */
+.header-section {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #222;
+    padding-bottom: 15px;
+    margin-bottom: 25px;
+}
+.search-box {
+    background: #151515;
+    border: 1px solid #333;
+    color: white;
+    border-radius: 6px;
+    padding: 6px 15px;
+    width: 250px;
+}
+   .btn-back {
+            background: #1a1a1a;
+            border: 1px solid #222;
+            color: #fff;
+            padding: 6px 12px;
+            border-radius: 8px;
             display: flex;
             align-items: center;
-            backdrop-filter: blur(12px);
-            animation: slideDown 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+            gap: 5px;
+            text-decoration: none;
         }
 
-        @keyframes slideDown {
-            from { opacity: 0; transform: translateY(-20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
+/* --- Album Grid & Cards --- */
+.grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 20px;
+}
+.album-card {
+    background: var(--card);
+    border-radius: 15px;
+    padding: 12px;
+    border: 1px solid #1a1a1a;
+    transition: 0.3s;
+    position: relative;
+}
+.album-card:hover {
+    border-color: var(--accent);
+    transform: translateY(-5px);
+}
 
-        .dashboard-btn {
-            background: #1a1a1a;
-            border: 1px solid var(--border-color);
-            color: #999;
-            padding: 12px 24px;
-            border-radius: 14px;
-            font-weight: 600;
-            font-size: 0.9rem;
-            transition: all 0.3s ease;
-        }
+/* --- Media Wrapper --- */
+.media-wrapper {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 16/9;
+    background: #000;
+    border-radius: 10px;
+    overflow: hidden;
+    margin-bottom: 10px;
+}
+.media-wrapper img,
+.media-wrapper video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+}
+.album-card:hover .media-wrapper img,
+.album-card:hover .media-wrapper video {
+    transform: scale(1.05);
+}
 
-        .dashboard-btn:hover { 
-            background: #fff; 
-            color: #000; 
-            border-color: #fff;
-            transform: translateY(-2px);
-        }
+/* --- Play Button --- */
+.play-btn {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 35px;
+    height: 35px;
+    background: var(--accent-grad);
+    border-radius: 50%;
+    border: none;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    cursor: pointer;
+    z-index: 5;
+    transition: 0.3s;
+}
+.album-card:hover .play-btn { opacity: 1; }
 
-        .track-title { color: #fff; font-size: 1rem; font-weight: 600; margin-bottom: 2px; }
-        .track-uid { font-family: 'Courier New', Courier, monospace; letter-spacing: 0.5px; opacity: 0.6; }
+/* --- Custom Controls --- */
+.custom-controls {
+    position: absolute;
+    bottom: 5px;
+    left: 0;
+    right: 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 10px;
+    background: rgba(0,0,0,0.6);
+    backdrop-filter: blur(4px);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    border-radius: 0 0 8px 8px;
+}
+.media-wrapper:hover .custom-controls { opacity: 1; }
+.custom-controls button {
+    background: none;
+    border: none;
+    color: white;
+    cursor: pointer;
+}
+.custom-controls input[type="range"] {
+    flex: 1;
+    margin: 0 5px;
+    accent-color: var(--accent);
+}
 
-    </style>
+/* --- Titles & Artists --- */
+.title {
+    font-size: 0.9rem;
+    font-weight: 600;
+    margin: 5px 0 2px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.artist {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    margin-bottom: 8px;
+}
+
+/* --- Stars --- */
+.stars-row {
+    color: #ffca08;
+    font-size: 0.75rem;
+    margin-bottom: 10px;
+}
+
+/* --- Review Button --- */
+.btn-rev-pop {
+    background: var(--accent) !important;
+    border: none;
+    color: #fff;
+    font-size: 0.75rem;
+    padding: 6px;
+    width: 100%;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+.btn-rev-pop:hover {
+    filter: brightness(1.2);
+}
+
+/* --- Review Overlay --- */
+#reviewOverlay {
+    display: none;
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(0,0,0,0.9);
+    backdrop-filter: blur(4px);
+    z-index: 9999;
+    align-items: center;
+    justify-content: center;
+}
+.review-modal {
+    background: var(--card);
+    width: 90%;
+    max-width: 380px;
+    padding: 25px;
+    border-radius: 15px;
+    border: 1px solid #222;
+}
+.star-input {
+    display: flex;
+    flex-direction: row-reverse;
+    justify-content: center;
+    gap: 8px;
+    margin-bottom: 15px;
+}
+.star-input input { display: none; }
+.star-input label {
+    font-size: 2rem;
+    color: #222;
+    cursor: pointer;
+}
+.star-input label:hover,
+.star-input label:hover~label,
+.star-input input:checked~label { color: #ffca08; }
+
+/* --- Footer --- */
+footer {
+    text-align: center;
+    padding: 30px;
+    font-size: 0.7rem;
+    color: #444;
+}
+</style>
+
 </head>
+
 <body>
 
-    <div class="container-fluid px-lg-5">
-        <div class="page-header d-flex justify-content-between align-items-center">
-            <div>
-                <h1 class="page-title m-0 text-uppercase">Collection <span class="accent-text">ALBUMS</span></h1>
-                <p class="text-muted small mt-2">Manage your music library and album catalogs.</p>
+    <div class="studio-wrapper">
+        <div class="header-section">
+            <h4 class="m-0 fw-bold">ALBUMS<span style="color: var(--accent);">STUDIO</span></h4>
+            <div class="d-flex align-items-center gap-2">
+                <input type="text" id="search" class="search-box" placeholder="Search albums...">
+                <a href="index.php" class="btn-back"><i class="bi bi-arrow-left"></i> Back</a>
             </div>
-            <a href="dashboard.php" class="dashboard-btn text-decoration-none">
-                <i class="bi bi-grid-1x2-fill me-2 small"></i> Admin Panel
-            </a>
         </div>
 
-        <?php if(isset($_GET['status']) && $_GET['status'] == 'deleted'): ?>
-            <div class="status-alert shadow-sm alert-dismissible fade show" role="alert">
-                <i class="bi bi-shield-check fs-4 me-3"></i>
-                <div>
-                    <span class="fw-bold">Library Updated</span> &mdash; The album record has been permanently deleted.
-                </div>
-                <button type="button" class="btn-close btn-close-white ms-auto" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
+        <?php if (isset($msg)): ?>
+            <div class="alert alert-success py-2" style="font-size:0.8rem;"><?= $msg ?></div>
         <?php endif; ?>
 
-        <div class="admin-card">
-            <div class="table-responsive">
-                <table class="table table-dark">
-                    <thead>
-                        <tr>
-                            <th style="width: 35%;">Album Details</th>
-                            <th style="width: 25%;">Artist / Genre</th>
-                            <th style="width: 15%;">Release Year</th>
-                            <th style="width: 15%;">System Entry</th>
-                            <th style="width: 10%;" class="text-center">Action</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <?php if(mysqli_num_rows($res) > 0): ?>
-                            <?php while($row = mysqli_fetch_assoc($res)): ?>
-                            <tr>
-                                <td>
-                                    <div class="d-flex align-items-center">
-                                        <img src="../uploads/albums/<?= $row['cover'] ?>" class="album-artwork me-3" onerror="this.src='https://via.placeholder.com/150/111/fff?text=No+Cover'">
-                                        <div>
-                                            <div class="track-title"><?= htmlspecialchars($row['title']) ?></div>
-                                            <code class="track-uid text-muted small">REF: #<?= str_pad($row['id'], 4, '0', STR_PAD_LEFT) ?></code>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td>
-                                    <div class="text-white small fw-bold"><?= htmlspecialchars($row['artist'] ?? 'Various Artists') ?></div>
-                                    <div class="text-muted" style="font-size: 0.8rem;"><?= htmlspecialchars($row['genre'] ?? 'N/A') ?></div>
-                                </td>
-                                <td>
-                                    <span class="badge bg-dark border border-secondary px-3 py-2" style="font-weight: 500;">
-                                        <i class="bi bi-calendar-check me-2 text-secondary"></i><?= $row['release_year'] ?? 'N/A' ?>
-                                    </span>
-                                </td>
-                                <td>
-                                    <div class="text-muted small d-flex align-items-center">
-                                        <i class="bi bi-clock-history me-2 text-secondary"></i> 
-                                        <?= date('M d, Y', strtotime($row['created_at'])) ?>
-                                    </div>
-                                </td>
-                                <td class="text-center">
-                                    <a href="<?= basename($_SERVER['PHP_SELF']) ?>?delete=<?= $row['id'] ?>" 
-                                       onclick="return confirm('Attention: Deleting this album will remove all associated tracks. Proceed?')" 
-                                       class="btn-delete text-decoration-none"
-                                       title="Delete Album">
-                                        <i class="bi bi-trash3-fill"></i>
-                                    </a>
-                                </td>
-                            </tr>
-                            <?php endwhile; ?>
+        <div class="grid" id="albumGrid">
+            <?php while ($row = mysqli_fetch_assoc($albums)):
+                $avg = round($row['avg_rating'], 1);
+            ?>
+                <div class="album-card" data-title="<?= strtolower($row['title']); ?>" data-artist="<?= strtolower($row['artist']); ?>">
+                    <div class="media-wrapper">
+                        <?php if (!empty($row['video'])): ?>
+                            <video id="vid-<?= $row['id']; ?>" preload="metadata" poster="../admin/uploads/albums/<?= $row['cover']; ?>">
+                                <source src="../admin/uploads/albums/<?= $row['video']; ?>" type="video/mp4">
+                            </video>
+                            <button class="play-btn"><i class="bi bi-play-fill"></i></button>
+                            <div class="custom-controls">
+                                <input type="range" class="progress" min="0" max="100" value="0">
+                                <button class="mute-btn"><i class="bi bi-volume-up"></i></button>
+                                <button class="fullscreen-btn"><i class="bi bi-arrows-fullscreen"></i></button>
+                            </div>
                         <?php else: ?>
-                            <tr>
-                                <td colspan="5" class="text-center py-5">
-                                    <div class="opacity-10 mb-3"><i class="bi bi-disc display-2"></i></div>
-                                    <p class="text-muted fw-light">No albums found in the library.</p>
-                                </td>
-                            </tr>
+                            <img src="../admin/uploads/albums/<?= $row['cover']; ?>" class="album-cover">
                         <?php endif; ?>
-                    </tbody>
-                </table>
-            </div>
+                    </div>
+
+                    <div class="card-body">
+                        <div class="title"><?= htmlspecialchars($row['title']); ?></div>
+                        <div class="artist"><?= htmlspecialchars($row['artist']); ?></div>
+
+                        <div class="stars-row">
+                            <?php for ($i = 1; $i <= 5; $i++) echo ($i <= $avg) ? '★' : '☆'; ?>
+                            <span class="ms-2 text-muted" style="font-size: 0.7rem;">(<?= $row['total_reviews'] ?>)</span>
+                        </div>
+
+                        <button class="btn-rev-pop" onclick="popReview('<?= $row['id'] ?>', '<?= addslashes($row['title']) ?>')">Rate Album</button>
+
+                        <?php if (!empty($row['audio'])): ?>
+                            <audio id="aud-<?= $row['id']; ?>">
+                                <source src="../admin/uploads/albums/<?= $row['audio']; ?>" type="audio/mpeg">
+                            </audio>
+                        <?php endif; ?>
+                    </div>
+                </div>
+            <?php endwhile; ?>
         </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <div id="reviewOverlay">
+        <div class="review-modal">
+            <h5 class="text-center mb-1" id="popTitle">Album Name</h5>
+            <p class="text-center text-muted small mb-4">Leave your rating</p>
+            <form method="POST">
+                <input type="hidden" name="album_id" id="popId">
+                <div class="star-input mb-4">
+                    <input type="radio" name="rating" value="5" id="s5" required><label for="s5">★</label>
+                    <input type="radio" name="rating" value="4" id="s4"><label for="s4">★</label>
+                    <input type="radio" name="rating" value="3" id="s3"><label for="s3">★</label>
+                    <input type="radio" name="rating" value="2" id="s2"><label for="s2">★</label>
+                    <input type="radio" name="rating" value="1" id="s1"><label for="s1">★</label>
+                </div>
+                <textarea name="comment" class="form-control bg-dark text-white border-secondary mb-3" placeholder="Write feedback..." required></textarea>
+                <div class="d-flex gap-2">
+                    <button type="button" class="btn btn-secondary w-100" onclick="closePop()">Cancel</button>
+                    <button type="submit" name="submit_review" class="btn btn-danger w-100" style="background: var(--accent);">Post</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <footer>&copy; 2026 ALBUMS STUDIO &bull; SOUND SYSTEM</footer>
+
+    <script>
+        // Search
+        document.getElementById("search").addEventListener("input", function() {
+            let val = this.value.toLowerCase().trim();
+            document.querySelectorAll(".album-card").forEach(card => {
+                let text = card.dataset.title + " " + card.dataset.artist;
+                card.style.display = text.includes(val) ? "block" : "none";
+            });
+        });
+
+        // Modals
+        function popReview(id, title) {
+            document.getElementById('popId').value = id;
+            document.getElementById('popTitle').innerText = title;
+            document.getElementById('reviewOverlay').style.display = 'flex';
+        }
+
+        function closePop() {
+            document.getElementById('reviewOverlay').style.display = 'none';
+        }
+
+        // Video Player logic
+        document.querySelectorAll('.media-wrapper').forEach(wrapper => {
+            const video = wrapper.querySelector('video');
+            if (!video) return;
+
+            const playBtn = wrapper.querySelector('.play-btn');
+            const progress = wrapper.querySelector('.progress');
+            const muteBtn = wrapper.querySelector('.mute-btn');
+            const fullscreenBtn = wrapper.querySelector('.fullscreen-btn');
+
+            playBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                if (video.paused) {
+                    document.querySelectorAll('video').forEach(v => v.pause());
+                    video.play();
+                    playBtn.innerHTML = '<i class="bi bi-pause-fill"></i>';
+                } else {
+                    video.pause();
+                    playBtn.innerHTML = '<i class="bi bi-play-fill"></i>';
+                }
+            });
+
+            video.addEventListener('timeupdate', () => {
+                progress.value = (video.currentTime / video.duration) * 100;
+            });
+
+            progress.addEventListener('input', () => {
+                video.currentTime = (progress.value / 100) * video.duration;
+            });
+
+            muteBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                video.muted = !video.muted;
+                muteBtn.innerHTML = video.muted ? '<i class="bi bi-volume-mute"></i>' : '<i class="bi bi-volume-up"></i>';
+            });
+
+            fullscreenBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                if (video.requestFullscreen) video.requestFullscreen();
+            });
+        });
+    </script>
 </body>
+
 </html>
