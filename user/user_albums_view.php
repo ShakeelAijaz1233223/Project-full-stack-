@@ -405,6 +405,7 @@ $albums = mysqli_query($conn, $query);
             icon.className = 'bi bi-play-fill';
         }
     }
+    
 </script>
 
 </body>
