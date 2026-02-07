@@ -339,7 +339,7 @@ $videos = mysqli_query($conn, $query);
                     <span class="artist-tag"><?= htmlspecialchars($row['artist']) ?></span>
                     <span><?= htmlspecialchars($row['album']) ?></span>
                     <span><?= htmlspecialchars($row['year']) ?></span>
-                    <span class="genre-tag">Genre: <?= htmlspecialchars($row['genre']) ?></span>
+                    
                 </div>
                 
 
