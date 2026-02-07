@@ -479,7 +479,8 @@ if (isset($_SESSION['email']) && isset($conn)) {
             display: flex;
             align-items: center;
             justify-content: center;
-           
+            opacity: 0;
+            transition: 0.3s;
         }
 
         .media-card:hover .play-overlay {
@@ -755,7 +756,7 @@ if (isset($_SESSION['email']) && isset($conn)) {
 
                             <div class="card-img">
                                 <img src="<?= $img ?>" alt="Cover">
-                                <a href="user_play_music.php?id=<?= $row['id'] ?>" class="play-overlay">
+                                <a href="user_music_view.php?id=<?= $row['id'] ?>" class="play-overlay">
                                     <div class="play-btn"><i class="fas fa-play"></i></div>
                                 </a>
                             </div>
