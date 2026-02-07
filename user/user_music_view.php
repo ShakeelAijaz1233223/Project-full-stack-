@@ -296,6 +296,22 @@ $music = mysqli_query($conn, $query);
         .star-rating input:checked~label {
             color: #ffca08;
         }
+        .disc-wrapper {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 16/9; /* keeps a 16:9 box */
+    border-radius: 10px;
+    overflow: hidden;
+    background: #000;
+}
+
+.album-cover {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;  /* This makes the image fully cover the container */
+    object-position: center; /* Center the image */
+}
+
 
         footer {
             text-align: center;
