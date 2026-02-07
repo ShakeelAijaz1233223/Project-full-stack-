@@ -260,7 +260,7 @@ if (isset($_SESSION['email']) && isset($conn)) {
         /* --- HERO SECTION --- */
         .hero {
             min-height: calc(100vh - 80px);
-            margin-top: 80px;
+            margin-top: 70px;
             position: relative;
             overflow: hidden;
             display: flex;
