@@ -44,22 +44,20 @@ $albums = mysqli_query($conn, $query);
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
     <style>
      <style>
-:root {
-    --bg: #080808;
-    --card: #111;
-    --accent: #ff0055;
-    --accent-grad: linear-gradient(45deg, #ff0055, #ff5e00);
-    --text-main: #fff;
-    --text-muted: #aaa;
-}
+   :root {
+            --bg: #080808;
+            --card: #111;
+            --accent: #ff0055;
+            --accent-grad: linear-gradient(45deg, #ff0055, #ff5e00);
+        }
 
 /* --- Body & Wrapper --- */
-body {
-    background: var(--bg);
-    color: var(--text-main);
-    font-family: 'Inter', sans-serif;
-    margin: 0;
-}
+ body {
+            background: var(--bg);
+            color: #fff;
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
+        }
 .studio-wrapper {
     width: 95%;
     margin: 0 auto;
