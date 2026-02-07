@@ -9,6 +9,7 @@ $filter = "";
 if (isset($_GET['genre']) && isset($_GET['artist'])) {
     $genre = mysqli_real_escape_string($conn, $_GET['genre']);
     $artist = mysqli_real_escape_string($conn, $_GET['artist']);
+    $artist = mysqli_real_escape_string($conn, $_GET['years']);
     $filter = " WHERE genre = '$genre' AND artist = '$artist' ";
 }
 
