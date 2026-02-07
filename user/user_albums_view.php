@@ -164,10 +164,7 @@ $albums = mysqli_query($conn, $query);
             z-index: 5;
         }
 
-        .album-card .play-btn:hover {
-            transform: translate(-50%, -50%) scale(1.1);
-            background: rgba(255, 0, 85, 0.9);
-        }
+      
 
         .custom-controls {
             position: absolute;
