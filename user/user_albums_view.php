@@ -8,10 +8,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['submit_review'])) {
     $album_id = mysqli_real_escape_string($conn, $_POST['album_id']);
     $rating = (int)$_POST['rating'];
     $comment = mysqli_real_escape_string($conn, $_POST['comment']);
-    
+
     $review_query = "INSERT INTO album_reviews (album_id, rating, comment) VALUES ('$album_id', '$rating', '$comment')";
-    
-    if(mysqli_query($conn, $review_query)) {
+
+    if (mysqli_query($conn, $review_query)) {
         header("Location: " . $_SERVER['PHP_SELF'] . "?status=success");
         exit();
     }
@@ -27,6 +27,7 @@ $albums = mysqli_query($conn, $query);
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -34,7 +35,7 @@ $albums = mysqli_query($conn, $query);
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
-    
+
     <style>
         :root {
             --bg: #0d0d0d;
@@ -43,7 +44,7 @@ $albums = mysqli_query($conn, $query);
             --accent-grad: linear-gradient(135deg, #ff3366, #ff9933);
             --text-main: #f5f5f5;
             --text-muted: #999;
-            --shadow: rgba(0,0,0,0.8);
+            --shadow: rgba(0, 0, 0, 0.8);
         }
 
         body {
@@ -137,20 +138,24 @@ $albums = mysqli_query($conn, $query);
             margin-bottom: 15px;
         }
 
-        .media-wrapper img, .media-wrapper video {
+        .media-wrapper img,
+        .media-wrapper video {
             width: 100%;
             height: 100%;
             object-fit: cover;
             position: absolute;
-            top: 0; left: 0;
+            top: 0;
+            left: 0;
             transition: opacity 0.5s ease;
         }
 
         .play-btn {
             position: absolute;
-            top: 50%; left: 50%;
+            top: 50%;
+            left: 50%;
             transform: translate(-50%, -50%);
-            width: 50px; height: 50px;
+            width: 50px;
+            height: 50px;
             background: var(--accent-grad);
             border-radius: 50%;
             border: none;
@@ -173,8 +178,10 @@ $albums = mysqli_query($conn, $query);
 
         .custom-controls {
             position: absolute;
-            bottom: 0; left: 0; right: 0;
-            background: linear-gradient(transparent, rgba(0,0,0,0.9));
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(transparent, rgba(0, 0, 0, 0.9));
             padding: 10px;
             display: flex;
             align-items: center;
@@ -212,7 +219,7 @@ $albums = mysqli_query($conn, $query);
         }
 
         .meta-info span {
-            background: rgba(255,255,255,0.08);
+            background: rgba(255, 255, 255, 0.08);
             padding: 2px 8px;
             border-radius: 5px;
             color: var(--text-muted);
@@ -250,8 +257,11 @@ $albums = mysqli_query($conn, $query);
         #reviewOverlay {
             display: none;
             position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.9);
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
             backdrop-filter: blur(8px);
             z-index: 9999;
             align-items: center;
@@ -275,52 +285,70 @@ $albums = mysqli_query($conn, $query);
             margin-bottom: 20px;
         }
 
-        .star-rating label { font-size: 2.5rem; color: #333; cursor: pointer; }
-        .star-rating input { display: none; }
-        .star-rating label:hover, .star-rating label:hover~label, .star-rating input:checked~label { color: #ffd700; }
+        .star-rating label {
+            font-size: 2.5rem;
+            color: #333;
+            cursor: pointer;
+        }
 
-        footer { text-align: center; padding: 40px; color: #444; font-size: 0.8rem; }
+        .star-rating input {
+            display: none;
+        }
+
+        .star-rating label:hover,
+        .star-rating label:hover~label,
+        .star-rating input:checked~label {
+            color: #ffd700;
+        }
+
+        footer {
+            text-align: center;
+            padding: 40px;
+            color: #444;
+            font-size: 0.8rem;
+        }
     </style>
 </head>
+
 <body>
 
-<div class="studio-wrapper">
-    <div class="header-section">
-        <h4 class="m-0 fw-bold">Album<span style="color: var(--accent);">Studio</span></h4>
-        <div class="d-flex gap-2">
-            <input type="text" id="search" class="search-box" placeholder="Search by album or artist...">
-            <a href="index.php" class="btn-back"><i class="bi bi-house"></i> Home</a>
+    <div class="studio-wrapper">
+        <div class="header-section">
+            <h4 class="m-0 fw-bold">Album<span style="color: var(--accent);">Studio</span></h4>
+            <div class="d-flex gap-2">
+                <input type="text" id="search" class="search-box" placeholder="Search by album or artist...">
+                <a href="index.php" class="btn-back"><i class="bi bi-house"></i> Home</a>
+            </div>
         </div>
-    </div>
 
-    <div class="grid" id="albumGrid">
-        <?php while ($row = mysqli_fetch_assoc($albums)): 
-            $avg = round($row['avg_rating'], 1);
-        ?>
-            <div class="album-card" data-search="<?= strtolower($row['title'] . ' ' . $row['artist']); ?>">
-                <div class="media-wrapper">
-                    <?php if (!empty($row['video'])): ?>
-                        <video id="vid-<?= $row['id'] ?>" loop playsinline poster="../admin/uploads/albums/<?= $row['cover'] ?>">
-                            <source src="../admin/uploads/albums/<?= $row['video'] ?>" type="video/mp4">
-                        </video>
-                        <button class="play-btn" onclick="handleMedia('<?= $row['id'] ?>', this)">
-                            <i class="bi bi-play-fill"></i>
-                        </button>
-                        <div class="custom-controls">
-                            <input type="range" class="progress" min="0" max="100" value="0">
-                        </div>
-                    <?php else: ?>
-                        <img src="../admin/uploads/albums/<?= $row['cover'] ?>" alt="Cover">
-                    <?php endif; ?>
+        <div class="grid" id="albumGrid">
+            <?php while ($row = mysqli_fetch_assoc($albums)):
+                $avg = round($row['avg_rating'], 1);
+            ?>
+                <div class="album-card" data-search="<?= strtolower($row['title'] . ' ' . $row['artist']); ?>">
+                    <div class="media-wrapper">
+                        <?php if (!empty($row['video'])): ?>
+                            <video id="vid-<?= $row['id'] ?>" loop playsinline poster="../admin/uploads/albums/<?= $row['cover'] ?>">
+                                <source src="../admin/uploads/albums/<?= $row['video'] ?>" type="video/mp4">
+                            </video>
+                            <button class="play-btn" onclick="handleMedia('<?= $row['id'] ?>', this)">
+                                <i class="bi bi-play-fill"></i>
+                            </button>
+                            <div class="custom-controls">
+                                <input type="range" class="progress" min="0" max="100" value="0">
+                            </div>
+                        <?php else: ?>
+                            <img src="../admin/uploads/albums/<?= $row['cover'] ?>" alt="Cover">
+                        <?php endif; ?>
+                    </div>
+
+                    <p class="title"><?= htmlspecialchars($row['title']) ?></p>
+
+                    <<div class="meta-info">
+                        <span class="artist-tag"><?= htmlspecialchars($row['artist']) ?></span>
+                        <span class="album-tag"><?= htmlspecialchars($row['title']) ?></span>
+                        <span class="year-tag"><?= htmlspecialchars($row['year']) ?></span>
                 </div>
-
-                <p class="title"><?= htmlspecialchars($row['title']) ?></p>
-                
-               <<div class="meta-info">
-    <span class="artist-tag"><?= htmlspecialchars($row['artist']) ?></span>
-    <span class="album-tag"><?= htmlspecialchars($row['title']) ?></span>
-    <span class="year-tag"><?= htmlspecialchars($row['year']) ?></span>
-</div>
 
 
 
@@ -332,93 +360,94 @@ $albums = mysqli_query($conn, $query);
                 <button class="rev-btn" onclick="openReview('<?= $row['id'] ?>', '<?= addslashes($row['title']) ?>')">
                     <i class="bi bi-chat-square-text me-2"></i>ADD REVIEW
                 </button>
-            </div>
-        <?php endwhile; ?>
+        </div>
+    <?php endwhile; ?>
     </div>
-</div>
-
-<div id="reviewOverlay">
-    <div class="review-box">
-        <h5 class="text-center mb-1" id="revTitle">Album Name</h5>
-        <p class="text-center text-muted small mb-4">How would you rate this album?</p>
-        
-        <form method="POST">
-            <input type="hidden" name="album_id" id="revAlbumId">
-            <div class="star-rating">
-                <input type="radio" name="rating" value="5" id="s5" required><label for="s5">★</label>
-                <input type="radio" name="rating" value="4" id="s4"><label for="s4">★</label>
-                <input type="radio" name="rating" value="3" id="s3"><label for="s3">★</label>
-                <input type="radio" name="rating" value="2" id="s2"><label for="s2">★</label>
-                <input type="radio" name="rating" value="1" id="s1"><label for="s1">★</label>
-            </div>
-            <textarea name="comment" class="form-control bg-dark text-white border-secondary mb-3" rows="3" placeholder="Write a comment..." required></textarea>
-            <div class="row g-2">
-                <div class="col-6"><button type="button" class="btn btn-secondary w-100" onclick="closeReview()">CANCEL</button></div>
-                <div class="col-6"><button type="submit" name="submit_review" class="btn btn-primary w-100" style="background: var(--accent); border:none;">SUBMIT</button></div>
-            </div>
-        </form>
     </div>
-</div>
 
-<footer>&copy; 2026 Album Studio Pro &bull; Optimized for Performance</footer>
+    <div id="reviewOverlay">
+        <div class="review-box">
+            <h5 class="text-center mb-1" id="revTitle">Album Name</h5>
+            <p class="text-center text-muted small mb-4">How would you rate this album?</p>
 
-<script>
-    // Search Filter
-    document.getElementById("search").addEventListener("input", function() {
-        let val = this.value.toLowerCase();
-        document.querySelectorAll(".album-card").forEach(card => {
-            card.style.display = card.getAttribute('data-search').includes(val) ? "block" : "none";
+            <form method="POST">
+                <input type="hidden" name="album_id" id="revAlbumId">
+                <div class="star-rating">
+                    <input type="radio" name="rating" value="5" id="s5" required><label for="s5">★</label>
+                    <input type="radio" name="rating" value="4" id="s4"><label for="s4">★</label>
+                    <input type="radio" name="rating" value="3" id="s3"><label for="s3">★</label>
+                    <input type="radio" name="rating" value="2" id="s2"><label for="s2">★</label>
+                    <input type="radio" name="rating" value="1" id="s1"><label for="s1">★</label>
+                </div>
+                <textarea name="comment" class="form-control bg-dark text-white border-secondary mb-3" rows="3" placeholder="Write a comment..." required></textarea>
+                <div class="row g-2">
+                    <div class="col-6"><button type="button" class="btn btn-secondary w-100" onclick="closeReview()">CANCEL</button></div>
+                    <div class="col-6"><button type="submit" name="submit_review" class="btn btn-primary w-100" style="background: var(--accent); border:none;">SUBMIT</button></div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <footer>&copy; 2026 Album Studio Pro &bull; Optimized for Performance</footer>
+
+    <script>
+        // Search Filter
+        document.getElementById("search").addEventListener("input", function() {
+            let val = this.value.toLowerCase();
+            document.querySelectorAll(".album-card").forEach(card => {
+                card.style.display = card.getAttribute('data-search').includes(val) ? "block" : "none";
+            });
         });
-    });
 
-    // Play/Pause Control
-    function handleMedia(id, btn) {
-        const video = document.getElementById('vid-' + id);
-        const icon = btn.querySelector('i');
+        // Play/Pause Control
+        function handleMedia(id, btn) {
+            const video = document.getElementById('vid-' + id);
+            const icon = btn.querySelector('i');
 
-        // Stop other videos
-        document.querySelectorAll('video').forEach(v => {
-            if (v !== video) {
-                v.pause();
-                const otherBtn = v.closest('.media-wrapper').querySelector('.play-btn i');
-                if(otherBtn) otherBtn.className = 'bi bi-play-fill';
+            // Stop other videos
+            document.querySelectorAll('video').forEach(v => {
+                if (v !== video) {
+                    v.pause();
+                    const otherBtn = v.closest('.media-wrapper').querySelector('.play-btn i');
+                    if (otherBtn) otherBtn.className = 'bi bi-play-fill';
+                }
+            });
+
+            if (video.paused) {
+                video.play();
+                icon.className = 'bi bi-pause-fill';
+            } else {
+                video.pause();
+                icon.className = 'bi bi-play-fill';
             }
-        });
-
-        if (video.paused) {
-            video.play();
-            icon.className = 'bi bi-pause-fill';
-        } else {
-            video.pause();
-            icon.className = 'bi bi-play-fill';
         }
-    }
 
-    // Progress Bar logic
-    document.querySelectorAll('video').forEach(video => {
-        const wrapper = video.closest('.media-wrapper');
-        const progress = wrapper.querySelector('.progress');
-        
-        video.addEventListener('timeupdate', () => {
-            progress.value = (video.currentTime / video.duration) * 100;
+        // Progress Bar logic
+        document.querySelectorAll('video').forEach(video => {
+            const wrapper = video.closest('.media-wrapper');
+            const progress = wrapper.querySelector('.progress');
+
+            video.addEventListener('timeupdate', () => {
+                progress.value = (video.currentTime / video.duration) * 100;
+            });
+
+            progress.addEventListener('input', () => {
+                video.currentTime = (progress.value / 100) * video.duration;
+            });
         });
 
-        progress.addEventListener('input', () => {
-            video.currentTime = (progress.value / 100) * video.duration;
-        });
-    });
+        // Modal Control
+        function openReview(id, title) {
+            document.getElementById('revAlbumId').value = id;
+            document.getElementById('revTitle').innerText = title;
+            document.getElementById('reviewOverlay').style.display = 'flex';
+        }
 
-    // Modal Control
-    function openReview(id, title) {
-        document.getElementById('revAlbumId').value = id;
-        document.getElementById('revTitle').innerText = title;
-        document.getElementById('reviewOverlay').style.display = 'flex';
-    }
-
-    function closeReview() {
-        document.getElementById('reviewOverlay').style.display = 'none';
-    }
-</script>
+        function closeReview() {
+            document.getElementById('reviewOverlay').style.display = 'none';
+        }
+    </script>
 
 </body>
+
 </html>
