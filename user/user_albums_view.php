@@ -2,6 +2,24 @@
 session_start();
 include "../config/db.php";
 
+include "../config/db.php";
+
+// Check for Genre or Artist filters from the URL
+$filter = "";
+if (isset($_GET['genre']) && isset($_GET['artist'])) {
+    $genre = mysqli_real_escape_string($conn, $_GET['genre']);
+    $artist = mysqli_real_escape_string($conn, $_GET['artist']);
+    $filter = " WHERE genre = '$genre' AND artist = '$artist' ";
+}
+
+// Updated Query with Filter
+$query = "SELECT *, 
+          (SELECT AVG(rating) FROM reviews WHERE reviews.music_id = music_studio.id) as avg_rating,
+          (SELECT COUNT(*) FROM reviews WHERE reviews.music_id = music_studio.id) as total_reviews
+          FROM music_studio $filter ORDER BY id DESC";
+
+
+
 // Handle Review Submission
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['submit_review'])) {
     $album_id = mysqli_real_escape_string($conn, $_POST['album_id']);
