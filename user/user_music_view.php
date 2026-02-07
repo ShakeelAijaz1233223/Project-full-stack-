@@ -234,6 +234,11 @@ footer { text-align:center; padding:40px; font-size:0.7rem; color:#444; }
                 <i class="bi bi-disc-fill"></i>
                 <button class="play-btn" onclick="togglePlay(this)"><i class="bi bi-play-fill"></i></button>
             </div>
+            <div class="custom-controls">
+                <input type="range" class="progress" min="0" max="100" value="0">
+                <button class="mute-btn"><i class="bi bi-volume-up"></i></button>
+                <button class="fullscreen-btn"><i class="bi bi-arrows-fullscreen"></i></button>
+            </div>
             <div class="title"><?= htmlspecialchars($row['title']); ?></div>
             <div class="artist"><?= htmlspecialchars($row['artist']); ?></div>
             <div class="stars-display">
@@ -243,11 +248,6 @@ footer { text-align:center; padding:40px; font-size:0.7rem; color:#444; }
             <button class="rev-btn" onclick="openReview('<?= $row['id']; ?>','<?= addslashes($row['title']); ?>')">REVIEW</button>
 
             <!-- Custom controls -->
-            <div class="custom-controls">
-                <input type="range" class="progress" min="0" max="100" value="0">
-                <button class="mute-btn"><i class="bi bi-volume-up"></i></button>
-                <button class="fullscreen-btn"><i class="bi bi-arrows-fullscreen"></i></button>
-            </div>
 
             <audio id="audio-<?= $row['id']; ?>">
                 <source src="../admin/uploads/music/<?= $row['file']; ?>" type="audio/mpeg">
