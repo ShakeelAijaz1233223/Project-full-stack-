@@ -340,9 +340,22 @@ $music = mysqli_query($conn, $query);
                         </div>
                     </div>
 
-                    <p class="title"><?= htmlspecialchars($row['title']) ?></p>
-                    <span class="artist-tag"><?= htmlspecialchars($row['artist']) ?></span>
-                    
+                   <div class="meta-info">
+    <span class="id-tag">ID: <?= htmlspecialchars($row['id']) ?></span>
+    <span class="title-tag">Title: <?= htmlspecialchars($row['title']) ?></span>
+    <span class="artist-tag">Artist: <?= htmlspecialchars($row['artist']) ?></span>
+    <span class="album-tag">Album: <?= htmlspecialchars($row['album']) ?></span>
+    <span class="year-tag">Year: <?= htmlspecialchars($row['year']) ?></span>
+    <span class="file-tag">File: <?= htmlspecialchars($row['file']) ?></span>
+    <span class="album-id-tag">Album ID: <?= htmlspecialchars($row['album_id']) ?></span>
+    <span class="genre-tag">Genre: <?= htmlspecialchars($row['genre']) ?></span>
+    <span class="duration-tag">Duration: <?= htmlspecialchars($row['duration']) ?></span>
+    <span class="desc-tag">Description: <?= htmlspecialchars(substr($row['description'],0,60)) ?>...</span>
+    <span class="created-tag">Uploaded: <?= date('d M Y', strtotime($row['created_at'])) ?></span>
+    <span class="cover-tag">Cover: <?= htmlspecialchars($row['cover_image']) ?></span>
+    <span class="full-cover-tag">Full Path: <?= htmlspecialchars($row['full_cover_image_path']) ?></span>
+</div>
+
                     <div class="stars-display">
                         <?php for ($i = 1; $i <= 5; $i++) echo ($i <= $avg) ? '★' : '☆'; ?>
                         <span style="color: #666; font-size: 0.7rem; margin-left: 5px;">(<?= $row['total_reviews'] ?>)</span>
