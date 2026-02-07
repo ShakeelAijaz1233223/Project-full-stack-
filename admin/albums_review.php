@@ -11,10 +11,10 @@ if (isset($_GET['delete'])) {
 }
 
 // 2. Fetch all reviews with Album Titles
-$query = "SELECT album_reviews.*, albums.title as album_name, albums.cover 
+$query = "SELECT album_reviews.*, albums.title as album_name 
           FROM album_reviews 
           JOIN albums ON album_reviews.album_id = albums.id 
-          ORDER BY album_reviews.created_at DESC";
+          ORDER BY album_reviews.id DESC";
 $result = mysqli_query($conn, $query);
 ?>
 
