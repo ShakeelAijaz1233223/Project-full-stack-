@@ -267,29 +267,6 @@ if (isset($_SESSION['email']) && isset($conn)) {
             justify-content: center;
             background: url('https://images.unsplash.com/photo-1514525253440-b393452e23f9?q=80&w=1920&auto=format&fit=crop') no-repeat center center/cover;
         }
-        .hero-title {
-  font-size: 3rem;
-  font-weight: 700;
-  color: #fff;
-  font-family: sans-serif;
-}
-
-.highlight {
-  color: #ff3366;
-}
-
-#animated-text {
-  display: inline-block;
-  white-space: nowrap;
-  overflow: hidden;
-  border-right: 2px solid #fff; /* Cursor effect */
-  animation: blink-cursor 0.7s steps(1) infinite;
-}
-
-@keyframes blink-cursor {
-  0%, 50%, 100% { border-color: transparent; }
-  25%, 75% { border-color: #fff; }
-}
 
         .hero-overlay {
             position: absolute;
@@ -690,10 +667,7 @@ if (isset($_SESSION['email']) && isset($conn)) {
         <div class="hero-overlay"></div>
         <div class="hero-content animate__animated animate__fadeInUp">
             <span class="hero-subtitle">Welcome to the future</span>
-            <h1 class="hero-title">
-                <span id="animated-text"></span>
-                <span class="highlight">REVOLUTION</span>
-            </h1>
+            <h1 class="hero-title">VISUAL AUDIO <br><span class="highlight">REVOLUTION</span></h1>
             <p class="hero-desc">
                 The thirst for learning meeting the rhythm of life. <br>
                 Stream. Review. Rate. Experience entertainment like never before.
@@ -979,7 +953,6 @@ if (isset($_SESSION['email']) && isset($conn)) {
         });
 
         document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
-        
     </script>
 </body>
 
