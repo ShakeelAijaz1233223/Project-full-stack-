@@ -92,18 +92,21 @@ $albums = mysqli_query($conn, $query);
             gap: 20px;
         }
 
-        .album-card {
-            background: var(--card-bg) !important;
-            backdrop-filter: blur(10px);
-            border: 1px solid var(--glass-border) !important;
-            border-radius: 20px !important;
-            padding: 15px;
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            position: relative;
-            overflow: hidden;
-            height: 100%;
-            width: 100% ;
-        }
+       .album-card {
+    background: rgba(255, 255, 255, 0.1); /* Glassy semi-transparent */
+    backdrop-filter: blur(15px);          /* Stronger blur for depth */
+    border: 1px solid rgba(255, 255, 255, 0.25); /* Glass-like border */
+    border-radius: 25px;                  /* Bigger rounded corners */
+    padding: 25px;                        /* More inner space */
+    width: 100%;
+    height: 100%;
+    transition: transform 0.5s ease, box-shadow 0.5s ease;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
 
         .album-card:hover {
             transform: translateY(-10px) scale(1.02);
