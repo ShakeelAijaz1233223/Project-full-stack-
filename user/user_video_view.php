@@ -212,12 +212,13 @@ $videos = mysqli_query($conn, $query);
         }
 
         .meta-info span {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-            margin: 8px 0 12px;
-            font-size: 0.75rem;
-            color: var(--text-muted);
+              background: rgba(255, 255, 255, 0.05);
+            padding: 3px 6px;
+            border-radius: 6px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            transition: 0.3s;
         }
 
         .artist-tag {
