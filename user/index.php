@@ -996,6 +996,7 @@ function type() {
   if (charIndex < texts[textIndex].length) {
     animatedText.textContent += texts[textIndex].charAt(charIndex);
     charIndex++;
+    textIndex.style.color = "red";
     setTimeout(type, 150);
   } else {
     // Wait 1 second then delete
