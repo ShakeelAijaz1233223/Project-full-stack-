@@ -2,7 +2,7 @@
 session_start();
 include "../config/db.php";
 
-// 1. Handle Review Submission
+// 1. Handle Review Submission (Secure way)
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['submit_review'])) {
     $album_id = mysqli_real_escape_string($conn, $_POST['album_id']);
     $rating = (int)$_POST['rating'];
@@ -16,7 +16,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['submit_review'])) {
     }
 }
 
-// 2. Fetch albums with Average Ratings & Join data
+// 2. Fetch albums with Average Ratings & Join data (Includes Year/Album)
 $query = "SELECT albums.*, 
           (SELECT AVG(rating) FROM album_reviews WHERE album_reviews.album_id = albums.id) as avg_rating,
           (SELECT COUNT(*) FROM album_reviews WHERE album_reviews.album_id = albums.id) as total_reviews
@@ -29,9 +29,11 @@ $albums = mysqli_query($conn, $query);
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Albums Studio | Advanced Search</title>
+    <title>Video Studio | Pro Dashboard</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    
     <style>
         :root {
             --bg: #0d0d0d;
@@ -40,101 +42,150 @@ $albums = mysqli_query($conn, $query);
             --accent-grad: linear-gradient(135deg, #ff3366, #ff9933);
             --text-main: #f5f5f5;
             --text-muted: #999;
-            --shadow: rgba(0,0,0,0.6);
+            --shadow: rgba(0,0,0,0.8);
         }
 
-        body { background: var(--bg); color: var(--text-main); font-family: 'Inter', sans-serif; }
+        body {
+            background: var(--bg);
+            color: var(--text-main);
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+        }
+
         .studio-wrapper { width: 95%; margin: 0 auto; padding: 25px 0; }
 
-        /* Header & Search */
-        .header-section { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #222; padding-bottom: 15px; margin-bottom: 30px; flex-wrap: wrap; gap: 15px; }
-        .search-box { background: #1f1f1f; border: 1px solid #333; color: #fff; border-radius: 10px; padding: 10px 18px; width: 350px; transition: 0.3s; }
-        .search-box:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 10px rgba(255, 51, 102, 0.4); }
+        /* --- Header --- */
+        .header-section {
+            display: flex; justify-content: space-between; align-items: center;
+            border-bottom: 1px solid #222; padding-bottom: 15px; margin-bottom: 30px;
+        }
 
-        /* Grid & Cards */
-        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 25px; }
-        .album-card { background: var(--card); border-radius: 20px; padding: 15px; border: 1px solid #2a2a2a; transition: 0.3s; }
-        .album-card:hover { transform: translateY(-6px); border-color: var(--accent); }
+        .search-box {
+            background: #1f1f1f; border: 1px solid #333; color: var(--text-main);
+            border-radius: 10px; padding: 8px 16px; width: 320px; transition: 0.3s;
+        }
+        .search-box:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 12px rgba(255, 51, 102, 0.3); }
 
-        .media-wrapper { position: relative; width: 100%; aspect-ratio: 1/1; background: #000; border-radius: 15px; overflow: hidden; margin-bottom: 15px; }
+        .btn-back {
+            background: #222; color: var(--text-main); padding: 7px 18px;
+            border-radius: 10px; text-decoration: none; display: flex; align-items: center; gap: 8px; transition: 0.3s;
+        }
+        .btn-back:hover { background: var(--accent); color: #fff; }
+
+        /* --- Grid & Cards --- */
+        .grid {
+            display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 25px;
+        }
+
+        .video-card {
+            background: var(--card); border-radius: 20px; padding: 12px;
+            border: 1px solid #2a2a2a; box-shadow: 0 10px 20px var(--shadow); transition: all 0.3s ease;
+        }
+        .video-card:hover { transform: translateY(-8px); border-color: var(--accent); }
+
+        .media-wrapper {
+            position: relative; width: 100%; aspect-ratio: 1/1;
+            background: #000; border-radius: 15px; overflow: hidden; margin-bottom: 15px;
+        }
         .media-wrapper img, .media-wrapper video { width: 100%; height: 100%; object-fit: cover; }
+
+        .play-btn {
+            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            width: 55px; height: 55px; background: var(--accent-grad); border-radius: 50%;
+            border: none; color: #fff; display: flex; align-items: center; justify-content: center;
+            font-size: 1.8rem; cursor: pointer; z-index: 10; opacity: 0; transition: 0.3s;
+        }
+        .video-card:hover .play-btn { opacity: 1; }
+
+        .custom-controls {
+            position: absolute; bottom: 0; left: 0; right: 0;
+            background: linear-gradient(transparent, rgba(0,0,0,0.9));
+            padding: 10px; display: flex; align-items: center; gap: 10px; z-index: 11; opacity: 0; transition: 0.3s;
+        }
+        .media-wrapper:hover .custom-controls { opacity: 1; }
+
+        .progress { flex: 1; height: 5px; accent-color: var(--accent); cursor: pointer; }
+
+        /* --- Meta Info --- */
+        .title { font-size: 1.1rem; font-weight: 700; color: #fff; margin: 0; }
         
-        .play-btn { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 55px; height: 55px; background: var(--accent-grad); border-radius: 50%; border: none; color: #fff; display: flex; align-items: center; justify-content: center; opacity: 0; cursor: pointer; z-index: 5; transition: 0.3s; font-size: 1.5rem; }
-        .album-card:hover .play-btn { opacity: 1; }
+        .meta-info { display: flex; gap: 8px; margin: 8px 0 12px; font-size: 0.75rem; flex-wrap: wrap; }
+        .meta-info span { background: rgba(255,255,255,0.08); padding: 3px 10px; border-radius: 6px; color: var(--text-muted); }
+        .artist-tag { color: var(--accent) !important; font-weight: 600; background: rgba(255, 51, 102, 0.1) !important; }
 
-        /* Info Display */
-        .title { font-size: 1.1rem; font-weight: 700; color: #fff; margin-bottom: 4px; }
-        .info-row { font-size: 0.85rem; margin-bottom: 3px; display: flex; align-items: center; gap: 8px; color: var(--text-muted); }
-        .info-row i { color: var(--accent); width: 15px; text-align: center; }
-        .badge-year { background: rgba(255, 51, 102, 0.1); color: var(--accent); padding: 2px 8px; border-radius: 5px; font-weight: 600; font-size: 0.75rem; }
+        .stars-display { color: #ffd700; font-size: 0.85rem; margin-bottom: 15px; }
 
-        .stars-row { color: #ffd700; font-size: 0.85rem; margin: 12px 0; }
-        .btn-rev-pop { background: var(--accent); border: none; color: #fff; width: 100%; padding: 10px; border-radius: 12px; font-weight: 600; transition: 0.3s; }
-        .btn-rev-pop:hover { filter: brightness(1.2); }
+        .rev-btn {
+            width: 100%; padding: 10px; border-radius: 12px; border: none;
+            background: #252525; color: #fff; font-size: 0.85rem; font-weight: 600; transition: 0.3s;
+        }
+        .rev-btn:hover { background: var(--accent); }
 
-        /* Modal */
-        #reviewOverlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.9); backdrop-filter: blur(8px); z-index: 9999; align-items: center; justify-content: center; }
-        .review-modal { background: var(--card); width: 90%; max-width: 400px; padding: 30px; border-radius: 22px; border: 1px solid #333; }
-        .star-input { display: flex; flex-direction: row-reverse; justify-content: center; gap: 8px; margin-bottom: 20px; }
-        .star-input input { display: none; }
-        .star-input label { font-size: 2.5rem; color: #333; cursor: pointer; transition: 0.2s; }
-        .star-input label:hover, .star-input label:hover~label, .star-input input:checked~label { color: #ffd700; }
+        /* --- Review Modal --- */
+        #reviewOverlay {
+            display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.95);
+            backdrop-filter: blur(10px); z-index: 9999; align-items: center; justify-content: center;
+        }
+        .review-box {
+            background: #151515; padding: 30px; border-radius: 25px;
+            width: 90%; max-width: 400px; border: 1px solid #333;
+        }
+        .star-rating { display: flex; flex-direction: row-reverse; justify-content: center; gap: 8px; margin-bottom: 20px; }
+        .star-rating label { font-size: 2.5rem; color: #333; cursor: pointer; transition: 0.2s; }
+        .star-rating input { display: none; }
+        .star-rating label:hover, .star-rating label:hover~label, .star-rating input:checked~label { color: #ffd700; }
+
+        footer { text-align: center; padding: 40px; color: #444; font-size: 0.8rem; }
     </style>
 </head>
 <body>
 
 <div class="studio-wrapper">
     <div class="header-section">
-        <h4 class="m-0 fw-bold">ALBUMS<span style="color: var(--accent);">STUDIO</span></h4>
+        <h4 class="m-0 fw-bold">ALBUM<span style="color: var(--accent);">STUDIO</span></h4>
         <div class="d-flex gap-2">
-            <input type="text" id="search" class="search-box" placeholder="Search by name, artist, year, or album...">
-            <a href="index.php" class="btn btn-dark rounded-pill px-4 border-secondary"><i class="bi bi-house me-2"></i>Home</a>
+            <input type="text" id="search" class="search-box" placeholder="Search Name, Artist, Year, Album...">
+            <a href="index.php" class="btn-back"><i class="bi bi-house"></i> Home</a>
         </div>
     </div>
 
     <div class="grid" id="albumGrid">
         <?php while ($row = mysqli_fetch_assoc($albums)): 
             $avg = round($row['avg_rating'], 1);
-            // Search data string combining Name, Artist, Album, and Year
-            $searchMeta = strtolower($row['title'] . ' ' . $row['artist'] . ' ' . ($row['album'] ?? '') . ' ' . ($row['year'] ?? ''));
+            // Multi-field search data
+            $searchData = strtolower($row['title'] . ' ' . $row['artist'] . ' ' . ($row['album'] ?? '') . ' ' . ($row['year'] ?? ''));
         ?>
-            <div class="album-card" data-search="<?= $searchMeta; ?>">
+            <div class="video-card" data-search="<?= $searchData ?>">
                 <div class="media-wrapper">
                     <?php if (!empty($row['video'])): ?>
                         <video id="vid-<?= $row['id']; ?>" preload="metadata" poster="../admin/uploads/albums/<?= $row['cover']; ?>">
                             <source src="../admin/uploads/albums/<?= $row['video']; ?>" type="video/mp4">
                         </video>
                         <button class="play-btn" onclick="togglePlay('<?= $row['id']; ?>', this)"><i class="bi bi-play-fill"></i></button>
+                        <div class="custom-controls">
+                            <input type="range" class="progress" min="0" max="100" value="0" step="0.1">
+                        </div>
                     <?php else: ?>
                         <img src="../admin/uploads/albums/<?= $row['cover']; ?>" alt="Cover">
                     <?php endif; ?>
                 </div>
 
-                <div class="card-body p-1">
-                    <div class="title text-truncate"><?= htmlspecialchars($row['title']); ?></div>
+                <div class="p-1">
+                    <p class="title text-truncate"><?= htmlspecialchars($row['title']); ?></p>
                     
-                    <div class="info-row">
-                        <i class="bi bi-person-fill"></i> 
-                        <span><?= htmlspecialchars($row['artist']); ?></span>
+                    <div class="meta-info">
+                        <span class="artist-tag"><?= htmlspecialchars($row['artist']); ?></span>
+                        <span><?= htmlspecialchars($row['album'] ?? 'Single'); ?></span>
+                        <span><?= htmlspecialchars($row['year'] ?? 'N/A'); ?></span>
                     </div>
 
-                    <div class="info-row">
-                        <i class="bi bi-disc-fill"></i> 
-                        <span class="text-truncate"><?= htmlspecialchars($row['album'] ?? 'Single'); ?></span>
-                    </div>
-
-                    <div class="info-row mt-2">
-                        <i class="bi bi-calendar-event-fill"></i>
-                        <span class="badge-year"><?= htmlspecialchars($row['year'] ?? 'N/A'); ?></span>
-                    </div>
-                    
-                    <div class="stars-row">
+                    <div class="stars-display">
                         <?php for ($i = 1; $i <= 5; $i++) echo ($i <= $avg) ? '★' : '☆'; ?>
-                        <span class="ms-1 text-muted small">(<?= $row['total_reviews'] ?> reviews)</span>
+                        <span style="color: #666; font-size: 0.75rem; margin-left: 5px;">(<?= $row['total_reviews'] ?>)</span>
                     </div>
 
-                    <button class="btn-rev-pop" onclick="popReview('<?= $row['id'] ?>', '<?= addslashes($row['title']) ?>')">
-                        Rate Experience
+                    <button class="rev-btn" onclick="popReview('<?= $row['id'] ?>', '<?= addslashes($row['title']) ?>')">
+                        <i class="bi bi-chat-square-text me-2"></i>ADD REVIEW
                     </button>
                 </div>
             </div>
@@ -143,45 +194,41 @@ $albums = mysqli_query($conn, $query);
 </div>
 
 <div id="reviewOverlay">
-    <div class="review-modal shadow-lg">
+    <div class="review-box">
         <h5 class="text-center mb-1" id="popTitle">Album Name</h5>
-        <p class="text-center text-muted small mb-4">How much did you like it?</p>
+        <p class="text-center text-muted small mb-4">How was your experience?</p>
+        
         <form method="POST">
             <input type="hidden" name="album_id" id="popId">
-            <div class="star-input">
+            <div class="star-rating">
                 <input type="radio" name="rating" value="5" id="s5" required><label for="s5">★</label>
                 <input type="radio" name="rating" value="4" id="s4"><label for="s4">★</label>
                 <input type="radio" name="rating" value="3" id="s3"><label for="s3">★</label>
                 <input type="radio" name="rating" value="2" id="s2"><label for="s2">★</label>
                 <input type="radio" name="rating" value="1" id="s1"><label for="s1">★</label>
             </div>
-            <textarea name="comment" class="form-control bg-dark text-white border-secondary mb-3" rows="3" placeholder="Share your feedback..." required></textarea>
-            <div class="d-flex gap-2">
-                <button type="button" class="btn btn-secondary w-100 py-2" onclick="closePop()">Close</button>
-                <button type="submit" name="submit_review" class="btn btn-danger w-100 py-2" style="background: var(--accent);">Submit Rate</button>
+            <textarea name="comment" class="form-control bg-dark text-white border-secondary mb-4" rows="3" placeholder="Write your thoughts..." required></textarea>
+            <div class="row g-2">
+                <div class="col-6"><button type="button" class="btn btn-secondary w-100 fw-bold" onclick="closePop()">CANCEL</button></div>
+                <div class="col-6"><button type="submit" name="submit_review" class="btn btn-primary w-100 fw-bold" style="background: var(--accent); border:none;">SUBMIT</button></div>
             </div>
         </form>
     </div>
 </div>
 
+<footer>&copy; 2026 Video Studio Pro &bull; Optimized for Performance</footer>
+
 <script>
-    // 1. ADVANCED MULTI-FIELD SEARCH
+    // 1. Live Advanced Search (Name, Artist, Year, Album)
     document.getElementById("search").addEventListener("input", function() {
         let val = this.value.toLowerCase().trim();
-        let cards = document.querySelectorAll(".album-card");
-        
-        cards.forEach(card => {
-            let searchContent = card.getAttribute('data-search');
-            // Check if input matches Name, Artist, Year, or Album
-            if (searchContent.includes(val)) {
-                card.style.display = "block";
-            } else {
-                card.style.display = "none";
-            }
+        document.querySelectorAll(".video-card").forEach(card => {
+            let info = card.getAttribute('data-search');
+            card.style.display = info.includes(val) ? "block" : "none";
         });
     });
 
-    // 2. Video Player Logic
+    // 2. Pro Video Controller
     function togglePlay(id, btn) {
         const video = document.getElementById('vid-' + id);
         const icon = btn.querySelector('i');
@@ -201,6 +248,14 @@ $albums = mysqli_query($conn, $query);
             video.pause();
             icon.className = 'bi bi-play-fill';
         }
+
+        const progress = video.closest('.media-wrapper').querySelector('.progress');
+        video.ontimeupdate = () => {
+            progress.value = (video.currentTime / video.duration) * 100;
+        };
+        progress.oninput = () => {
+            video.currentTime = (progress.value / 100) * video.duration;
+        };
     }
 
     // 3. Modal Controls
