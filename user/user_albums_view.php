@@ -193,7 +193,9 @@ $albums = mysqli_query($conn, $query);
             z-index: 5;
         }
 
-        
+        .media-wrapper:hover .custom-controls {
+            opacity: 1;
+        }
 
         .custom-controls button {
             background: none;
