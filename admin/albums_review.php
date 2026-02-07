@@ -2,16 +2,21 @@
 session_start();
 include "../config/db.php";
 
-// 1. Handle Delete Review
+// 1. DELETE LOGIC - Fixed Redirection
 if (isset($_GET['delete'])) {
     $id = (int)$_GET['delete'];
-    mysqli_query($conn, "DELETE FROM album_reviews WHERE id = $id");
-    header("Location: album_reviews_manage.php?status=deleted");
-    exit();
+    
+    $delete = mysqli_query($conn, "DELETE FROM album_reviews WHERE id = $id");
+    
+    if($delete) {
+        // Clear message dikhane ke liye status bhej rahe hain
+        header("Location: album_reviews_manage.php?status=deleted");
+        exit();
+    }
 }
 
-// 2. Fetch all reviews with Album Titles
-$query = "SELECT album_reviews.*, albums.title as album_name 
+// 2. FETCH REVIEWS (Added cover in SELECT)
+$query = "SELECT album_reviews.*, albums.title as album_name, albums.cover 
           FROM album_reviews 
           JOIN albums ON album_reviews.album_id = albums.id 
           ORDER BY album_reviews.id DESC";
@@ -33,9 +38,9 @@ $result = mysqli_query($conn, $query);
         .table thead { background: #1a1a1a; }
         .album-img { width: 40px; height: 40px; border-radius: 5px; object-fit: cover; margin-right: 10px; }
         .stars { color: #ffca08; }
-        .btn-action { padding: 4px 8px; font-size: 0.8rem; }
-        .status-msg { font-size: 0.85rem; padding: 10px; border-radius: 5px; margin-bottom: 20px; }
-        .badge-rating { background: var(--accent); color: white; font-size: 0.75rem; }
+        /* Success Message Styling */
+        .alert-delete { background: #155724; color: #d4edda; border: none; font-size: 0.9rem; margin-bottom: 20px; }
+        .btn-action { padding: 4px 8px; font-size: 0.8rem; border-radius: 5px; }
     </style>
 </head>
 <body>
@@ -43,11 +48,14 @@ $result = mysqli_query($conn, $query);
 <div class="container py-5">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h3 class="fw-bold">ALBUM <span style="color: var(--accent);">REVIEWS</span></h3>
-        <a href="index.php" class="btn btn-outline-light btn-sm"><i class="bi bi-speedometer2"></i> Dashboard</a>
+        <a href="index.php" class="btn btn-outline-light btn-sm px-3"><i class="bi bi-speedometer2"></i> Dashboard</a>
     </div>
 
-    <?php if(isset($_GET['status'])): ?>
-        <div class="alert alert-danger status-msg bg-danger text-white border-0">Review deleted successfully!</div>
+    <?php if(isset($_GET['status']) && $_GET['status'] == 'deleted'): ?>
+        <div class="alert alert-success alert-delete alert-dismissible fade show shadow-sm" role="alert">
+            <i class="bi bi-check-circle-fill me-2"></i> Review was deleted successfully!
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="alert"></button>
+        </div>
     <?php endif; ?>
 
     <div class="table-container shadow-lg">
@@ -68,7 +76,7 @@ $result = mysqli_query($conn, $query);
                             <tr>
                                 <td>
                                     <div class="d-flex align-items-center">
-                                        <img src="uploads/albums/<?= $row['cover'] ?>" class="album-img">
+                                        <img src="../uploads/albums/<?= $row['cover'] ?>" class="album-img" onerror="this.src='https://via.placeholder.com/40'">
                                         <span class="fw-semibold"><?= htmlspecialchars($row['album_name']) ?></span>
                                     </div>
                                 </td>
@@ -79,16 +87,17 @@ $result = mysqli_query($conn, $query);
                                     <small class="text-muted"><?= $row['rating'] ?>/5</small>
                                 </td>
                                 <td style="max-width: 300px;">
-                                    <div class="text-truncate" title="<?= htmlspecialchars($row['comment']) ?>">
+                                    <div class="text-truncate text-muted" title="<?= htmlspecialchars($row['comment']) ?>">
                                         <?= htmlspecialchars($row['comment']) ?>
                                     </div>
                                 </td>
-                                <td><small class="text-muted"><?= date('d M, Y', strtotime($row['created_at'])) ?></small></td>
+                                <td><small class="text-muted small"><?= date('d M, Y', strtotime($row['created_at'])) ?></small></td>
                                 <td class="text-center">
-                                    <a href="?delete=<?= $row['id'] ?>" class="btn btn-outline-danger btn-action" 
-                                       onclick="return confirm('Are you sure you want to delete this review?')">
+                                    <a href="album_reviews_manage.php?delete=<?= $row['id'] ?>" 
+                                       class="btn btn-outline-danger btn-action" 
+                                       onclick="return confirm('Pakka delete karna hai?')">
                                         <i class="bi bi-trash"></i>
-                                    </button>
+                                    </a>
                                 </td>
                             </tr>
                         <?php endwhile; ?>
@@ -103,5 +112,6 @@ $result = mysqli_query($conn, $query);
     </div>
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
