@@ -352,8 +352,6 @@ $music = mysqli_query($conn, $query);
     <span class="duration-tag">Duration: <?= htmlspecialchars($row['duration']) ?></span>
     <span class="desc-tag">Description: <?= htmlspecialchars(substr($row['description'],0,60)) ?>...</span>
     <span class="created-tag">Uploaded: <?= date('d M Y', strtotime($row['created_at'])) ?></span>
-    <span class="cover-tag">Cover: <?= htmlspecialchars($row['cover_image']) ?></span>
-    <span class="full-cover-tag">Full Path: <?= htmlspecialchars($row['full_cover_image_path']) ?></span>
 </div>
 
                     <div class="stars-display">
