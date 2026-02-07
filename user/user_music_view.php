@@ -1,19 +1,14 @@
 <?php
-session_start();
 include "../config/db.php";
 
 // Handle Review Submission
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['submit_review'])) {
-    $music_id = mysqli_real_escape_string($conn, $_POST['music_id']);
-    $rating = (int)$_POST['rating'];
+    $music_id = $_POST['music_id'];
+    $rating = $_POST['rating'];
     $comment = mysqli_real_escape_string($conn, $_POST['comment']);
-
-    $review_query = "INSERT INTO reviews (music_id, rating, comment) VALUES ('$music_id', '$rating', '$comment')";
-
-    if (mysqli_query($conn, $review_query)) {
-        header("Location: " . $_SERVER['PHP_SELF'] . "?status=success");
-        exit();
-    }
+    mysqli_query($conn, "INSERT INTO reviews (music_id, rating, comment) VALUES ('$music_id', '$rating', '$comment')");
+    header("Location: " . $_SERVER['PHP_SELF'] . "?status=reviewed");
+    exit();
 }
 
 // Fetch Music with Average Ratings
@@ -43,7 +38,7 @@ $music = mysqli_query($conn, $query);
             --accent-grad: linear-gradient(135deg, #ff3366, #ff9933);
             --text-main: #f5f5f5;
             --text-muted: #999;
-            --shadow: rgba(0, 0, 0, 0.8);
+            --shadow: rgba(0,0,0,0.8);
         }
 
         body {
@@ -60,7 +55,7 @@ $music = mysqli_query($conn, $query);
             padding: 25px 0;
         }
 
-        /* --- Header --- */
+        /* --- Header Section --- */
         .header-section {
             display: flex;
             justify-content: space-between;
@@ -105,10 +100,10 @@ $music = mysqli_query($conn, $query);
             color: #fff;
         }
 
-        /* --- Grid & Cards --- */
+        /* --- Grid & Music Cards --- */
         .grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
             gap: 25px;
         }
 
@@ -119,7 +114,6 @@ $music = mysqli_query($conn, $query);
             border: 1px solid #2a2a2a;
             box-shadow: 0 10px 20px var(--shadow);
             transition: all 0.3s ease;
-            position: relative;
         }
 
         .music-card:hover {
@@ -127,26 +121,29 @@ $music = mysqli_query($conn, $query);
             border-color: var(--accent);
         }
 
-        /* --- Media Wrapper (Vinyl Animation) --- */
+        /* --- Audio Visual/Thumbnail Area --- */
         .media-wrapper {
             position: relative;
             width: 100%;
             aspect-ratio: 1/1;
+            background: #000;
             background: linear-gradient(45deg, #111, #222);
             border-radius: 15px;
             overflow: hidden;
+            margin-bottom: 15px;
             display: flex;
             align-items: center;
             justify-content: center;
-            margin-bottom: 15px;
         }
 
+        /* Vinyl Animation for Music */
         .vinyl-disc {
             width: 80%;
             height: 80%;
             border-radius: 50%;
             background: radial-gradient(circle, #333 20%, #111 21%, #111 100%);
             border: 2px solid #222;
+            position: relative;
             animation: rotate 5s linear infinite;
             animation-play-state: paused;
         }
@@ -156,20 +153,13 @@ $music = mysqli_query($conn, $query);
         }
 
         @keyframes rotate {
-            0% {
-                transform: rotate(0deg);
-            }
-
-            100% {
-                transform: rotate(360deg);
-            }
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
         }
 
+        /* --- Play Button --- */
         .play-btn {
             position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
             width: 55px;
             height: 55px;
             background: var(--accent-grad);
@@ -186,17 +176,15 @@ $music = mysqli_query($conn, $query);
             box-shadow: 0 0 15px rgba(255, 51, 102, 0.5);
         }
 
+        /* --- Controls --- */
         .custom-controls {
             position: absolute;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            background: linear-gradient(transparent, rgba(0, 0, 0, 0.9));
-            padding: 10px;
+            bottom: 0; left: 0; right: 0;
+            background: linear-gradient(transparent, rgba(0,0,0,0.9));
+            padding: 12px;
             display: flex;
             align-items: center;
             gap: 10px;
-            z-index: 11;
             opacity: 0;
             transition: 0.3s;
         }
@@ -207,9 +195,16 @@ $music = mysqli_query($conn, $query);
 
         .progress {
             flex: 1;
-            height: 5px;
+            height: 4px;
             accent-color: var(--accent);
             cursor: pointer;
+        }
+
+        .control-btn {
+            background: none;
+            border: none;
+            color: #fff;
+            font-size: 1.1rem;
         }
 
         /* --- Text Styling --- */
@@ -218,36 +213,20 @@ $music = mysqli_query($conn, $query);
             font-weight: 700;
             margin: 0;
             color: #fff;
-        }
-
-        .meta-info {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-            margin: 8px 0 12px;
-            font-size: 0.75rem;
-            color: var(--text-muted);
-        }
-
-        .meta-info span {
-            background: rgba(255, 255, 255, 0.05);
-            padding: 3px 6px;
-            border-radius: 6px;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
-            transition: 0.3s;
-        }
-
-        .meta-info span:hover {
-            background: rgba(255, 51, 102, 0.15);
-            color: var(--text-main);
         }
 
         .artist-tag {
-            color: var(--accent) !important;
+            display: inline-block;
+            color: var(--accent);
+            background: rgba(255, 51, 102, 0.1);
+            font-size: 0.75rem;
             font-weight: 600;
-            background: rgba(255, 51, 102, 0.1) !important;
+            padding: 2px 10px;
+            border-radius: 5px;
+            margin: 5px 0 10px;
         }
 
         .stars-display {
@@ -258,7 +237,7 @@ $music = mysqli_query($conn, $query);
 
         .rev-btn {
             width: 100%;
-            padding: 8px;
+            padding: 9px;
             border-radius: 10px;
             border: none;
             background: #222;
@@ -281,7 +260,7 @@ $music = mysqli_query($conn, $query);
             width: 100%;
             padding: 7px;
             border-radius: 10px;
-            background: rgba(255, 255, 255, 0.05);
+            background: rgba(255,255,255,0.05);
             color: var(--text-muted);
             text-decoration: none;
             font-size: 0.75rem;
@@ -292,16 +271,68 @@ $music = mysqli_query($conn, $query);
             background: #333;
             color: #fff;
         }
+        /* --- Meta Info Container --- */
+.meta-info {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;          /* space between items */
+    margin: 8px 0 12px;
+    font-size: 0.75rem;
+    color: var(--text-muted);
+}
 
-        /* --- Review Modal --- */
+/* --- Individual Field Badges --- */
+.meta-info span {
+    background: rgba(255, 255, 255, 0.05);
+    padding: 3px 6px;
+    border-radius: 6px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    transition: 0.3s;
+}
+
+/* Hover effect for better visibility */
+.meta-info span:hover {
+    background: rgba(255, 51, 102, 0.15); /* accent hover */
+    color: var(--text-main);
+}
+
+/* Optional: Highlight important fields */
+.meta-info .title-tag,
+.meta-info .artist-tag,
+.meta-info .album-tag {
+    font-weight: 600;
+    color: #fff;
+}
+
+/* Smaller fields like ID, album-id, file */
+.meta-info .id-tag,
+.meta-info .album-id-tag,
+.meta-info .file-tag,
+.meta-info .full-cover-tag {
+    color: var(--text-muted);
+}
+
+/* Optional: make description slightly truncated */
+.meta-info .desc-tag {
+    max-width: 150px;
+}
+
+/* Optional: make year and duration distinct */
+.meta-info .year-tag,
+.meta-info .duration-tag {
+    font-style: italic;
+    color: #ccc;
+}
+
+
+        /* --- Review Overlay --- */
         #reviewOverlay {
             display: none;
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.9);
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.9);
             backdrop-filter: blur(8px);
             z-index: 9999;
             align-items: center;
@@ -311,7 +342,7 @@ $music = mysqli_query($conn, $query);
         .review-box {
             background: #151515;
             padding: 30px;
-            border-radius: 20px;
+            border-radius: 24px;
             width: 90%;
             max-width: 400px;
             border: 1px solid #333;
@@ -321,32 +352,15 @@ $music = mysqli_query($conn, $query);
             display: flex;
             flex-direction: row-reverse;
             justify-content: center;
-            gap: 5px;
+            gap: 8px;
             margin-bottom: 20px;
         }
 
-        .star-rating label {
-            font-size: 2.5rem;
-            color: #333;
-            cursor: pointer;
-        }
+        .star-rating input { display: none; }
+        .star-rating label { font-size: 2.5rem; color: #333; cursor: pointer; transition: 0.2s; }
+        .star-rating label:hover, .star-rating label:hover~label, .star-rating input:checked~label { color: #ffd700; }
 
-        .star-rating input {
-            display: none;
-        }
-
-        .star-rating label:hover,
-        .star-rating label:hover~label,
-        .star-rating input:checked~label {
-            color: #ffd700;
-        }
-
-        footer {
-            text-align: center;
-            padding: 40px;
-            color: #444;
-            font-size: 0.8rem;
-        }
+        footer { text-align: center; padding: 40px; color: #444; font-size: 0.8rem; }
     </style>
 </head>
 
@@ -354,46 +368,58 @@ $music = mysqli_query($conn, $query);
 
     <div class="studio-wrapper">
         <div class="header-section">
-            <h4 class="m-0 fw-bold">Music<span style="color: var(--accent);">Studio</span></h4>
+            <h4 class="m-0 fw-bold">MUSIC<span style="color: var(--accent);">STUDIO</span></h4>
             <div class="d-flex gap-2">
                 <input type="text" id="search" class="search-box" placeholder="Search tracks or artists...">
-                <a href="index.php" class="btn-back"><i class="bi bi-house"></i> Home</a>
+                <a href="javascript:history.back()" class="btn-back"><i class="bi bi-arrow-left"></i> Back</a>
             </div>
         </div>
 
         <div class="grid" id="musicGrid">
-            <?php while ($row = mysqli_fetch_assoc($music)):
+            <?php while ($row = mysqli_fetch_assoc($music)): 
                 $avg = round($row['avg_rating'], 1);
             ?>
                 <div class="music-card" data-search="<?= strtolower($row['title'] . ' ' . $row['artist']); ?>">
-                    <div class="media-wrapper">
-                        <div class="vinyl-disc"></div>
-                        <button class="play-btn" onclick="toggleAudio('<?= $row['id'] ?>', this)">
-                            <i class="bi bi-play-fill"></i>
-                        </button>
-                        <div class="custom-controls">
-                            <input type="range" class="progress" min="0" max="100" value="0">
-                            <button class="btn btn-sm text-white border-0" onclick="muteAudio('<?= $row['id'] ?>', this)">
-                                <i class="bi bi-volume-up"></i>
-                            </button>
-                        </div>
-                    </div>
+                   <div class="media-wrapper">
+    <?php 
+        // Safe cover path
+        $coverPath = "../admin/uploads/music_covers/" . ($row['cover_image'] ?? 'default.jpg'); 
+    ?>
+    
+    <!-- Cover Image -->
+    <div class="cover-image">
+        <img src="<?= $coverPath ?>" alt="Music Cover">
+    </div>
 
-                    <p class="title"><?= htmlspecialchars($row['title']) ?></p>
+    <!-- Play button -->
+    <button class="play-btn" onclick="toggleAudio('<?= $row['id'] ?>', this)">
+        <i class="bi bi-play-fill"></i>
+    </button>
 
-                    <div class="meta-info">
-                        <span class="artist-tag">Artist: <?= htmlspecialchars($row['artist']) ?></span>
-                        <span class="album-tag">Album: <?= htmlspecialchars($row['album']) ?></span>
-                        <span class="year-tag">Year: <?= htmlspecialchars($row['year']) ?></span>
-                    </div>
+    <!-- Custom controls -->
+    <div class="custom-controls">
+        <input type="range" class="progress" min="0" max="100" value="0">
+        <button class="control-btn" onclick="muteAudio('<?= $row['id'] ?>', this)">
+            <i class="bi bi-volume-up"></i>
+        </button>
+    </div>  
+</div>
+
+
+                   <div class="meta-info">
+    <span class="title-tag">Title: <?= htmlspecialchars($row['title']) ?></span>
+    <span class="artist-tag">Artist: <?= htmlspecialchars($row['artist']) ?></span>
+    <span class="album-tag">Album: <?= htmlspecialchars($row['album']) ?></span>
+    <span class="year-tag">Year: <?= htmlspecialchars($row['year']) ?></span>
+</div>
 
                     <div class="stars-display">
                         <?php for ($i = 1; $i <= 5; $i++) echo ($i <= $avg) ? '★' : '☆'; ?>
-                        <span style="color: #666; font-size: 0.7rem;">(<?= $row['total_reviews'] ?>)</span>
+                        <span style="color: #666; font-size: 0.7rem; margin-left: 5px;">(<?= $row['total_reviews'] ?>)</span>
                     </div>
 
                     <button class="rev-btn" onclick="openReview('<?= $row['id'] ?>', '<?= addslashes($row['title']) ?>')">
-                        <i class="bi bi-chat-square-text me-2"></i>LEAVE A REVIEW
+                        <i class="bi bi-chat-dots me-2"></i>LEAVE A REVIEW
                     </button>
 
                     <?php if (!empty($row['video'])): ?>
@@ -414,7 +440,7 @@ $music = mysqli_query($conn, $query);
         <div class="review-box">
             <h5 class="text-center mb-1" id="revTitle">Track Name</h5>
             <p class="text-center text-muted small mb-4">How was the sound quality?</p>
-
+            
             <form method="POST">
                 <input type="hidden" name="music_id" id="revMusicId">
                 <div class="star-rating">
@@ -426,17 +452,17 @@ $music = mysqli_query($conn, $query);
                 </div>
                 <textarea name="comment" class="form-control bg-dark text-white border-secondary mb-3" rows="3" placeholder="Share your thoughts..." required></textarea>
                 <div class="row g-2">
-                    <div class="col-6"><button type="button" class="btn btn-secondary w-100" onclick="closeReview()">CANCEL</button></div>
+                    <div class="col-6"><button type="button" class="btn btn-secondary w-100" onclick="closeReview()">CLOSE</button></div>
                     <div class="col-6"><button type="submit" name="submit_review" class="btn btn-primary w-100" style="background: var(--accent); border:none;">POST</button></div>
                 </div>
             </form>
         </div>
     </div>
 
-    <footer>&copy; 2026 Music Studio Pro &bull; Optimized for Performance</footer>
+    <footer>&copy; 2026 Music Studio Pro &bull; Experience Premium Sound</footer>
 
     <script>
-        // Search Filter
+        // Search Functionality
         document.getElementById("search").addEventListener("input", function() {
             let val = this.value.toLowerCase();
             document.querySelectorAll(".music-card").forEach(card => {
@@ -444,19 +470,19 @@ $music = mysqli_query($conn, $query);
             });
         });
 
-        // Audio Control
+        // Audio Management
         function toggleAudio(id, btn) {
             const audio = document.getElementById('audio-' + id);
             const card = btn.closest('.music-card');
             const icon = btn.querySelector('i');
 
-            // Stop other audios
+            // Pause all other audios
             document.querySelectorAll('audio').forEach(a => {
                 if (a !== audio) {
                     a.pause();
-                    a.closest('.music-card').classList.remove('playing');
-                    const otherBtn = a.closest('.music-card').querySelector('.play-btn i');
-                    if (otherBtn) otherBtn.className = 'bi bi-play-fill';
+                    const otherCard = a.closest('.music-card');
+                    otherCard.classList.remove('playing');
+                    otherCard.querySelector('.play-btn i').className = 'bi bi-play-fill';
                 }
             });
 
@@ -471,13 +497,15 @@ $music = mysqli_query($conn, $query);
             }
         }
 
-        // Progress Bar
+        // Progress Bar & Time Update
         document.querySelectorAll('audio').forEach(audio => {
             const card = audio.closest('.music-card');
             const progress = card.querySelector('.progress');
 
             audio.addEventListener('timeupdate', () => {
-                if (audio.duration) progress.value = (audio.currentTime / audio.duration) * 100;
+                if (audio.duration) {
+                    progress.value = (audio.currentTime / audio.duration) * 100;
+                }
             });
 
             progress.addEventListener('input', () => {
@@ -491,7 +519,7 @@ $music = mysqli_query($conn, $query);
             btn.innerHTML = audio.muted ? '<i class="bi bi-volume-mute"></i>' : '<i class="bi bi-volume-up"></i>';
         }
 
-        // Modal Control
+        // Modal Controls
         function openReview(id, title) {
             document.getElementById('revMusicId').value = id;
             document.getElementById('revTitle').innerText = title;
@@ -502,7 +530,5 @@ $music = mysqli_query($conn, $query);
             document.getElementById('reviewOverlay').style.display = 'none';
         }
     </script>
-
 </body>
-
 </html>
