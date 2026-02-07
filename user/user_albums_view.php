@@ -332,8 +332,8 @@ $albums = mysqli_query($conn, $query);
                         <video id="vid-<?= $row['id']; ?>" preload="metadata" poster="../admin/uploads/albums/<?= $row['cover']; ?>">
                             <source src="../admin/uploads/albums/<?= $row['video']; ?>" type="video/mp4">
                         </video>
+                        <button class="play-btn"><i class="bi bi-play-fill"></i></button>
                         <div class="custom-controls">
-                            <button class="play-btn"><i class="bi bi-play-fill"></i></button>
                             <input type="range" class="progress" min="0" max="100" value="0">
                             <button class="mute-btn"><i class="bi bi-volume-up"></i></button>
                             <button class="fullscreen-btn"><i class="bi bi-arrows-fullscreen"></i></button>
