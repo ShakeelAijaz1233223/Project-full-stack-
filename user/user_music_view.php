@@ -1,337 +1,332 @@
 <?php
 include "../config/db.php";
 
-// Fetch Music/Videos with Ratings
+// Handle Review Submission
+if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['submit_review'])) {
+    $music_id = $_POST['music_id'];
+    $rating = $_POST['rating'];
+    $comment = mysqli_real_escape_string($conn, $_POST['comment']);
+    mysqli_query($conn, "INSERT INTO reviews (music_id, rating, comment) VALUES ('$music_id', '$rating', '$comment')");
+    header("Location: " . $_SERVER['PHP_SELF'] . "?status=reviewed");
+    exit();
+}
+
+// Fetch Music with Average Ratings
 $query = "SELECT music.*, 
           (SELECT AVG(rating) FROM reviews WHERE reviews.music_id = music.id) as avg_rating,
           (SELECT COUNT(*) FROM reviews WHERE reviews.music_id = music.id) as total_reviews
-          FROM music WHERE video IS NOT NULL AND video != '' ORDER BY id DESC";
+          FROM music ORDER BY id DESC";
 $music = mysqli_query($conn, $query);
 ?>
 
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Video Studio | Pro Dashboard</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
-    <style>
-        :root {
-            --bg-color: #080808;
-            --card-bg: #121212;
-            --accent: #ff3366;
-            --accent-glow: rgba(255, 51, 102, 0.4);
-            --text-main: #ffffff;
-            --text-dim: #b3b3b3;
-            --glass: rgba(255, 255, 255, 0.03);
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Music Studio | Pro Dashboard</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
 
-        body {
-            background-color: var(--bg-color);
-            color: var(--text-main);
-            font-family: 'Inter', system-ui, -apple-system, sans-serif;
-            letter-spacing: -0.02em;
-        }
+<style>
+:root {
+    --bg: #0d0d0d;
+    --card: #1b1b1b;
+    --accent: #ff3366;
+    --accent-grad: linear-gradient(135deg, #ff3366, #ff9933);
+    --text-main: #f5f5f5;
+    --text-muted: #999;
+    --shadow: rgba(0,0,0,0.8);
+}
 
-        .studio-container {
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 40px 20px;
-        }
+body {
+    background: var(--bg);
+    color: var(--text-main);
+    font-family: 'Inter', sans-serif;
+    margin: 0;
+    overflow-x: hidden;
+}
 
-        /* --- Header Navigation --- */
-        .glass-nav {
-            background: rgba(18, 18, 18, 0.8);
-            backdrop-filter: blur(20px);
-            padding: 20px;
-            border-radius: 20px;
-            border: 1px solid rgba(255,255,255,0.05);
-            margin-bottom: 40px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            position: sticky;
-            top: 20px;
-            z-index: 1000;
-        }
+.studio-wrapper {
+    width: 95%;
+    margin: 0 auto;
+    padding: 25px 0;
+}
 
-        .search-wrapper {
-            position: relative;
-            width: 350px;
-        }
+/* --- Header --- */
+.header-section {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #222;
+    padding-bottom: 15px;
+    margin-bottom: 30px;
+}
 
-        .search-box {
-            width: 100%;
-            background: #1a1a1a;
-            border: 1px solid #333;
-            border-radius: 50px;
-            padding: 10px 20px 10px 45px;
-            color: white;
-            transition: 0.3s;
-        }
+.search-box {
+    background: #1f1f1f;
+    border: 1px solid #333;
+    color: var(--text-main);
+    border-radius: 10px;
+    padding: 8px 16px;
+    width: 280px;
+    transition: 0.3s;
+}
+.search-box:focus {
+    outline: none;
+    border-color: var(--accent);
+    box-shadow: 0 0 12px rgba(255,51,102,0.3);
+}
 
-        .search-box:focus {
-            outline: none;
-            border-color: var(--accent);
-            box-shadow: 0 0 15px var(--accent-glow);
-        }
+.btn-back {
+    background: #222;
+    border: none;
+    color: var(--text-main);
+    padding: 7px 18px;
+    border-radius: 10px;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.9rem;
+    transition: 0.3s;
+}
+.btn-back:hover {
+    background: var(--accent);
+    color: #fff;
+}
 
-        .search-icon {
-            position: absolute;
-            left: 18px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: var(--text-dim);
-        }
+/* --- Grid & Cards --- */
+.grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 25px;
+}
 
-        /* --- Video Grid --- */
-        .video-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-            gap: 30px;
-        }
+.music-card {
+    background: var(--card);
+    border-radius: 20px;
+    padding: 12px;
+    border: 1px solid #2a2a2a;
+    box-shadow: 0 10px 20px var(--shadow);
+    transition: all 0.3s ease;
+    position: relative;
+}
+.music-card:hover {
+    transform: translateY(-8px);
+    border-color: var(--accent);
+}
 
-        .video-card {
-            background: var(--card-bg);
-            border-radius: 24px;
-            padding: 15px;
-            border: 1px solid #222;
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        }
+/* --- Media Wrapper / Vinyl --- */
+.media-wrapper {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 1/1;
+    background: linear-gradient(45deg, #111, #222);
+    border-radius: 15px;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 15px;
+}
 
-        .video-card:hover {
-            transform: translateY(-10px);
-            border-color: #444;
-            background: #181818;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.6);
-        }
+.vinyl-disc {
+    width: 80%;
+    height: 80%;
+    border-radius: 50%;
+    background: radial-gradient(circle, #333 20%, #111 21%, #111 100%);
+    border: 2px solid #222;
+    animation: rotate 5s linear infinite;
+    animation-play-state: paused;
+}
+.music-card.playing .vinyl-disc {
+    animation-play-state: running;
+}
+@keyframes rotate { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
-        /* --- Video Player Section --- */
-        .video-wrapper {
-            position: relative;
-            width: 100%;
-            aspect-ratio: 16/9;
-            border-radius: 18px;
-            overflow: hidden;
-            background: #000;
-            margin-bottom: 20px;
-        }
+.play-btn {
+    position: absolute;
+    width: 55px;
+    height: 55px;
+    background: var(--accent-grad);
+    border-radius: 50%;
+    border: none;
+    color: #fff;
+    font-size: 1.6rem;
+    cursor: pointer;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: 0.3s;
+    box-shadow: 0 0 15px rgba(255,51,102,0.5);
+}
 
-        video {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            display: block;
-        }
+/* --- Controls --- */
+.custom-controls {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    background: linear-gradient(transparent, rgba(0,0,0,0.9));
+    padding: 12px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    opacity: 0;
+    transition: 0.3s;
+}
+.media-wrapper:hover .custom-controls { opacity: 1; }
 
-        .video-overlay-btn {
-            position: absolute;
-            inset: 0;
-            background: rgba(0,0,0,0.3);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            opacity: 0;
-            transition: 0.3s;
-            cursor: pointer;
-            border: none;
-        }
+.progress { flex:1; height:4px; accent-color: var(--accent); cursor:pointer; }
+.control-btn { background:none; border:none; color:#fff; font-size:1.1rem; }
 
-        .video-card:hover .video-overlay-btn {
-            opacity: 1;
-        }
+/* --- Meta Info --- */
+.meta-info {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: 8px 0 12px;
+    font-size: 0.75rem;
+    color: var(--text-muted);
+}
+.meta-info span {
+    background: rgba(255,255,255,0.05);
+    padding: 3px 6px;
+    border-radius: 6px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    transition:0.3s;
+}
+.meta-info span:hover { background: rgba(255,51,102,0.15); color: var(--text-main); }
 
-        .play-icon {
-            font-size: 3rem;
-            color: white;
-            filter: drop-shadow(0 0 10px rgba(0,0,0,0.5));
-        }
+/* --- Stars & Buttons --- */
+.stars-display { color:#ffd700; font-size:0.8rem; margin-bottom:12px; }
+.rev-btn { width:100%; padding:9px; border-radius:10px; border:none; background:#222; color:#fff; font-size:0.8rem; font-weight:600; transition:0.3s; margin-bottom:8px; }
+.rev-btn:hover { background: var(--accent); }
+.download-btn { display:flex; align-items:center; justify-content:center; gap:6px; width:100%; padding:7px; border-radius:10px; background: rgba(255,255,255,0.05); color: var(--text-muted); text-decoration:none; font-size:0.75rem; transition:0.3s; }
+.download-btn:hover { background:#333; color:#fff; }
 
-        /* --- Info Section --- */
-        .track-title {
-            font-size: 1.1rem;
-            font-weight: 700;
-            margin: 5px 0;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
+/* --- Review Overlay --- */
+#reviewOverlay {
+    display:none;
+    position:fixed; top:0; left:0; width:100%; height:100%;
+    background: rgba(0,0,0,0.9);
+    backdrop-filter: blur(8px);
+    z-index:9999;
+    display:flex; align-items:center; justify-content:center;
+}
+.review-box {
+    background:#151515; padding:30px; border-radius:24px; width:90%; max-width:400px; border:1px solid #333;
+}
+.star-rating { display:flex; flex-direction:row-reverse; justify-content:center; gap:8px; margin-bottom:20px; }
+.star-rating input{display:none;} 
+.star-rating label { font-size:2.5rem; color:#333; cursor:pointer; transition:0.2s; }
+.star-rating label:hover, .star-rating label:hover~label, .star-rating input:checked~label { color:#ffd700; }
 
-        .artist-name {
-            color: var(--accent);
-            font-size: 0.9rem;
-            font-weight: 500;
-            margin-bottom: 15px;
-            display: block;
-        }
-
-        .meta-badges {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 6px;
-            margin-bottom: 20px;
-        }
-
-        .badge-item {
-            background: var(--glass);
-            padding: 4px 10px;
-            border-radius: 6px;
-            font-size: 0.7rem;
-            color: var(--text-dim);
-            border: 1px solid rgba(255,255,255,0.05);
-        }
-
-        /* --- Action Buttons --- */
-        .btn-action {
-            width: 100%;
-            padding: 12px;
-            border-radius: 12px;
-            border: none;
-            font-weight: 600;
-            font-size: 0.85rem;
-            transition: 0.3s;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            text-decoration: none;
-        }
-
-        .btn-download {
-            background: var(--accent);
-            color: white;
-            box-shadow: 0 5px 15px var(--accent-glow);
-        }
-
-        .btn-download:hover {
-            background: #e62e5c;
-            color: white;
-            transform: scale(1.02);
-        }
-
-        .btn-back-main {
-            background: var(--glass);
-            color: white;
-            border: 1px solid #333;
-        }
-
-        .btn-back-main:hover {
-            background: #222;
-            color: white;
-        }
-
-        footer {
-            text-align: center;
-            padding: 50px 0;
-            border-top: 1px solid #222;
-            margin-top: 50px;
-            color: var(--text-dim);
-            font-size: 0.8rem;
-        }
-
-        /* Responsive Fixes */
-        @media (max-width: 768px) {
-            .glass-nav { flex-direction: column; gap: 15px; }
-            .search-wrapper { width: 100%; }
-        }
-    </style>
+footer { text-align:center; padding:40px; color:#444; font-size:0.8rem; }
+</style>
 </head>
 <body>
 
-<div class="studio-container">
-    <header class="glass-nav">
-        <h3 class="m-0 fw-bold">VIDEO<span style="color: var(--accent);">STUDIO</span></h3>
-        <div class="search-wrapper">
-            <i class="bi bi-search search-icon"></i>
-            <input type="text" id="search" class="search-box" placeholder="Search music videos...">
+<div class="studio-wrapper">
+    <div class="header-section">
+        <h4 class="m-0 fw-bold">MUSIC<span style="color: var(--accent)">STUDIO</span></h4>
+        <div class="d-flex gap-2">
+            <input type="text" id="search" class="search-box" placeholder="Search tracks or artists...">
+            <a href="javascript:history.back()" class="btn-back"><i class="bi bi-arrow-left"></i> Back</a>
         </div>
-        <a href="javascript:history.back()" class="btn btn-outline-light btn-sm rounded-pill px-4">
-            <i class="bi bi-arrow-left me-2"></i>Back to Audio
-        </a>
-    </header>
+    </div>
 
-    <div class="video-grid" id="videoGrid">
+    <div class="grid" id="musicGrid">
         <?php while ($row = mysqli_fetch_assoc($music)): 
-            $avg = round($row['avg_rating'], 1);
+            $avg = round($row['avg_rating'],1); 
         ?>
-            <div class="video-card" data-search="<?= strtolower($row['title'] . ' ' . $row['artist']); ?>">
-                <div class="video-wrapper">
-                    <video id="video-<?= $row['id'] ?>" preload="metadata" poster="../admin/uploads/music_covers/<?= $row['cover_image'] ?? 'default.jpg' ?>">
-                        <source src="../admin/uploads/music/<?= $row['video'] ?>" type="video/mp4">
-                    </video>
-                    <button class="video-overlay-btn" onclick="toggleVideo('<?= $row['id'] ?>')">
-                        <i class="bi bi-play-circle-fill play-icon"></i>
-                    </button>
+        <div class="music-card" data-search="<?= strtolower($row['title'].' '.$row['artist']); ?>">
+            <div class="media-wrapper">
+                <div class="vinyl-disc"></div>
+                <button class="play-btn" onclick="toggleAudio('<?= $row['id'] ?>', this)"><i class="bi bi-play-fill"></i></button>
+                <div class="custom-controls">
+                    <input type="range" class="progress" min="0" max="100" value="0">
+                    <button class="control-btn" onclick="muteAudio('<?= $row['id'] ?>', this)"><i class="bi bi-volume-up"></i></button>
                 </div>
-
-                <h5 class="track-title"><?= htmlspecialchars($row['title']) ?></h5>
-                <span class="artist-name"><?= htmlspecialchars($row['artist']) ?></span>
-
-                <div class="meta-badges">
-                    <span class="badge-item"><i class="bi bi-disc me-1"></i> <?= htmlspecialchars($row['album']) ?></span>
-                    <span class="badge-item"><i class="bi bi-calendar-check me-1"></i> <?= $row['year'] ?></span>
-                    <span class="badge-item text-warning">
-                        <i class="bi bi-star-fill me-1"></i> <?= $avg ?> (<?= $row['total_reviews'] ?>)
-                    </span>
-                </div>
-
-                <a href="../admin/uploads/music/<?= $row['video'] ?>" download class="btn-action btn-download">
-                    <i class="bi bi-cloud-arrow-down-fill"></i> DOWNLOAD MP4
-                </a>
             </div>
+
+            <div class="meta-info">
+                <span class="title-tag">Title: <?= htmlspecialchars($row['title']) ?></span>
+                <span class="artist-tag">Artist: <?= htmlspecialchars($row['artist']) ?></span>
+                <span class="album-tag">Album: <?= htmlspecialchars($row['album']) ?></span>
+                <span class="year-tag">Year: <?= htmlspecialchars($row['year']) ?></span>
+            </div>
+
+            <div class="stars-display">
+                <?php for($i=1;$i<=5;$i++) echo ($i<=$avg)?'★':'☆'; ?>
+                <span style="color:#666; font-size:0.7rem;">(<?= $row['total_reviews'] ?>)</span>
+            </div>
+
+            <button class="rev-btn" onclick="openReview('<?= $row['id'] ?>','<?= addslashes($row['title']) ?>')"><i class="bi bi-chat-dots me-2"></i>LEAVE A REVIEW</button>
+
+            <?php if(!empty($row['video'])): ?>
+            <a href="../admin/uploads/music/<?= $row['video'] ?>" download class="download-btn"><i class="bi bi-cloud-arrow-down"></i> Get Video Version</a>
+            <?php endif; ?>
+
+            <audio id="audio-<?= $row['id'] ?>" preload="none"><source src="../admin/uploads/music/<?= $row['file'] ?>" type="audio/mpeg"></audio>
+        </div>
         <?php endwhile; ?>
     </div>
 </div>
 
-<footer>
-    <p>&copy; 2026 Studio Pro Visuals &bull; High Definition Experience</p>
-</footer>
+<div id="reviewOverlay">
+    <div class="review-box">
+        <h5 class="text-center mb-1" id="revTitle">Track Name</h5>
+        <p class="text-center text-muted small mb-4">How was the sound quality?</p>
+        <form method="POST">
+            <input type="hidden" name="music_id" id="revMusicId">
+            <div class="star-rating">
+                <input type="radio" name="rating" value="5" id="s5" required><label for="s5">★</label>
+                <input type="radio" name="rating" value="4" id="s4"><label for="s4">★</label>
+                <input type="radio" name="rating" value="3" id="s3"><label for="s3">★</label>
+                <input type="radio" name="rating" value="2" id="s2"><label for="s2">★</label>
+                <input type="radio" name="rating" value="1" id="s1"><label for="s1">★</label>
+            </div>
+            <textarea name="comment" class="form-control bg-dark text-white border-secondary mb-3" rows="3" placeholder="Share your thoughts..." required></textarea>
+            <div class="row g-2">
+                <div class="col-6"><button type="button" class="btn btn-secondary w-100" onclick="closeReview()">CLOSE</button></div>
+                <div class="col-6"><button type="submit" name="submit_review" class="btn btn-primary w-100" style="background: var(--accent); border:none;">POST</button></div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<footer>&copy; 2026 Music Studio Pro &bull; Experience Premium Sound</footer>
 
 <script>
-    // Video Play/Pause Logic
-    function toggleVideo(id) {
-        const video = document.getElementById('video-' + id);
-        const btn = video.nextElementSibling.querySelector('i');
+document.getElementById("search").addEventListener("input", function(){
+    let val=this.value.toLowerCase();
+    document.querySelectorAll(".music-card").forEach(card=>{ card.style.display=card.getAttribute('data-search').includes(val)?"block":"none"; });
+});
 
-        // Pause other videos when one starts
-        document.querySelectorAll('video').forEach(v => {
-            if (v !== video) {
-                v.pause();
-                v.nextElementSibling.querySelector('i').className = 'bi bi-play-circle-fill play-icon';
-            }
-        });
+function toggleAudio(id, btn){
+    const audio=document.getElementById('audio-'+id);
+    const card=btn.closest('.music-card');
+    const icon=btn.querySelector('i');
+    document.querySelectorAll('audio').forEach(a=>{ if(a!==audio){ a.pause(); a.closest('.music-card').classList.remove('playing'); a.closest('.music-card').querySelector('.play-btn i').className='bi bi-play-fill'; } });
+    if(audio.paused){ audio.play(); card.classList.add('playing'); icon.className='bi bi-pause-fill'; } 
+    else { audio.pause(); card.classList.remove('playing'); icon.className='bi bi-play-fill'; }
+}
 
-        if (video.paused) {
-            video.play();
-            video.controls = true; // Show native controls once playing
-            btn.className = 'bi bi-pause-circle-fill play-icon';
-            video.nextElementSibling.style.opacity = '0'; // Hide overlay
-        } else {
-            video.pause();
-            btn.className = 'bi bi-play-circle-fill play-icon';
-            video.nextElementSibling.style.opacity = '1';
-        }
-    }
+document.querySelectorAll('audio').forEach(audio=>{
+    const card=audio.closest('.music-card');
+    const progress=card.querySelector('.progress');
+    audio.addEventListener('timeupdate', ()=>{ if(audio.duration) progress.value=(audio.currentTime/audio.duration)*100; });
+    progress.addEventListener('input', ()=>{ audio.currentTime=(progress.value/100)*audio.duration; });
+});
 
-    // Video Overlay Visibility on Hover
-    document.querySelectorAll('.video-wrapper').forEach(wrapper => {
-        const video = wrapper.querySelector('video');
-        const overlay = wrapper.querySelector('.video-overlay-btn');
+function muteAudio(id,btn){ const audio=document.getElementById('audio-'+id); audio.muted=!audio.muted; btn.innerHTML=audio.muted?'<i class="bi bi-volume-mute"></i>':'<i class="bi bi-volume-up"></i>'; }
 
-        video.onplay = () => { overlay.style.opacity = '0'; };
-        video.onpause = () => { overlay.style.opacity = '1'; };
-    });
-
-    // Search Logic
-    document.getElementById("search").addEventListener("input", function() {
-        let val = this.value.toLowerCase();
-        document.querySelectorAll(".video-card").forEach(card => {
-            card.style.display = card.getAttribute('data-search').includes(val) ? "block" : "none";
-        });
-    });
+function openReview(id,title){ document.getElementById('revMusicId').value=id; document.getElementById('revTitle').innerText=title; document.getElementById('reviewOverlay').style.display='flex'; }
+function closeReview(){ document.getElementById('reviewOverlay').style.display='none'; }
 </script>
-
 </body>
 </html>
