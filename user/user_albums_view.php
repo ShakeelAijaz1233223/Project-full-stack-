@@ -350,13 +350,7 @@ footer {
                             <img src="../admin/uploads/albums/<?= $row['cover']; ?>" class="album-cover">
                         <?php endif; ?>
                     </div>
-                     <div class="d-flex justify-content-between align-items-start">
-                    <div>
-                        <p class="title"><?= htmlspecialchars($row['title']); ?></p>
-                        <p class="meta-info"><?= htmlspecialchars($row['artist']); ?></p>
-                    </div>
-                    <span class="album-year"><?= htmlspecialchars($row['year']); ?></span>
-                </div>
+                    
 
                     <div class="card-body">
                         <div class="title"><?= htmlspecialchars($row['title']); ?></div>
