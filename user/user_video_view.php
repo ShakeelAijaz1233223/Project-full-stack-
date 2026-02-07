@@ -249,10 +249,13 @@ $videos = mysqli_query($conn, $query);
         .rev-btn:hover { background: var(--accent); }
 
         /* --- Review Modal (Same to Same) --- */
-        #reviewOverlay {
+     #reviewOverlay {
             display: none;
             position: fixed;
-            inset: 0;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
             background: rgba(0, 0, 0, 0.9);
             backdrop-filter: blur(8px);
             z-index: 9999;
