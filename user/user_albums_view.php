@@ -346,47 +346,46 @@ $albums = mysqli_query($conn, $query);
             <?php while ($row = mysqli_fetch_assoc($albums)):
                 $avg = round($row['avg_rating'], 1);
             ?>
-              <div class="card album-card" data-title="<?= strtolower($row['title']); ?>" data-artist="<?= strtolower($row['artist']); ?>">
-    
-    <div class="media-wrapper">
-        <?php if (!empty($row['video'])): ?>
-            <video id="vid-<?= $row['id']; ?>" preload="metadata" poster="../admin/uploads/albums/<?= $row['cover']; ?>" style="width:100%; height:100%; object-fit:cover;">
-                <source src="../admin/uploads/albums/<?= $row['video']; ?>" type="video/mp4">
-            </video>
+                <div class="card album-card" data-title="<?= strtolower($row['title']); ?>" data-artist="<?= strtolower($row['artist']); ?>">
+                    
 
-            <div class="custom-controls" id="controls-<?= $row['id']; ?>">
-                <button class="play-btn"><i class="bi bi-play-fill"></i></button>
-                <input type="range" class="progress" min="0" max="100" value="0">
-                <button class="mute-btn"><i class="bi bi-volume-up"></i></button>
-                <button class="fullscreen-btn"><i class="bi bi-arrows-fullscreen"></i></button>
-            </div>
-        <?php else: ?>
-            <img src="../admin/uploads/albums/<?= $row['cover']; ?>" style="width:100%; height:100%; object-fit:cover;">
-        <?php endif; ?>
-    </div>
+                    <div class="media-wrapper">
+                        <?php if (!empty($row['video'])): ?>
+                            <video id="vid-<?= $row['id']; ?>" preload="metadata" poster="../admin/uploads/albums/<?= $row['cover']; ?>">
+                                <source src="../admin/uploads/albums/<?= $row['video']; ?>" type="video/mp4">
+                            </video>
 
-    <div class="card-body">
-        <div class="title"><?= htmlspecialchars($row['title']); ?></div>
-        <div class="artist"><?= htmlspecialchars($row['artist']); ?></div>
+                            <!-- Custom overlay controls -->
+                            <div class="custom-controls" id="controls-<?= $row['id']; ?>">
+                                <button class="play-btn"><i class="bi bi-play-fill"></i></button>
+                                <input type="range" class="progress" min="0" max="100" value="0">
+                                <button class="mute-btn"><i class="bi bi-volume-up"></i></button>
+                                <button class="fullscreen-btn"><i class="bi bi-arrows-fullscreen"></i></button>
+                            </div>
+                        <?php else: ?>
+                            <img src="../admin/uploads/albums/<?= $row['cover']; ?>" style="width:100%; height:100%; object-fit:cover; border-radius:8px;">
+                        <?php endif; ?>
+                    </div>
 
-        <div class="stars-row">
-            <div class="stars">
-                <?php for ($i = 1; $i <= 5; $i++) echo ($i <= $avg) ? '★' : '☆'; ?>
-            </div>
-            <span class="ms-2 text-muted" style="font-size: 0.7rem;">(<?= $row['total_reviews'] ?>)</span>
-        </div>
 
-        <button class="btn-rev-pop" onclick="popReview('<?= $row['id'] ?>', '<?= addslashes($row['title']) ?>')">
-            <i class="bi bi-star-fill me-1"></i> Rate Album
-        </button>
+                    <div class="card-body">
+                        <div class="title"><?= htmlspecialchars($row['title']); ?></div>
+                        <div class="artist"><?= htmlspecialchars($row['artist']); ?></div>
 
-        <?php if (!empty($row['audio'])): ?>
-            <audio id="aud-<?= $row['id']; ?>">
-                <source src="../admin/uploads/albums/<?= $row['audio']; ?>" type="audio/mpeg">
-            </audio>
-        <?php endif; ?>
-    </div>
-</div>
+                        <div class="stars-row">
+                            <?php for ($i = 1; $i <= 5; $i++) echo ($i <= $avg) ? '★' : '☆'; ?>
+                            <span class="ms-1 text-muted">(<?= $row['total_reviews'] ?>)</span>
+                        </div>
+
+                        <button class="btn-rev-pop" onclick="popReview('<?= $row['id'] ?>', '<?= addslashes($row['title']) ?>')">RATE ALBUM</button>
+
+                        <?php if (!empty($row['audio'])): ?>
+                            <audio id="aud-<?= $row['id']; ?>">
+                                <source src="../admin/uploads/albums/<?= $row['audio']; ?>" type="audio/mpeg">
+                            </audio>
+                        <?php endif; ?>
+                    </div>
+                </div>
             <?php endwhile; ?>
         </div>
     </div>
