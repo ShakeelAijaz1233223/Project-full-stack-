@@ -192,17 +192,7 @@ body {
 }
 .rev-btn:hover { background: var(--accent); }
 
-.btn-back {
-    background: #1a1a1a;
-    border: 1px solid #222;
-    color: #fff;
-    padding: 6px 12px;
-    border-radius: 8px;
-    display: flex;
-    align-items: center;
-    gap: 5px;
-    text-decoration: none;
-}
+
 /* --- Review Overlay --- */
 #reviewOverlay {
     display: none;
