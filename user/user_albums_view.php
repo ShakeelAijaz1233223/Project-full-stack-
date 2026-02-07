@@ -155,13 +155,13 @@ $albums = mysqli_query($conn, $query);
             transform: translate(-50%, -50%);
             background: rgba(255, 0, 85, 0.7);
             border: none;
-            padding: 10px;
+            padding: 20px;
             border-radius: 50%;
             color: #fff;
-            /* font-size: 24px; */
+            font-size: 24px;
             cursor: pointer;
             transition: transform 0.3s ease, background 0.3s ease;
-            /* z-index: 5; */
+            z-index: 5;
         }
 
         .album-card .play-btn:hover {
