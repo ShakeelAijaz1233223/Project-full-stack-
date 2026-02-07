@@ -305,11 +305,11 @@ footer { text-align:center; padding:40px; font-size:0.7rem; color:#444; }
             <div class="disc-wrapper">
                 <i class="bi bi-disc-fill"></i>
                 <button class="play-btn" onclick="togglePlay(this)"><i class="bi bi-play-fill"></i></button>
-            </div>
-            <div class="custom-controls">
-                <input type="range" class="progress" min="0" max="100" value="0">
-                <button class="mute-btn"><i class="bi bi-volume-up"></i></button>
-               
+                <div class="custom-controls">
+                    <input type="range" class="progress" min="0" max="100" value="0">
+                    <button class="mute-btn"><i class="bi bi-volume-up"></i></button>
+                   
+                </div>
             </div>
             <div class="title"><?= htmlspecialchars($row['title']); ?></div>
             <div class="artist"><?= htmlspecialchars($row['artist']); ?></div>
