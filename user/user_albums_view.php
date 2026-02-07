@@ -355,7 +355,7 @@ $albums = mysqli_query($conn, $query);
                         <?php endif; ?>
                     </div>
 
-                    <div class="card-body">
+                    <div class="card-bodya">
                         <div class="title"><?= htmlspecialchars($row['title']); ?></div>
                         <div class="artist"><?= htmlspecialchars($row['artist']); ?></div>
 
