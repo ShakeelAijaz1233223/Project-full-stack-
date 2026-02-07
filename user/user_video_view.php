@@ -29,8 +29,8 @@ $videos = mysqli_query($conn, $query);
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
-<style>
-   /* Paste your full CSS here (from the last code block) */
+
+    <style>
         :root {
             --bg: #0d0d0d;
             --card: #1b1b1b;
@@ -55,7 +55,7 @@ $videos = mysqli_query($conn, $query);
             padding: 25px 0;
         }
 
-        /* --- Header --- */
+        /* --- Header (Same to Same) --- */
         .header-section {
             display: flex;
             justify-content: space-between;
@@ -95,8 +95,12 @@ $videos = mysqli_query($conn, $query);
             transition: 0.3s;
         }
 
-        .btn-back:hover { background: var(--accent); color: #fff; }
+        .btn-back:hover {
+            background: var(--accent);
+            color: #fff;
+        }
 
+        /* --- Grid & Cards (Same to Same) --- */
         .grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
@@ -113,8 +117,12 @@ $videos = mysqli_query($conn, $query);
             position: relative;
         }
 
-        .video-card:hover { transform: translateY(-8px); border-color: var(--accent); }
+        .video-card:hover {
+            transform: translateY(-8px);
+            border-color: var(--accent);
+        }
 
+        /* --- Media Wrapper (16:9 for Video) --- */
         .media-wrapper {
             position: relative;
             width: 100%;
@@ -179,24 +187,106 @@ $videos = mysqli_query($conn, $query);
 
         .media-wrapper:hover .custom-controls { opacity: 1; }
 
-        .progress { flex: 1; height: 5px; accent-color: var(--accent); cursor: pointer; }
+        .progress {
+            flex: 1;
+            height: 5px;
+            accent-color: var(--accent);
+            cursor: pointer;
+        }
 
-        .title { font-size: 1rem; font-weight: 700; margin: 0; color: #fff; }
-        .meta-info { display: flex; flex-wrap: wrap; gap: 8px; margin: 8px 0 12px; font-size: 0.75rem; color: var(--text-muted); }
-        .meta-info span { background: rgba(255,255,255,0.05); padding:3px 6px; border-radius:6px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; transition:0.3s; }
-        .artist-tag { color: var(--accent) !important; font-weight: 600; background: rgba(255,51,102,0.1) !important; }
-        .stars-display { color:#ffd700; font-size:0.8rem; margin-bottom:12px; }
-        .rev-btn { width:100%; padding:8px; border-radius:10px; border:none; background:#222; color:#fff; font-size:0.8rem; font-weight:600; transition:0.3s; margin-bottom:8px; }
+        /* --- Text Styling (Same to Same) --- */
+        .title {
+            font-size: 1rem;
+            font-weight: 700;
+            margin: 0;
+            color: #fff;
+        }
+
+        .meta-info {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin: 8px 0 12px;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+
+        .meta-info span {
+              background: rgba(255, 255, 255, 0.05);
+            padding: 3px 6px;
+            border-radius: 6px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            transition: 0.3s;
+        }
+
+        .artist-tag {
+            color: var(--accent) !important;
+            font-weight: 600;
+            background: rgba(255, 51, 102, 0.1) !important;
+        }
+
+        .stars-display {
+            color: #ffd700;
+            font-size: 0.8rem;
+            margin-bottom: 12px;
+        }
+
+        .rev-btn {
+            width: 100%;
+            padding: 8px;
+            border-radius: 10px;
+            border: none;
+            background: #222;
+            color: #fff;
+            font-size: 0.8rem;
+            font-weight: 600;
+            transition: 0.3s;
+            margin-bottom: 8px;
+        }
+
         .rev-btn:hover { background: var(--accent); }
-        #reviewOverlay { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.9); backdrop-filter: blur(8px); z-index:9999; align-items:center; justify-content:center; }
-        .review-box { background:#151515; padding:30px; border-radius:20px; width:90%; max-width:400px; border:1px solid #333; }
-        .star-rating { display:flex; flex-direction:row-reverse; justify-content:center; gap:5px; margin-bottom:20px; }
-        .star-rating label { font-size:2.5rem; color:#333; cursor:pointer; }
-        .star-rating input { display:none; }
+
+        /* --- Review Modal (Same to Same) --- */
+     #reviewOverlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            backdrop-filter: blur(8px);
+            z-index: 9999;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .review-box {
+            background: #151515;
+            padding: 30px;
+            border-radius: 20px;
+            width: 90%;
+            max-width: 400px;
+            border: 1px solid #333;
+        }
+
+        .star-rating {
+            display: flex;
+            flex-direction: row-reverse;
+            justify-content: center;
+            gap: 5px;
+            margin-bottom: 20px;
+        }
+
+        .star-rating label { font-size: 2.5rem; color: #333; cursor: pointer; }
+        .star-rating input { display: none; }
         .star-rating label:hover,
         .star-rating label:hover~label,
-        .star-rating input:checked~label { color:#ffd700; }
-        footer { text-align:center; padding:40px; color:#444; font-size:0.8rem; }
+        .star-rating input:checked~label { color: #ffd700; }
+
+        footer { text-align: center; padding: 40px; color: #444; font-size: 0.8rem; }
     </style>
 </head>
 <body>
