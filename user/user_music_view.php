@@ -151,24 +151,64 @@ body {
 .rev-btn:hover { background:var(--accent); }
 
 /* Custom controls */
+/* Custom controls redesigned like music card style */
 .custom-controls {
-    display:flex;
-    align-items:center;
-    gap:8px;
-    margin-top:5px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 10px;
+    background: #1a1a1a;
+    padding: 6px 10px;
+    border-radius: 12px;
+    border: 1px solid #222;
 }
+
 .custom-controls input[type="range"] {
-    flex:1;
+    flex: 1;
+    -webkit-appearance: none;
+    background: #333;
+    height: 6px;
+    border-radius: 5px;
+    cursor: pointer;
 }
+.custom-controls input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: var(--accent);
+    border: 2px solid #fff;
+    cursor: pointer;
+    transition: 0.3s;
+}
+.custom-controls input[type="range"]::-moz-range-thumb {
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: var(--accent);
+    border: 2px solid #fff;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
 .custom-controls button {
-    background:#222;
-    border:none;
-    color:#fff;
-    padding:5px 8px;
-    border-radius:6px;
-    cursor:pointer;
+    background: #111;
+    border: 1px solid #222;
+    color: #fff;
+    padding: 6px 10px;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: 0.3s;
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
-.custom-controls button:hover { background:var(--accent); }
+.custom-controls button:hover {
+    background: var(--accent);
+    color: #fff;
+}
+
 
 /* Review overlay */
 #reviewOverlay {
