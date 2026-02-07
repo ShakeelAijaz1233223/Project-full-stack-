@@ -343,7 +343,7 @@ document.querySelectorAll('.media-wrapper').forEach(wrapper => {
         document.querySelectorAll('video').forEach(v => {
             if (v !== video) {
                 v.pause();
-                v.muted = true;
+               
                 let btn = v.closest('.media-wrapper').querySelector('.play-btn i');
                 if(btn) btn.className = 'bi bi-play-fill';
             }
