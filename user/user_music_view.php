@@ -381,8 +381,7 @@ $music = mysqli_query($conn, $query);
             ?>
                 <div class="music-card" data-search="<?= strtolower($row['title'] . ' ' . $row['artist']); ?>">
                     <div class="media-wrapper">
-                        <div class="vinyl-disc"></div>
-                        
+                        <img src="music_img.jpg" alt="">                        
                         <button class="play-btn" onclick="toggleAudio('<?= $row['id'] ?>', this)">
                             <i class="bi bi-play-fill"></i>
                         </button>
