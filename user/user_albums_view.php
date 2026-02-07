@@ -86,53 +86,79 @@ $albums = mysqli_query($conn, $query);
         }
 
         /* New Album Card Styling */
-        .grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-            gap: 20px;
-        }
+      .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 20px;
+}
 
-        .album-card {
-            background: var(--card-bg) !important;
-            backdrop-filter: blur(10px);
-            border: 1px solid var(--glass-border) !important;
-            border-radius: 20px !important;
-            padding: 15px;
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            position: relative;
-            overflow: hidden;
-            height: 100%;
-            width: 100% ;
-        }
+.album-card {
+    background: var(--card-bg) !important;
+    backdrop-filter: blur(10px);
+    border: 1px solid var(--glass-border) !important;
+    border-radius: 20px !important;
+    padding: 15px;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    position: relative;
+    overflow: hidden;
+    height: 100%;
+    width: 100%;
+    display: flex;             /* Added for centering button */
+    flex-direction: column;    /* Stack media and button vertically */
+    align-items: center;       /* Center everything horizontally */
+}
 
-        .album-card:hover {
-            transform: translateY(-10px) scale(1.02);
-            background: rgba(255, 255, 255, 0.07) !important;
-            border-color: rgba(255, 0, 85, 0.5) !important;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
-        }
+.album-card:hover {
+    transform: translateY(-10px) scale(1.02);
+    background: rgba(255, 255, 255, 0.07) !important;
+    border-color: rgba(255, 0, 85, 0.5) !important;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
+}
 
-        /* Media Wrapper */
-        .media-wrapper {
-            border-radius: 3px !important;
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.4);
-            position: relative;
-            aspect-ratio: 1/1;
-            overflow: hidden;
-            background: #000;
-        }
+/* Media Wrapper */
+.media-wrapper {
+    border-radius: 3px !important;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.4);
+    position: relative;
+    aspect-ratio: 1/1;
+    overflow: hidden;
+    background: #000;
+    width: 100%;   /* Ensure full width inside card */
+    margin-bottom: 15px; /* Space between media and button */
+}
 
-        .media-wrapper img, .media-wrapper video {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            transition: transform 0.5s ease;
-        }
+.media-wrapper img, .media-wrapper video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+}
 
-        .album-card:hover .media-wrapper img, 
-        .album-card:hover .media-wrapper video {
-            transform: scale(1.1);
-        }
+.album-card:hover .media-wrapper img, 
+.album-card:hover .media-wrapper video {
+    transform: scale(1.1);
+}
+
+/* Center RATE ALBUM button */
+.album-card .rate-btn {
+    display: inline-block;
+    margin-top: 10px;          /* Space between media and button */
+    padding: 12px 25px;
+    background: linear-gradient(90deg, #ff0080, #7928ca);
+    color: #fff;
+    font-weight: bold;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    text-align: center;
+    transition: transform 0.3s ease, background 0.3s ease;
+}
+
+.album-card .rate-btn:hover {
+    transform: scale(1.05);
+    background: linear-gradient(90deg, #ff3399, #a14dd9);
+}
+
 
         /* Video Controls Overlay */
         .custom-controls {
