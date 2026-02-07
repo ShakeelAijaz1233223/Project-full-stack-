@@ -104,10 +104,10 @@ footer { text-align:center; padding:40px; font-size:0.7rem; color:#444; }
             <div class="disc-wrapper">
                 <i class="bi bi-disc-fill text-muted" style="font-size:4rem;"></i>
                 <button class="play-btn"><i class="bi bi-play-fill"></i></button>
-                <div class="custom-controls">
-                    <input type="range" class="progress" min="0" max="100" value="0">
-                    <button class="mute-btn"><i class="bi bi-volume-up"></i></button>
-                </div>
+            </div>
+            <div class="custom-controls">
+                <input type="range" class="progress" min="0" max="100" value="0">
+                <button class="mute-btn"><i class="bi bi-volume-up"></i></button>
             </div>
             <div class="title"><?= htmlspecialchars($row['title']); ?></div>
             <div class="artist"><?= htmlspecialchars($row['artist']); ?></div>
