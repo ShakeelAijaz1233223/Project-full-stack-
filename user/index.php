@@ -147,6 +147,78 @@ if (isset($_SESSION['email']) && isset($conn)) {
             color: var(--primary);
         }
 
+         /* --- MOBILE MENU BUTTON --- */
+        .menu-btn {
+            display: none;
+            color: #fff;
+            font-size: 20px;
+            cursor: pointer;
+        }
+
+        /* --- USER DROPDOWN --- */
+        .user-trigger {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 8px 16px;
+            border-radius: 50px;
+            cursor: pointer;
+            border: 1px solid var(--border-glass);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: var(--transition);
+        }
+
+        .user-dropdown {
+            position: relative;
+        }
+
+        .dropdown-content {
+            position: absolute;
+            right: 0;
+            top: 55px;
+            background: rgba(15, 15, 17, 0.98);
+            backdrop-filter: blur(25px);
+            min-width: 200px;
+            border-radius: 18px;
+            padding: 10px;
+            border: 1px solid var(--border-glass);
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(10px);
+            transition: var(--transition);
+            z-index: 1001;
+        }
+
+        .user-dropdown:hover .dropdown-content {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        .dropdown-content a {
+            color: #fff;
+            padding: 10px 15px;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 12px;
+            font-weight: 600;
+            border-radius: 10px;
+            transition: 0.3s;
+        }
+
+        .dropdown-content a i {
+            color: var(--primary);
+            width: 15px;
+        }
+
+        .dropdown-content a:hover {
+            background: rgba(255, 0, 85, 0.1);
+            transform: translateX(5px);
+        }
+
+
         /* Flashing Animation for New Items (Requirement) */
         @keyframes flash {
             0% {
