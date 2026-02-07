@@ -302,9 +302,10 @@ if (isset($_SESSION['email']) && isset($conn)) {
         }
 
         .hero-overlay {
-            position: relative;
-            inset: 0;
-            background: url("bgimage.png");
+             position: absolute;
+    inset: 0;
+    background: url("bgimage.png") center / cover no-repeat;
+    z-index: 1;;
         }
 
         .hero-content {
