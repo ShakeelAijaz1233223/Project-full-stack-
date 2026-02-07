@@ -347,10 +347,7 @@ $albums = mysqli_query($conn, $query);
                 $avg = round($row['avg_rating'], 1);
             ?>
                 <div class="card album-card" data-title="<?= strtolower($row['title']); ?>" data-artist="<?= strtolower($row['artist']); ?>">
-                    <div class="card-actions">
-                        <a href="?delete=<?= $row['id']; ?>" class="btn-delete" onclick="return confirm('Delete?');"><i class="bi bi-trash"></i></a>
-                        <a href="edit_album.php?id=<?= $row['id']; ?>" class="btn-edit"><i class="bi bi-pencil"></i></a>
-                    </div>
+                    
 
                     <div class="media-wrapper">
                         <?php if (!empty($row['video'])): ?>
