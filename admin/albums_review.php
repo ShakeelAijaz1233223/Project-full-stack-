@@ -48,7 +48,7 @@ $result = mysqli_query($conn, $query);
 <div class="container py-5">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h3 class="fw-bold m-0">ALBUM <span style="color: var(--accent);">REVIEWS</span></h3>
-        <a href="index.php" class="btn btn-outline-light btn-sm px-4 rounded-pill"><i class="bi bi-speedometer2"></i> Dashboard</a>
+        <a href="dashboard.php" class="btn btn-outline-light btn-sm px-4 rounded-pill"><i class="bi bi-speedometer2"></i> Dashboard</a>
     </div>
 
     <?php if(isset($_GET['status']) && $_GET['status'] == 'deleted'): ?>
