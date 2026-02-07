@@ -113,7 +113,7 @@ $albums = mysqli_query($conn, $query);
 
         /* Media Wrapper */
         .media-wrapper {
-            border-radius: 15px !important;
+            border-radius: 50px !important;
             box-shadow: 0 10px 20px rgba(0, 0, 0, 0.4);
             position: relative;
             aspect-ratio: 1/1;
@@ -143,7 +143,7 @@ $albums = mysqli_query($conn, $query);
             backdrop-filter: blur(5px);
             display: flex;
             align-items: center;
-            padding: 5px 100px;
+            padding: 5px 10px;
             gap: 8px;
             opacity: 0;
             transition: opacity 0.3s;
