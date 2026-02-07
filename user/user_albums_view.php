@@ -42,92 +42,105 @@ $albums = mysqli_query($conn, $query);
     <title>Albums Studio | Pro Admin</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
+    
     <style>
         :root {
-            --bg-dark: #080808;
-            --card-bg: #121212;
+            --bg-dark: #050505;
+            --card-bg: rgba(255, 255, 255, 0.03);
             --accent: #ff0055;
-            --accent-gradient: linear-gradient(45deg, #ff0055, #ff5e00);
-            --text-muted: #888888;
+            --primary-gradient: linear-gradient(135deg, #ff0055, #7000ff);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --text-main: #ffffff;
+            --text-dim: #a0a0a0;
         }
 
         body {
             background-color: var(--bg-dark);
-            color: #fff;
-            font-family: 'Inter', sans-serif;
+            color: var(--text-main);
+            font-family: 'Plus Jakarta Sans', sans-serif;
             margin: 0;
+            background-image: radial-gradient(circle at 50% -20%, #1a1a2e 0%, #050505 80%);
+            min-height: 100vh;
         }
 
         .studio-wrapper {
             width: 95%;
+            max-width: 1400px;
             margin: 0 auto;
-            padding: 20px 0;
+            padding: 40px 0;
         }
 
+        /* Header Section */
         .header-section {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 25px;
-            border-bottom: 1px solid #1a1a1a;
-            padding-bottom: 15px;
+            margin-bottom: 40px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--glass-border);
         }
 
         .search-box {
-            background: #1a1a1a;
-            border: 1px solid #222;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--glass-border);
             color: white;
-            border-radius: 4px;
-            padding: 6px 15px;
-            width: 250px;
-            font-size: 0.85rem;
+            border-radius: 12px;
+            padding: 10px 20px;
+            width: 300px;
+            transition: 0.3s;
         }
 
-        .btn-back,
-        .btn-delete,
-        .btn-edit {
-            background: #1a1a1a;
-            border: 1px solid #222;
+        .search-box:focus {
+            outline: none;
+            background: rgba(255, 255, 255, 0.1);
+            border-color: var(--accent);
+            box-shadow: 0 0 15px rgba(255, 0, 85, 0.2);
+        }
+
+        .btn-back {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--glass-border);
             color: #fff;
-            padding: 6px 12px;
-            border-radius: 4px;
-            font-size: 0.85rem;
+            padding: 10px 20px;
+            border-radius: 12px;
             text-decoration: none;
             display: inline-flex;
             align-items: center;
-            gap: 4px;
-            transition: 0.3s ease;
+            gap: 8px;
+            transition: 0.3s;
+            font-weight: 600;
         }
 
-        .btn-back:hover,
-        .btn-delete:hover,
-        .btn-edit:hover {
-            background: #222;
-            border-color: var(--accent);
-            color: #fff;
+        .btn-back:hover {
+            background: #fff;
+            color: #000;
         }
 
+        /* Grid Layout */
         .grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-            gap: 12px;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 25px;
         }
 
-        .card {
-            background: var(--card-bg);
-            border: 1px solid transparent;
-            border-radius: 10px;
-            overflow: hidden;
-            transition: 0.3s ease;
-            text-align: center;
-            padding: 10px;
+        /* Album Card Styling */
+        .album-card {
+            background: var(--card-bg) !important;
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--glass-border) !important;
+            border-radius: 20px !important;
+            padding: 15px;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             position: relative;
+            overflow: hidden;
         }
 
-        .card:hover {
-            transform: translateY(-5px);
-            background: #1a1a1a;
-            border-color: #333;
+        .album-card:hover {
+            transform: translateY(-10px);
+            background: rgba(255, 255, 255, 0.08) !important;
+            border-color: rgba(255, 0, 85, 0.5) !important;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
         }
 
         .media-wrapper {
@@ -135,48 +148,33 @@ $albums = mysqli_query($conn, $query);
             width: 100%;
             aspect-ratio: 1/1;
             background: #000;
-            border-radius: 8px;
-            margin-bottom: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            border-radius: 15px;
             overflow: hidden;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.3);
         }
 
-        video {
+        .media-wrapper img, .media-wrapper video {
             width: 100%;
             height: 100%;
             object-fit: cover;
-            border-radius: 8px;
-            display: block;
+            transition: 0.5s ease;
         }
 
-
-        .play-overlay {
-            position: absolute;
-            width: 35px;
-            height: 35px;
-            background: var(--accent-gradient);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            opacity: 0;
-            transition: 0.3s;
-            z-index: 10;
-            border: none;
-            color: white;
+        .album-card:hover .media-wrapper img, 
+        .album-card:hover .media-wrapper video {
+            transform: scale(1.1);
         }
 
-        .card:hover .play-overlay {
-            opacity: 1;
+        /* Card Text */
+        .card-body {
+            padding: 15px 5px 0 5px !important;
+            text-align: left !important;
         }
 
         .title {
-            font-weight: 600;
-            font-size: 0.85rem;
-            margin-bottom: 1px;
+            font-weight: 800;
+            font-size: 1rem;
+            margin-bottom: 2px;
             color: #fff;
             white-space: nowrap;
             overflow: hidden;
@@ -184,67 +182,58 @@ $albums = mysqli_query($conn, $query);
         }
 
         .artist {
-            font-size: 0.75rem;
-            color: var(--text-muted);
-            margin-bottom: 5px;
+            font-size: 0.85rem;
+            color: var(--text-dim);
+            margin-bottom: 12px;
+            font-weight: 500;
         }
 
         /* Rating UI */
         .stars-row {
             color: #ffca08;
-            font-size: 0.7rem;
-            margin: 4px 0;
+            font-size: 0.8rem;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            margin-bottom: 15px;
         }
 
+        /* Premium Button */
         .btn-rev-pop {
-            background: #000;
-            color: #ccc;
-            border: 1px solid #222;
-            font-size: 0.65rem;
+            background: var(--primary-gradient) !important;
+            color: white !important;
+            border: none !important;
+            font-size: 0.75rem !important;
             width: 100%;
-            padding: 4px;
-            border-radius: 4px;
-            margin-top: 5px;
-            font-weight: 600;
+            padding: 12px !important;
+            border-radius: 12px !important;
+            font-weight: 700 !important;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: 0.3s ease;
+            box-shadow: 0 4px 15px rgba(255, 0, 85, 0.3);
         }
 
         .btn-rev-pop:hover {
-            background: var(--accent);
-            color: white;
+            filter: brightness(1.2);
+            box-shadow: 0 8px 25px rgba(255, 0, 85, 0.5);
+            transform: scale(1.02);
         }
 
-        .media-wrapper {
-            position: relative;
-            width: 100%;
-            aspect-ratio: 1/1;
-            background: #000;
-            border-radius: 8px;
-            overflow: hidden;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        video {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
+        /* Custom Video Controls */
         .custom-controls {
             position: absolute;
             bottom: 0;
             left: 0;
             right: 0;
-            background: rgba(0, 0, 0, 0.5);
+            background: linear-gradient(transparent, rgba(0,0,0,0.8));
+            backdrop-filter: blur(5px);
             display: flex;
             align-items: center;
-            padding: 5px 8px;
-            gap: 5px;
-            border-top-left-radius: 8px;
-            border-top-right-radius: 8px;
+            padding: 10px;
+            gap: 10px;
             opacity: 0;
-            transition: opacity 0.3s;
+            transition: 0.3s;
         }
 
         .media-wrapper:hover .custom-controls {
@@ -255,16 +244,11 @@ $albums = mysqli_query($conn, $query);
             background: none;
             border: none;
             color: #fff;
-            font-size: 16px;
+            font-size: 18px;
             cursor: pointer;
         }
 
-        .custom-controls input[type="range"] {
-            flex: 1;
-        }
-
-
-        /* Review Modal */
+        /* Modal Styling */
         #reviewOverlay {
             display: none;
             position: fixed;
@@ -272,7 +256,8 @@ $albums = mysqli_query($conn, $query);
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.9);
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(15px);
             z-index: 10000;
             align-items: center;
             justify-content: center;
@@ -281,49 +266,27 @@ $albums = mysqli_query($conn, $query);
         .review-modal {
             background: #111;
             width: 90%;
-            max-width: 380px;
-            padding: 30px;
-            border-radius: 20px;
-            border: 1px solid #222;
-        }
-
-        .star-input {
-            display: flex;
-            flex-direction: row-reverse;
-            justify-content: center;
-            gap: 10px;
-        }
-
-        .star-input input {
-            display: none;
+            max-width: 400px;
+            padding: 40px;
+            border-radius: 30px;
+            border: 1px solid var(--glass-border);
+            box-shadow: 0 25px 50px rgba(0,0,0,0.5);
         }
 
         .star-input label {
             font-size: 2.5rem;
             color: #222;
             cursor: pointer;
-        }
-
-        .star-input label:hover,
-        .star-input label:hover~label,
-        .star-input input:checked~label {
-            color: #ffca08;
-        }
-
-        .card-actions {
-            position: absolute;
-            top: 8px;
-            right: 8px;
-            display: flex;
-            gap: 6px;
-            z-index: 20;
+            transition: 0.2s;
         }
 
         footer {
-            padding: 40px;
+            padding: 60px;
             text-align: center;
-            font-size: 0.7rem;
+            font-size: 0.8rem;
             color: #444;
+            letter-spacing: 2px;
+            text-transform: uppercase;
         }
     </style>
 </head>
@@ -331,15 +294,17 @@ $albums = mysqli_query($conn, $query);
 <body>
     <div class="studio-wrapper">
         <div class="header-section">
-            <h4 class="m-0 fw-bold">ALBUMS<span style="color: var(--accent);">STUDIO</span></h4>
-            <div class="d-flex align-items-center gap-2">
-                <input type="text" id="search" class="search-box" placeholder="Search albums...">
-                <a href="index.php" class="btn-back"><i class="bi bi-arrow-left"></i> Back</a>
+            <h4 class="m-0 fw-bold" style="letter-spacing: -1px;">ALBUMS<span style="color: var(--accent);">STUDIO</span></h4>
+            <div class="d-flex align-items-center gap-3">
+                <input type="text" id="search" class="search-box" placeholder="Search artists, albums...">
+                <a href="index.php" class="btn-back"><i class="bi bi-house-door"></i> Dashboard</a>
             </div>
         </div>
 
         <?php if (isset($msg)): ?>
-            <div class="alert alert-success py-2" style="font-size:0.8rem;"><?= $msg ?></div>
+            <div class="alert alert-success border-0 bg-success text-white py-3 rounded-4 mb-4" style="font-size:0.9rem;">
+                <i class="bi bi-check-circle-fill me-2"></i> <?= $msg ?>
+            </div>
         <?php endif; ?>
 
         <div class="grid" id="albumGrid">
@@ -348,36 +313,37 @@ $albums = mysqli_query($conn, $query);
             ?>
                 <div class="card album-card" data-title="<?= strtolower($row['title']); ?>" data-artist="<?= strtolower($row['artist']); ?>">
                     
-
                     <div class="media-wrapper">
                         <?php if (!empty($row['video'])): ?>
                             <video id="vid-<?= $row['id']; ?>" preload="metadata" poster="../admin/uploads/albums/<?= $row['cover']; ?>">
                                 <source src="../admin/uploads/albums/<?= $row['video']; ?>" type="video/mp4">
                             </video>
 
-                            <!-- Custom overlay controls -->
                             <div class="custom-controls" id="controls-<?= $row['id']; ?>">
                                 <button class="play-btn"><i class="bi bi-play-fill"></i></button>
-                                <input type="range" class="progress" min="0" max="100" value="0">
+                                <input type="range" class="progress form-range" min="0" max="100" value="0" style="height: 4px;">
                                 <button class="mute-btn"><i class="bi bi-volume-up"></i></button>
                                 <button class="fullscreen-btn"><i class="bi bi-arrows-fullscreen"></i></button>
                             </div>
                         <?php else: ?>
-                            <img src="../admin/uploads/albums/<?= $row['cover']; ?>" style="width:100%; height:100%; object-fit:cover; border-radius:8px;">
+                            <img src="../admin/uploads/albums/<?= $row['cover']; ?>">
                         <?php endif; ?>
                     </div>
-
 
                     <div class="card-body">
                         <div class="title"><?= htmlspecialchars($row['title']); ?></div>
                         <div class="artist"><?= htmlspecialchars($row['artist']); ?></div>
 
                         <div class="stars-row">
-                            <?php for ($i = 1; $i <= 5; $i++) echo ($i <= $avg) ? '★' : '☆'; ?>
-                            <span class="ms-1 text-muted">(<?= $row['total_reviews'] ?>)</span>
+                            <span style="color: #ffca08;">
+                                <?php for ($i = 1; $i <= 5; $i++) echo ($i <= $avg) ? '★' : '☆'; ?>
+                            </span>
+                            <span class="ms-1 text-muted" style="font-size: 0.7rem;">(<?= $row['total_reviews'] ?>)</span>
                         </div>
 
-                        <button class="btn-rev-pop" onclick="popReview('<?= $row['id'] ?>', '<?= addslashes($row['title']) ?>')">RATE ALBUM</button>
+                        <button class="btn-rev-pop" onclick="popReview('<?= $row['id'] ?>', '<?= addslashes($row['title']) ?>')">
+                            <i class="bi bi-star-fill me-2"></i>Rate Album
+                        </button>
 
                         <?php if (!empty($row['audio'])): ?>
                             <audio id="aud-<?= $row['id']; ?>">
@@ -392,27 +358,28 @@ $albums = mysqli_query($conn, $query);
 
     <div id="reviewOverlay">
         <div class="review-modal">
-            <h5 class="text-center mb-1" id="popTitle">Album Name</h5>
-            <p class="text-center text-muted small mb-4">Leave a rating and comment</p>
+            <h4 class="text-center fw-bold mb-1" id="popTitle">Album Name</h4>
+            <p class="text-center text-muted small mb-4">How would you rate this record?</p>
             <form method="POST">
                 <input type="hidden" name="album_id" id="popId">
-                <div class="star-input mb-4">
-                    <input type="radio" name="rating" value="5" id="s5" required><label for="s5">★</label>
-                    <input type="radio" name="rating" value="4" id="s4"><label for="s4">★</label>
-                    <input type="radio" name="rating" value="3" id="s3"><label for="s3">★</label>
-                    <input type="radio" name="rating" value="2" id="s2"><label for="s2">★</label>
-                    <input type="radio" name="rating" value="1" id="s1"><label for="s1">★</label>
+                <div class="star-input d-flex flex-row-reverse justify-content-center gap-2 mb-4">
+                    <input type="radio" name="rating" value="5" id="s5" class="d-none" required><label for="s5">★</label>
+                    <input type="radio" name="rating" value="4" id="s4" class="d-none"><label for="s4">★</label>
+                    <input type="radio" name="rating" value="3" id="s3" class="d-none"><label for="s3">★</label>
+                    <input type="radio" name="rating" value="2" id="s2" class="d-none"><label for="s2">★</label>
+                    <input type="radio" name="rating" value="1" id="s1" class="d-none"><label for="s1">★</label>
                 </div>
-                <textarea name="comment" class="form-control bg-dark text-white border-secondary mb-3" placeholder="Write feedback..." required></textarea>
-                <div class="d-flex gap-2">
-                    <button type="button" class="btn btn-secondary w-100" onclick="closePop()">Cancel</button>
-                    <button type="submit" name="submit_review" class="btn btn-danger w-100">Post</button>
+                <textarea name="comment" class="form-control bg-dark text-white border-0 rounded-4 p-3 mb-4" rows="3" placeholder="Share your thoughts..." required></textarea>
+                <div class="d-flex gap-3">
+                    <button type="button" class="btn btn-dark w-100 rounded-3 py-2" onclick="closePop()">Cancel</button>
+                    <button type="submit" name="submit_review" class="btn btn-rev-pop w-100 py-2">Submit</button>
                 </div>
             </form>
         </div>
     </div>
 
     <footer>&copy; 2026 ALBUMS STUDIO &bull; SOUND SYSTEM</footer>
+
     <script>
         // Search
         document.getElementById("search").addEventListener("input", function() {
@@ -434,46 +401,17 @@ $albums = mysqli_query($conn, $query);
             document.getElementById('reviewOverlay').style.display = 'none';
         }
 
-        // Fixed Media Toggle
-        function togglePlay(id, btn) {
-            const video = document.getElementById('vid-' + id);
-            const audio = document.getElementById('aud-' + id);
-            const icon = btn.querySelector('i');
-
-            // Pause all other videos and audios
-            document.querySelectorAll('video, audio').forEach(media => {
-                if (media !== video && media !== audio) {
-                    media.pause();
-                }
-            });
-
-            // Play/Pause logic
-            if (video && video.paused) {
-                video.muted = false; // allow sound
-                video.play();
-                if (audio) audio.play();
-                icon.className = 'bi bi-pause-fill';
-            } else if (video) {
-                video.pause();
-                if (audio) audio.pause();
-                icon.className = 'bi bi-play-fill';
-            }
-        }
-
-
         // Single video player logic
         document.querySelectorAll('.media-wrapper').forEach(wrapper => {
             const video = wrapper.querySelector('video');
+            if (!video) return;
+
             const playBtn = wrapper.querySelector('.play-btn');
             const progress = wrapper.querySelector('.progress');
             const muteBtn = wrapper.querySelector('.mute-btn');
             const fullscreenBtn = wrapper.querySelector('.fullscreen-btn');
 
-            if (!video) return;
-
-            // Play/Pause
             playBtn.addEventListener('click', () => {
-                // Pause all other videos
                 document.querySelectorAll('video').forEach(v => {
                     if (v !== video) v.pause();
                 });
@@ -487,38 +425,31 @@ $albums = mysqli_query($conn, $query);
                 }
             });
 
-            // Update progress
             video.addEventListener('timeupdate', () => {
                 progress.value = (video.currentTime / video.duration) * 100;
             });
 
-            // Seek
             progress.addEventListener('input', () => {
                 video.currentTime = (progress.value / 100) * video.duration;
             });
 
-            // Mute toggle
             muteBtn.addEventListener('click', () => {
                 video.muted = !video.muted;
                 muteBtn.innerHTML = video.muted ? '<i class="bi bi-volume-mute"></i>' : '<i class="bi bi-volume-up"></i>';
             });
 
-            // Fullscreen toggle
             fullscreenBtn.addEventListener('click', () => {
                 if (!document.fullscreenElement) {
-                    video.parentElement.requestFullscreen();
+                    wrapper.requestFullscreen();
                 } else {
                     document.exitFullscreen();
                 }
             });
 
-            // Pause video when clicking outside
             video.addEventListener('ended', () => {
                 playBtn.innerHTML = '<i class="bi bi-play-fill"></i>';
             });
         });
     </script>
-
 </body>
-
 </html>
