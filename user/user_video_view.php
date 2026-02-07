@@ -318,7 +318,7 @@ $videos = mysqli_query($conn, $query);
                 <div class="media-wrapper">
                     <img src="<?= $thumbnail ?>" class="thumb-img" id="thumb-<?= $row['id'] ?>">
                     
-                    <video id="vid-<?= $row['id'] ?>" loop muted playsinline>
+                    <video id="vid-<?= $row['id'] ?>" loop  playsinline>
                         <source src="../admin/uploads/videos/<?= $row['file'] ?>" type="video/mp4">
                     </video>
 
