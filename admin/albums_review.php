@@ -9,6 +9,38 @@ if (isset($_GET['delete'])) {
     header("Location: /admin/album_review.php?status=deleted");
 
     exit();
+}/* ===============================
+    2. UPDATE ADMIN LAST SEEN
+================================ */
+$admin_id = (int)$_SESSION['admin_id'];
+$stmt = $conn->prepare("UPDATE admin_users SET last_seen = NOW() WHERE id = ?");
+$stmt->bind_param("i", $admin_id);
+$stmt->execute();
+
+/* ===============================
+    3. DELETE VIDEO (POST Method)
+================================ */
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_id'])) {
+    $id = (int)$_POST['delete_id'];
+    
+    $stmt = $conn->prepare("SELECT file FROM videos WHERE id = ?");
+    $stmt->bind_param("i", $id);
+    $stmt->execute();
+    $res = $stmt->get_result();
+    
+    if ($row = $res->fetch_assoc()) {
+        $filepath = "../uploads/videos/" . $row['file'];
+        if (!empty($row['file']) && file_exists($filepath)) {
+            unlink($filepath); 
+        }
+        
+        $del = $conn->prepare("DELETE FROM videos WHERE id = ?");
+        $del->bind_param("i", $id);
+        $del->execute();
+    }
+    // PHP_SELF use karne se "Not Found" error kabhi nahi aayega
+    header("Location: " . $_SERVER['PHP_SELF'] . "?status=deleted");
+    exit;
 }
 
 // 2. Fetch all reviews with Album Titles
