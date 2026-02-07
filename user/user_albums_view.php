@@ -97,11 +97,12 @@ $albums = mysqli_query($conn, $query);
             backdrop-filter: blur(10px);
             border: 1px solid var(--glass-border) !important;
             border-radius: 20px !important;
-            padding: 150px;
+            padding: 15px;
             transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             position: relative;
             overflow: hidden;
             height: 100%;
+            width: 100% ;
         }
 
         .album-card:hover {
