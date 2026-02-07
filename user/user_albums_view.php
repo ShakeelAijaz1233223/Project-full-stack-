@@ -92,72 +92,18 @@ $albums = mysqli_query($conn, $query);
             gap: 20px;
         }
 
-       .album-card {
-    background: rgba(255, 255, 255, 0.1); /* Glassy semi-transparent */
-    backdrop-filter: blur(15px);          /* Stronger blur for depth */
-    border: 1px solid rgba(255, 255, 255, 0.25); /* Glass-like border */
-    border-radius: 25px;                  /* Bigger rounded corners */
-    padding: 25px;                        /* More inner space */
-    width: 100%;
-    height: 100%;
-    transition: transform 0.5s ease, box-shadow 0.5s ease;
-    position: relative;
-    overflow: hidden;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-}
-
-/* Hover effect for pop & interactivity */
-.album-card:hover {
-    transform: scale(1.05);               /* Slightly bigger on hover */
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3); /* Soft shadow */
-}
-
-/* Optional: Album image inside the card */
-.album-card img {
-    width: 100%;
-    border-radius: 20px;
-    margin-bottom: 15px;
-    object-fit: cover;
-    transition: transform 0.5s ease;
-}
-
-.album-card img:hover {
-    transform: scale(1.1); /* Zoom effect on hover */
-}
-
-/* Album title & info styling */
-.album-card h3 {
-    color: #fff;
-    font-size: 1.6rem;       /* Bigger text */
-    margin-bottom: 10px;
-}
-
-.album-card p {
-    color: rgba(255, 255, 255, 0.8);
-    font-size: 1rem;
-}
-
-/* Optional: Play button overlay */
-.album-card .play-btn {
-    position: absolute;
-    bottom: 20px;
-    right: 20px;
-    background: rgba(255, 255, 255, 0.2);
-    border: none;
-    padding: 10px 15px;
-    border-radius: 50%;
-    color: #fff;
-    cursor: pointer;
-    transition: background 0.3s ease, transform 0.3s ease;
-}
-
-.album-card .play-btn:hover {
-    background: rgba(255, 255, 255, 0.4);
-    transform: scale(1.2);
-}
-
+        .album-card {
+            background: var(--card-bg) !important;
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--glass-border) !important;
+            border-radius: 20px !important;
+            padding: 15px;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+            overflow: hidden;
+            height: 100%;
+            width: 100% ;
+        }
 
         .album-card:hover {
             transform: translateY(-10px) scale(1.02);
