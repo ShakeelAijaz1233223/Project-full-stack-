@@ -405,6 +405,15 @@ $albums = mysqli_query($conn, $query);
             icon.className = 'bi bi-play-fill';
         }
     }
+    document.querySelectorAll('.media-wrapper').forEach(wrapper => {
+    wrapper.addEventListener('click', () => {
+        const video = wrapper.querySelector('video');
+        const audio = wrapper.querySelector('audio');
+        if(video) video.muted = !video.muted; // toggle sound
+        if(audio) audio.paused ? audio.play() : audio.pause();
+    });
+});
+
 </script>
 
 </body>
