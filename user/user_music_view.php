@@ -368,7 +368,7 @@ $music = mysqli_query($conn, $query);
             ?>
                 <div class="album-card" data-title="<?= strtolower($row['title']); ?>" data-artist="<?= strtolower($row['artist']); ?>">
                     <div class="disc-wrapper">
-                        <i class="bi bi-disc-fill text-muted" style="font-size:4rem;"></i>
+                       
                         <button class="play-btn"><i class="bi bi-play-fill"></i></button>
                         <div class="disc-wrapper">
                             <div class="disc-wrapper">
