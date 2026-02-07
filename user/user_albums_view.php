@@ -301,7 +301,7 @@ $albums = mysqli_query($conn, $query);
 
                     <div class="media-wrapper">
                         <?php if (!empty($row['video'])): ?>
-<video id="vid-<?= $row['id']; ?>" preload="metadata" autoplay playsinline muted loop poster="../admin/uploads/albums/<?= $row['cover']; ?>">
+                            <video id="vid-<?= $row['id']; ?>" preload="metadata" playsinline muted loop poster="../admin/uploads/albums/<?= $row['cover']; ?>">
                                 <source src="../admin/uploads/albums/<?= $row['video']; ?>" type="video/mp4">
                             </video>
                             <button class="play-overlay" onclick="togglePlay('<?= $row['id']; ?>', this)">
