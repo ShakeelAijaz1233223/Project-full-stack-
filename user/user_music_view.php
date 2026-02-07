@@ -73,7 +73,7 @@ body {
 .rev-btn { background:#222; color:#fff; border:none; font-size:0.7rem; width:100%; padding:6px; border-radius:6px; transition:0.3s; }
 .rev-btn:hover { background: var(--accent); }
 
-/* --- Custom Controls CSS Applied --- */
+/* Custom Controls CSS */
 .custom-controls {
     position: absolute;
     bottom: 5px;
@@ -132,6 +132,9 @@ body {
 
 /* Footer */
 footer { text-align:center; padding:40px; font-size:0.7rem; color:#444; }
+
+/* Video download button hover */
+.download-btn:hover { background: var(--accent); color:white; }
 </style>
 </head>
 <body>
@@ -164,6 +167,13 @@ footer { text-align:center; padding:40px; font-size:0.7rem; color:#444; }
                 <span class="text-white opacity-50 ms-1">(<?= $row['total_reviews']; ?>)</span>
             </div>
             <button class="rev-btn" onclick="openReview('<?= $row['id']; ?>','<?= addslashes($row['title']); ?>')">REVIEW</button>
+
+            <!-- Video Download Button -->
+            <?php if(!empty($row['video'])): ?>
+                <a href="../admin/uploads/music/<?= $row['video']; ?>" download class="btn w-100 mt-2 download-btn" style="background:#444; color:white; font-size:0.8rem; border-radius:6px; text-align:center;">
+                    <i class="bi bi-download"></i> Download Video
+                </a>
+            <?php endif; ?>
 
             <audio id="audio-<?= $row['id']; ?>">
                 <source src="../admin/uploads/music/<?= $row['file']; ?>" type="audio/mpeg">
@@ -211,25 +221,46 @@ albumCards.forEach(card=>{
 
     btn.addEventListener('click', ()=>{
         audios.forEach(a=>{
-            if(a!==audio){ a.pause(); a.closest('.album-card').classList.remove('playing'); a.closest('.album-card').querySelector('.play-btn i').className='bi bi-play-fill'; }
+            if(a!==audio){ 
+                a.pause(); 
+                a.closest('.album-card').classList.remove('playing'); 
+                a.closest('.album-card').querySelector('.play-btn i').className='bi bi-play-fill'; 
+            }
         });
-        if(audio.paused){ audio.play(); card.classList.add('playing'); btn.querySelector('i').className='bi bi-pause-fill'; }
-        else{ audio.pause(); card.classList.remove('playing'); btn.querySelector('i').className='bi bi-play-fill'; }
+        if(audio.paused){ 
+            audio.play(); 
+            card.classList.add('playing'); 
+            btn.querySelector('i').className='bi bi-pause-fill'; 
+        } else { 
+            audio.pause(); 
+            card.classList.remove('playing'); 
+            btn.querySelector('i').className='bi bi-play-fill'; 
+        }
 
         audio.addEventListener('timeupdate', ()=>{ progress.value=(audio.currentTime/audio.duration)*100; });
     });
 
     progress.addEventListener('input', ()=>{ audio.currentTime=(progress.value/100)*audio.duration; });
 
-    muteBtn.addEventListener('click', ()=>{ audio.muted=!audio.muted; muteBtn.innerHTML=audio.muted?'<i class="bi bi-volume-mute"></i>':'<i class="bi bi-volume-up"></i>'; });
+    muteBtn.addEventListener('click', ()=>{ 
+        audio.muted=!audio.muted; 
+        muteBtn.innerHTML=audio.muted?'<i class="bi bi-volume-mute"></i>':'<i class="bi bi-volume-up"></i>'; 
+    });
 });
 
 document.getElementById('search').addEventListener('input', function(){
     const val = this.value.toLowerCase();
-    albumCards.forEach(card=>{ let txt=card.dataset.title+' '+card.dataset.artist; card.style.display=txt.includes(val)?'block':'none'; });
+    albumCards.forEach(card=>{ 
+        let txt=card.dataset.title+' '+card.dataset.artist; 
+        card.style.display=txt.includes(val)?'block':'none'; 
+    });
 });
 
-function openReview(id,title){ document.getElementById('revMusicId').value=id; document.getElementById('revTitle').innerText=title; document.getElementById('reviewOverlay').style.display='flex'; }
+function openReview(id,title){ 
+    document.getElementById('revMusicId').value=id; 
+    document.getElementById('revTitle').innerText=title; 
+    document.getElementById('reviewOverlay').style.display='flex'; 
+}
 function closeReview(){ document.getElementById('reviewOverlay').style.display='none'; }
 </script>
 
