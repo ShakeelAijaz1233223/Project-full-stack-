@@ -333,6 +333,7 @@ $userName = !empty($userData['name']) ? $userData['name'] : 'Admin';
             <a href="add_albums.php"><i class="fa-solid fa-folder-plus"></i> Add Album</a>
             <a href="add_music.php"><i class="fa-solid fa-cloud-arrow-up"></i> Add Music</a>
             <a href="add_video.php"><i class="fa-solid fa-file-video"></i> Add Video</a>
+            <a href="reviews.php"><i class="fa-solid fa-envelope-open-text"></i> Review All</a>
             <a href="admin_messages.php"><i class="fa-solid fa-envelope-open-text"></i> Messages</a>
            
             <a href="logout.php" class="text-danger mt-3"><i class="fa-solid fa-power-off"></i> Sign Out</a>
