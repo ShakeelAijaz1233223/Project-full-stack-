@@ -258,6 +258,48 @@ function popReview(id,title){
     document.getElementById('reviewOverlay').style.display = 'flex';
 }
 function closePop(){ document.getElementById('reviewOverlay').style.display='none'; }
+
+    // Video Player logic
+    document.querySelectorAll('.media-wrapper').forEach(wrapper => {
+        const video = wrapper.querySelector('video');
+        if (!video) return;
+
+        const playBtn = wrapper.querySelector('.play-btn');
+        const progress = wrapper.querySelector('.progress');
+        const muteBtn = wrapper.querySelector('.mute-btn');
+        const fullscreenBtn = wrapper.querySelector('.fullscreen-btn');
+
+        playBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            if (video.paused) {
+                document.querySelectorAll('video').forEach(v => v.pause());
+                video.play();
+                playBtn.innerHTML = '<i class="bi bi-pause-fill"></i>';
+            } else {
+                video.pause();
+                playBtn.innerHTML = '<i class="bi bi-play-fill"></i>';
+            }
+        });
+
+        video.addEventListener('timeupdate', () => {
+            progress.value = (video.currentTime / video.duration) * 100;
+        });
+
+        progress.addEventListener('input', () => {
+            video.currentTime = (progress.value / 100) * video.duration;
+        });
+
+        muteBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            video.muted = !video.muted;
+            muteBtn.innerHTML = video.muted ? '<i class="bi bi-volume-mute"></i>' : '<i class="bi bi-volume-up"></i>';
+        });
+
+        fullscreenBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            if (video.requestFullscreen) video.requestFullscreen();
+        });
+    });
 </script>
 
 </body>
