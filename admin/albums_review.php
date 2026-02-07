@@ -1,108 +1,106 @@
 <?php
-// session_start();
+session_start();
 include "../config/db.php";
 
-// 1. Handle Delete Review
-if (isset($_GET['delete'])) {
-    $id = (int)$_GET['delete'];
-    mysqli_query($conn, "DELETE FROM album_reviews WHERE id = $id");
-    header("Location: /admin/album_review.php?status=deleted");
-
+/* ===============================
+    1. ADMIN AUTH
+================================ */
+if (!isset($_SESSION['email']) || !isset($_SESSION['admin_id'])) {
+    header("Location: login.php");
     exit();
 }
 
-// 2. Fetch all reviews with Album Titles
-$query = "SELECT album_reviews.*, albums.title as album_name, albums.cover 
-          FROM album_reviews 
-          JOIN albums ON album_reviews.album_id = albums.id 
-          ORDER BY album_reviews.created_at DESC";
-$result = mysqli_query($conn, $query);
+/* ===============================
+    2. UPDATE ADMIN LAST SEEN
+================================ */
+$admin_id = (int)$_SESSION['admin_id'];
+$stmt = $conn->prepare("UPDATE admin_users SET last_seen = NOW() WHERE id = ?");
+$stmt->bind_param("i", $admin_id);
+$stmt->execute();
+
+/* ===============================
+    3. DELETE VIDEO (POST Method)
+================================ */
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_id'])) {
+    $id = (int)$_POST['delete_id'];
+    
+    $stmt = $conn->prepare("SELECT file FROM videos WHERE id = ?");
+    $stmt->bind_param("i", $id);
+    $stmt->execute();
+    $res = $stmt->get_result();
+    
+    if ($row = $res->fetch_assoc()) {
+        $filepath = "../uploads/videos/" . $row['file'];
+        if (!empty($row['file']) && file_exists($filepath)) {
+            unlink($filepath); 
+        }
+        
+        $del = $conn->prepare("DELETE FROM videos WHERE id = ?");
+        $del->bind_param("i", $id);
+        $del->execute();
+    }
+    // PHP_SELF use karne se "Not Found" error kabhi nahi aayega
+    header("Location: " . $_SERVER['PHP_SELF'] . "?status=deleted");
+    exit;
+}
+
+// Fetch videos for display
+$videos = mysqli_query($conn, "SELECT * FROM videos ORDER BY id DESC");
 ?>
 
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Manage Album Reviews | Admin</title>
+    <title>Manage Videos</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
     <style>
-        :root { --bg-dark: #080808; --card-bg: #121212; --accent: #ff0055; }
-        body { background-color: var(--bg-dark); color: #fff; font-family: 'Inter', sans-serif; }
-        .table-container { background: var(--card-bg); border-radius: 15px; padding: 20px; border: 1px solid #222; margin-top: 30px; }
-        .table { color: #fff; border-color: #222; }
-        .table thead { background: #1a1a1a; }
-        .album-img { width: 40px; height: 40px; border-radius: 5px; object-fit: cover; margin-right: 10px; }
-        .stars { color: #ffca08; }
-        .btn-action { padding: 4px 8px; font-size: 0.8rem; }
-        .status-msg { font-size: 0.85rem; padding: 10px; border-radius: 5px; margin-bottom: 20px; }
-        .badge-rating { background: var(--accent); color: white; font-size: 0.75rem; }
+        body { background: #080808; color: #fff; font-family: 'Inter', sans-serif; }
+        .table-container { background: #121212; border-radius: 15px; padding: 20px; border: 1px solid #222; }
+        .btn-delete { color: #ff0055; border: 1px solid #ff0055; background: none; }
+        .btn-delete:hover { background: #ff0055; color: #fff; }
     </style>
 </head>
 <body>
-
 <div class="container py-5">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h3 class="fw-bold">ALBUM <span style="color: var(--accent);">REVIEWS</span></h3>
-        <a href="index.php" class="btn btn-outline-light btn-sm"><i class="bi bi-speedometer2"></i> Dashboard</a>
-    </div>
-
-    <?php if(isset($_GET['status'])): ?>
-        <div class="alert alert-danger status-msg bg-danger text-white border-0">Review deleted successfully!</div>
+    
+    <?php if(isset($_GET['status']) && $_GET['status'] == 'deleted'): ?>
+        <div class="alert alert-danger bg-danger text-white border-0 py-2 mb-4">
+            <i class="bi bi-trash me-2"></i> Video and file deleted successfully!
+        </div>
     <?php endif; ?>
 
     <div class="table-container shadow-lg">
-        <div class="table-responsive">
-            <table class="table table-hover align-middle">
-                <thead>
-                    <tr>
-                        <th>Album</th>
-                        <th>Rating</th>
-                        <th>Comment</th>
-                        <th>Date</th>
-                        <th class="text-center">Action</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php if(mysqli_num_rows($result) > 0): ?>
-                        <?php while($row = mysqli_fetch_assoc($result)): ?>
-                            <tr>
-                                <td>
-                                    <div class="d-flex align-items-center">
-                                        <img src="uploads/albums/<?= $row['cover'] ?>" class="album-img">
-                                        <span class="fw-semibold"><?= htmlspecialchars($row['album_name']) ?></span>
-                                    </div>
-                                </td>
-                                <td>
-                                    <div class="stars">
-                                        <?php for($i=1; $i<=5; $i++) echo ($i <= $row['rating']) ? '★' : '☆'; ?>
-                                    </div>
-                                    <small class="text-muted"><?= $row['rating'] ?>/5</small>
-                                </td>
-                                <td style="max-width: 300px;">
-                                    <div class="text-truncate" title="<?= htmlspecialchars($row['comment']) ?>">
-                                        <?= htmlspecialchars($row['comment']) ?>
-                                    </div>
-                                </td>
-                                <td><small class="text-muted"><?= date('d M, Y', strtotime($row['created_at'])) ?></small></td>
-                                <td class="text-center">
-                                    <a href="?delete=<?= $row['id'] ?>" class="btn btn-outline-danger btn-action" 
-                                       onclick="return confirm('Are you sure you want to delete this review?')">
-                                        <i class="bi bi-trash"></i>
-                                    </button>
-                                </td>
-                            </tr>
-                        <?php endwhile; ?>
-                    <?php else: ?>
-                        <tr>
-                            <td colspan="5" class="text-center py-5 text-muted">No reviews found yet.</td>
-                        </tr>
-                    <?php endif; ?>
-                </tbody>
-            </table>
-        </div>
+        <h4 class="mb-4">MANAGE VIDEOS</h4>
+        <table class="table table-dark table-hover align-middle">
+            <thead>
+                <tr>
+                    <th>Title</th>
+                    <th>File Name</th>
+                    <th class="text-center">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php while($v = mysqli_fetch_assoc($videos)): ?>
+                <tr>
+                    <td><?= htmlspecialchars($v['title']) ?></td>
+                    <td class="text-muted small"><?= htmlspecialchars($v['file']) ?></td>
+                    <td class="text-center">
+                        <form method="POST" onsubmit="return confirm('Pakka delete karna hai?');" style="display:inline;">
+                            <input type="hidden" name="delete_id" value="<?= $v['id'] ?>">
+                            <button type="submit" class="btn btn-sm btn-delete">
+                                <i class="bi bi-trash3"></i> Delete
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+                <?php endwhile; ?>
+            </tbody>
+        </table>
     </div>
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
