@@ -336,7 +336,7 @@ $videos = mysqli_query($conn, $query);
                 </div>
 
                 <button class="rev-btn" onclick="openReview('<?= $row['id'] ?>', '<?= addslashes($row['title']) ?>')">
-                    <i class="bi bi-chat-square-text me-2"></i>LEAVE A REVIEW
+                    <i class="bi bi-chat-square-text me-2"></i>ADD REVIEW
                 </button>
             </div>
         <?php endwhile; ?>
