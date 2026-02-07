@@ -396,12 +396,10 @@ $music = mysqli_query($conn, $query);
                     </div>
 
                    <div class="meta-info">
-    <span class="id-tag">ID: <?= htmlspecialchars($row['id']) ?></span>
     <span class="title-tag">Title: <?= htmlspecialchars($row['title']) ?></span>
     <span class="artist-tag">Artist: <?= htmlspecialchars($row['artist']) ?></span>
     <span class="album-tag">Album: <?= htmlspecialchars($row['album']) ?></span>
     <span class="year-tag">Year: <?= htmlspecialchars($row['year']) ?></span>
-    <span class="album-id-tag">Album ID: <?= htmlspecialchars($row['album_id']) ?></span>
 </div>
 
                     <div class="stars-display">
