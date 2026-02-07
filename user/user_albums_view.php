@@ -108,6 +108,57 @@ $albums = mysqli_query($conn, $query);
     justify-content: space-between;
 }
 
+/* Hover effect for pop & interactivity */
+.album-card:hover {
+    transform: scale(1.05);               /* Slightly bigger on hover */
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3); /* Soft shadow */
+}
+
+/* Optional: Album image inside the card */
+.album-card img {
+    width: 100%;
+    border-radius: 20px;
+    margin-bottom: 15px;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+}
+
+.album-card img:hover {
+    transform: scale(1.1); /* Zoom effect on hover */
+}
+
+/* Album title & info styling */
+.album-card h3 {
+    color: #fff;
+    font-size: 1.6rem;       /* Bigger text */
+    margin-bottom: 10px;
+}
+
+.album-card p {
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 1rem;
+}
+
+/* Optional: Play button overlay */
+.album-card .play-btn {
+    position: absolute;
+    bottom: 20px;
+    right: 20px;
+    background: rgba(255, 255, 255, 0.2);
+    border: none;
+    padding: 10px 15px;
+    border-radius: 50%;
+    color: #fff;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.3s ease;
+}
+
+.album-card .play-btn:hover {
+    background: rgba(255, 255, 255, 0.4);
+    transform: scale(1.2);
+}
+
+
         .album-card:hover {
             transform: translateY(-10px) scale(1.02);
             background: rgba(255, 255, 255, 0.07) !important;
