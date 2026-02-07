@@ -329,7 +329,7 @@ if (isset($_SESSION['email']) && isset($conn)) {
             </p>
             <div class="cta-group">
                 <button class="btn btn-primary" onclick="location.href='#music'">Start Listening</button>
-                <button class="btn btn-outline" onclick="location.href='#about'">Learn More</button>
+                <button class="btn btn-outline" onclick="location.href='user_music_view.php'">Learn More</button>
             </div>
         </div>
     </section>
