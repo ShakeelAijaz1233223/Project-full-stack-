@@ -22,7 +22,6 @@ $videos = mysqli_query($conn, $query);
 
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -175,9 +174,7 @@ $videos = mysqli_query($conn, $query);
 
         .custom-controls {
             position: absolute;
-            bottom: 0;
-            left: 0;
-            right: 0;
+            bottom: 0; left: 0; right: 0;
             background: linear-gradient(transparent, rgba(0, 0, 0, 0.9));
             padding: 10px;
             display: flex;
@@ -188,9 +185,7 @@ $videos = mysqli_query($conn, $query);
             transition: 0.3s;
         }
 
-        .media-wrapper:hover .custom-controls {
-            opacity: 1;
-        }
+        .media-wrapper:hover .custom-controls { opacity: 1; }
 
         .progress {
             flex: 1;
@@ -217,7 +212,7 @@ $videos = mysqli_query($conn, $query);
         }
 
         .meta-info span {
-            background: rgba(255, 255, 255, 0.05);
+              background: rgba(255, 255, 255, 0.05);
             padding: 3px 6px;
             border-radius: 6px;
             white-space: nowrap;
@@ -251,12 +246,10 @@ $videos = mysqli_query($conn, $query);
             margin-bottom: 8px;
         }
 
-        .rev-btn:hover {
-            background: var(--accent);
-        }
+        .rev-btn:hover { background: var(--accent); }
 
         /* --- Review Modal (Same to Same) --- */
-        #reviewOverlay {
+     #reviewOverlay {
             display: none;
             position: fixed;
             top: 0;
@@ -287,176 +280,157 @@ $videos = mysqli_query($conn, $query);
             margin-bottom: 20px;
         }
 
-        .star-rating label {
-            font-size: 2.5rem;
-            color: #333;
-            cursor: pointer;
-        }
-
-        .star-rating input {
-            display: none;
-        }
-
+        .star-rating label { font-size: 2.5rem; color: #333; cursor: pointer; }
+        .star-rating input { display: none; }
         .star-rating label:hover,
         .star-rating label:hover~label,
-        .star-rating input:checked~label {
-            color: #ffd700;
-        }
+        .star-rating input:checked~label { color: #ffd700; }
 
-        footer {
-            text-align: center;
-            padding: 40px;
-            color: #444;
-            font-size: 0.8rem;
-        }
+        footer { text-align: center; padding: 40px; color: #444; font-size: 0.8rem; }
     </style>
 </head>
-
 <body>
 
-    <div class="studio-wrapper">
-        <div class="header-section">
-            <h4 class="m-0 fw-bold">Video<span style="color: var(--accent);">Studio</span></h4>
-            <div class="d-flex gap-2">
-                <input type="text" id="search" class="search-box" placeholder="Search visuals, artists...">
-                <a href="index.php" class="btn-back"><i class="bi bi-house"></i> Home</a>
-            </div>
+<div class="studio-wrapper">
+    <div class="header-section">
+        <h4 class="m-0 fw-bold">Video<span style="color: var(--accent);">Studio</span></h4>
+        <div class="d-flex gap-2">
+            <input type="text" id="search" class="search-box" placeholder="Search visuals, artists...">
+            <a href="index.php" class="btn-back"><i class="bi bi-house"></i> Home</a>
         </div>
+    </div>
 
-        <div class="grid" id="videoGrid">
-            <?php while ($row = mysqli_fetch_assoc($videos)):
-                $avg = round($row['avg_rating'], 1);
-                $thumbnail = !empty($row['thumbnail']) ? "../admin/uploads/video_thumbnails/" . $row['thumbnail'] : "../assets/img/default_thumb.jpg";
-            ?>
-                <div class="video-card" data-search="<?= strtolower($row['title'] . ' ' . $row['artist']); ?>">
-                    <div class="media-wrapper">
-                        <img src="<?= $thumbnail ?>" class="thumb-img" id="thumb-<?= $row['id'] ?>">
+    <div class="grid" id="videoGrid">
+        <?php while ($row = mysqli_fetch_assoc($videos)): 
+            $avg = round($row['avg_rating'], 1);
+            $thumbnail = !empty($row['thumbnail']) ? "../admin/uploads/video_thumbnails/".$row['thumbnail'] : "../assets/img/default_thumb.jpg";
+        ?>
+            <div class="video-card" data-search="<?= strtolower($row['title'] . ' ' . $row['artist']); ?>">
+                <div class="media-wrapper">
+                    <img src="<?= $thumbnail ?>" class="thumb-img" id="thumb-<?= $row['id'] ?>">
+                    
+                    <video id="vid-<?= $row['id'] ?>" loop playsinline>
+                        <source src="../admin/uploads/videos/<?= $row['file'] ?>" type="video/mp4">
+                    </video>
 
-                        <video id="vid-<?= $row['id'] ?>" loop playsinline>
-                            <source src="../admin/uploads/videos/<?= $row['file'] ?>" type="video/mp4">
-                        </video>
-
-                        <button class="play-btn" onclick="handleMedia('<?= $row['id'] ?>', this)">
-                            <i class="bi bi-play-fill"></i>
-                        </button>
-
-                        <div class="custom-controls">
-                            <input type="range" class="progress" min="0" max="100" value="0">
-                            <button class="btn btn-sm text-white p-0 border-0" onclick="toggleMute('<?= $row['id'] ?>', this)">
-                                <i class="bi bi-volume-up"></i>
-                            </button>
-                        </div>
-                    </div>
-
-                    <p class="title"><?= htmlspecialchars($row['title']) ?></p>
-
-                    <div class="meta-info">
-                        <span class="artist-tag">Artist: <?= htmlspecialchars($row['artist']) ?></span>
-                        <span class="album-tag">Source: <?= htmlspecialchars($row['album']) ?></span>
-                        <span class="year-tag">Year: <?= htmlspecialchars($row['year']) ?></span>
-                    </div>
-
-                    <div class="stars-display">
-                        <?php for ($i = 1; $i <= 5; $i++) echo ($i <= $avg) ? '★' : '☆'; ?>
-                        <span style="color: #666; font-size: 0.7rem;">(<?= $row['total_reviews'] ?>)</span>
-                    </div>
-
-                    <button class="rev-btn" onclick="openReview('<?= $row['id'] ?>', '<?= addslashes($row['title']) ?>')">
-                        <i class="bi bi-chat-square-text me-2"></i>ADD REVIEW
+                    <button class="play-btn" onclick="handleMedia('<?= $row['id'] ?>', this)">
+                        <i class="bi bi-play-fill"></i>
                     </button>
+
+                    <div class="custom-controls">
+                        <input type="range" class="progress" min="0" max="100" value="0">
+                        <button class="btn btn-sm text-white p-0 border-0" onclick="toggleMute('<?= $row['id'] ?>', this)">
+                            <i class="bi bi-volume-up"></i>
+                        </button>
+                    </div>
                 </div>
-            <?php endwhile; ?>
-        </div>
+
+                <p class="title"><?= htmlspecialchars($row['title']) ?></p>
+                
+                <div class="meta-info">
+                    <span class="artist-tag">Artist: <?= htmlspecialchars($row['artist']) ?></span>
+                    <span class="album-tag">Source: <?= htmlspecialchars($row['album']) ?></span>
+                    <span class="year-tag">Year: <?= htmlspecialchars($row['year']) ?></span>
+                </div>
+
+                <div class="stars-display">
+                    <?php for ($i = 1; $i <= 5; $i++) echo ($i <= $avg) ? '★' : '☆'; ?>
+                    <span style="color: #666; font-size: 0.7rem;">(<?= $row['total_reviews'] ?>)</span>
+                </div>
+
+                <button class="rev-btn" onclick="openReview('<?= $row['id'] ?>', '<?= addslashes($row['title']) ?>')">
+                    <i class="bi bi-chat-square-text me-2"></i>ADD REVIEW
+                </button>
+            </div>
+        <?php endwhile; ?>
     </div>
+</div>
 
-    <div id="reviewOverlay">
-        <div class="review-box">
-            <h5 class="text-center mb-1" id="revTitle">Video Name</h5>
-            <p class="text-center text-muted small mb-4">How was the visual quality?</p>
-
-            <form method="POST">
-                <input type="hidden" name="video_id" id="revVideoId">
-                <div class="star-rating">
-                    <input type="radio" name="rating" value="5" id="s5" required><label for="s5">★</label>
-                    <input type="radio" name="rating" value="4" id="s4"><label for="s4">★</label>
-                    <input type="radio" name="rating" value="3" id="s3"><label for="s3">★</label>
-                    <input type="radio" name="rating" value="2" id="s2"><label for="s2">★</label>
-                    <input type="radio" name="rating" value="1" id="s1"><label for="s1">★</label>
-                </div>
-                <textarea name="comment" class="form-control bg-dark text-white border-secondary mb-3" rows="3" placeholder="Share your feedback..." required></textarea>
-
-                <div class="row g-2">
-                    <div class="col-6"><button type="button" class="btn btn-secondary w-100" onclick="closeReview()">CANCEL</button></div>
-                    <div class="col-6"><button type="submit" name="submit_review" class="btn btn-primary w-100" style="background: var(--accent); border:none;">POST</button></div>
-                </div>
-            </form>
-        </div>
+<div id="reviewOverlay">
+    <div class="review-box">
+        <h5 class="text-center mb-1" id="revTitle">Video Name</h5>
+        <p class="text-center text-muted small mb-4">How was the visual quality?</p>
+        
+        <form method="POST">
+            <input type="hidden" name="video_id" id="revVideoId">
+            <div class="star-rating">
+                <input type="radio" name="rating" value="5" id="s5" required><label for="s5">★</label>
+                <input type="radio" name="rating" value="4" id="s4"><label for="s4">★</label>
+                <input type="radio" name="rating" value="3" id="s3"><label for="s3">★</label>
+                <input type="radio" name="rating" value="2" id="s2"><label for="s2">★</label>
+                <input type="radio" name="rating" value="1" id="s1"><label for="s1">★</label>
+            </div>
+            <textarea name="comment" class="form-control bg-dark text-white border-secondary mb-3" rows="3" placeholder="Share your feedback..." required></textarea>
+            
+            <div class="row g-2">
+                <div class="col-6"><button type="button" class="btn btn-secondary w-100" onclick="closeReview()">CANCEL</button></div>
+                <div class="col-6"><button type="submit" name="submit_review" class="btn btn-primary w-100" style="background: var(--accent); border:none;">POST</button></div>
+            </div>
+        </form>
     </div>
+</div>
 
-    <footer>&copy; 2026 Video Studio Pro &bull; Optimized Experience</footer>
+<footer>&copy; 2026 Video Studio Pro &bull; Optimized Experience</footer>
 
-    <script>
-        // Search
-        document.getElementById("search").addEventListener("input", function() {
-            let val = this.value.toLowerCase();
-            document.querySelectorAll(".video-card").forEach(card => {
-                card.style.display = card.getAttribute('data-search').includes(val) ? "block" : "none";
-            });
+<script>
+    // Search
+    document.getElementById("search").addEventListener("input", function() {
+        let val = this.value.toLowerCase();
+        document.querySelectorAll(".video-card").forEach(card => {
+            card.style.display = card.getAttribute('data-search').includes(val) ? "block" : "none";
         });
+    });
 
-        // Media Logic
-        function handleMedia(id, btn) {
-            const video = document.getElementById('vid-' + id);
-            const thumb = document.getElementById('thumb-' + id);
-            const icon = btn.querySelector('i');
+    // Media Logic
+    function handleMedia(id, btn) {
+        const video = document.getElementById('vid-' + id);
+        const thumb = document.getElementById('thumb-' + id);
+        const icon = btn.querySelector('i');
 
-            document.querySelectorAll('video').forEach(v => {
-                if (v !== video) {
-                    v.pause();
-                    const vThumb = v.closest('.media-wrapper').querySelector('.thumb-img');
-                    if (vThumb) vThumb.style.opacity = '1';
-                    v.closest('.media-wrapper').querySelector('.play-btn i').className = 'bi bi-play-fill';
-                }
-            });
-
-            if (video.paused) {
-                video.play();
-                thumb.style.opacity = '0';
-                icon.className = 'bi bi-pause-fill';
-            } else {
-                video.pause();
-                thumb.style.opacity = '1';
-                icon.className = 'bi bi-play-fill';
+        document.querySelectorAll('video').forEach(v => {
+            if (v !== video) {
+                v.pause();
+                const vThumb = v.closest('.media-wrapper').querySelector('.thumb-img');
+                if(vThumb) vThumb.style.opacity = '1';
+                v.closest('.media-wrapper').querySelector('.play-btn i').className = 'bi bi-play-fill';
             }
-        }
-
-        // Progress
-        document.querySelectorAll('video').forEach(video => {
-            const progress = video.closest('.media-wrapper').querySelector('.progress');
-            video.addEventListener('timeupdate', () => {
-                if (video.duration) progress.value = (video.currentTime / video.duration) * 100;
-            });
-            progress.addEventListener('input', () => {
-                video.currentTime = (progress.value / 100) * video.duration;
-            });
         });
 
-        function toggleMute(id, btn) {
-            const video = document.getElementById('vid-' + id);
-            video.muted = !video.muted;
-            btn.innerHTML = video.muted ? '<i class="bi bi-volume-mute"></i>' : '<i class="bi bi-volume-up"></i>';
+        if (video.paused) {
+            video.play();
+            thumb.style.opacity = '0';
+            icon.className = 'bi bi-pause-fill';
+        } else {
+            video.pause();
+            thumb.style.opacity = '1';
+            icon.className = 'bi bi-play-fill';
         }
+    }
 
-        function openReview(id, title) {
-            document.getElementById('revVideoId').value = id;
-            document.getElementById('revTitle').innerText = title;
-            document.getElementById('reviewOverlay').style.display = 'flex';
-        }
+    // Progress
+    document.querySelectorAll('video').forEach(video => {
+        const progress = video.closest('.media-wrapper').querySelector('.progress');
+        video.addEventListener('timeupdate', () => {
+            if (video.duration) progress.value = (video.currentTime / video.duration) * 100;
+        });
+        progress.addEventListener('input', () => {
+            video.currentTime = (progress.value / 100) * video.duration;
+        });
+    });
 
-        function closeReview() {
-            document.getElementById('reviewOverlay').style.display = 'none';
-        }
-    </script>
+    function toggleMute(id, btn) {
+        const video = document.getElementById('vid-' + id);
+        video.muted = !video.muted;
+        btn.innerHTML = video.muted ? '<i class="bi bi-volume-mute"></i>' : '<i class="bi bi-volume-up"></i>';
+    }
+
+    function openReview(id, title) {
+        document.getElementById('revVideoId').value = id;
+        document.getElementById('revTitle').innerText = title;
+        document.getElementById('reviewOverlay').style.display = 'flex';
+    }
+
+    function closeReview() { document.getElementById('reviewOverlay').style.display = 'none'; }
+</script>
 </body>
-
 </html>
