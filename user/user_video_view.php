@@ -31,7 +31,7 @@ $videos = mysqli_query($conn, $query);
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
 
     <style>
-        :root {
+          :root {
             --bg: #0d0d0d;
             --card: #1b1b1b;
             --accent: #ff3366;
@@ -55,7 +55,7 @@ $videos = mysqli_query($conn, $query);
             padding: 25px 0;
         }
 
-        /* --- Header (Same to Same) --- */
+        /* --- Header --- */
         .header-section {
             display: flex;
             justify-content: space-between;
@@ -100,14 +100,14 @@ $videos = mysqli_query($conn, $query);
             color: #fff;
         }
 
-        /* --- Grid & Cards (Same to Same) --- */
+        /* --- Grid & Cards --- */
         .grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
             gap: 25px;
         }
 
-        .video-card {
+        .music-card {
             background: var(--card);
             border-radius: 20px;
             padding: 12px;
@@ -117,17 +117,17 @@ $videos = mysqli_query($conn, $query);
             position: relative;
         }
 
-        .video-card:hover {
+        .music-card:hover {
             transform: translateY(-8px);
             border-color: var(--accent);
         }
 
-        /* --- Media Wrapper (16:9 for Video) --- */
+        /* --- Media Wrapper (Vinyl Animation) --- */
         .media-wrapper {
             position: relative;
             width: 100%;
-            aspect-ratio: 16/9;
-            background: #000;
+            aspect-ratio: 1/1;
+            background: linear-gradient(45deg, #111, #222);
             border-radius: 15px;
             overflow: hidden;
             display: flex;
@@ -136,19 +136,28 @@ $videos = mysqli_query($conn, $query);
             margin-bottom: 15px;
         }
 
-        .thumb-img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            position: absolute;
-            z-index: 2;
-            transition: opacity 0.5s ease;
+        .vinyl-disc {
+            width: 80%;
+            height: 80%;
+            border-radius: 50%;
+            background: radial-gradient(circle, #333 20%, #111 21%, #111 100%);
+            border: 2px solid #222;
+            animation: rotate 5s linear infinite;
+            animation-play-state: paused;
         }
 
-        video {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
+        .music-card.playing .vinyl-disc {
+            animation-play-state: running;
+        }
+
+        @keyframes rotate {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
         }
 
         .play-btn {
@@ -174,7 +183,9 @@ $videos = mysqli_query($conn, $query);
 
         .custom-controls {
             position: absolute;
-            bottom: 0; left: 0; right: 0;
+            bottom: 0;
+            left: 0;
+            right: 0;
             background: linear-gradient(transparent, rgba(0, 0, 0, 0.9));
             padding: 10px;
             display: flex;
@@ -185,7 +196,9 @@ $videos = mysqli_query($conn, $query);
             transition: 0.3s;
         }
 
-        .media-wrapper:hover .custom-controls { opacity: 1; }
+        .media-wrapper:hover .custom-controls {
+            opacity: 1;
+        }
 
         .progress {
             flex: 1;
@@ -194,7 +207,7 @@ $videos = mysqli_query($conn, $query);
             cursor: pointer;
         }
 
-        /* --- Text Styling (Same to Same) --- */
+        /* --- Text Styling --- */
         .title {
             font-size: 1rem;
             font-weight: 700;
@@ -219,6 +232,11 @@ $videos = mysqli_query($conn, $query);
             overflow: hidden;
             text-overflow: ellipsis;
             transition: 0.3s;
+        }
+
+        .meta-info span:hover {
+            background: rgba(255, 51, 102, 0.15);
+            color: var(--text-main);
         }
 
         .artist-tag {
@@ -246,10 +264,32 @@ $videos = mysqli_query($conn, $query);
             margin-bottom: 8px;
         }
 
-        .rev-btn:hover { background: var(--accent); }
+        .rev-btn:hover {
+            background: var(--accent);
+        }
 
-        /* --- Review Modal (Same to Same) --- */
-     #reviewOverlay {
+        .download-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            width: 100%;
+            padding: 7px;
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.75rem;
+            transition: 0.3s;
+        }
+
+        .download-btn:hover {
+            background: #333;
+            color: #fff;
+        }
+
+        /* --- Review Modal --- */
+        #reviewOverlay {
             display: none;
             position: fixed;
             top: 0;
@@ -280,13 +320,28 @@ $videos = mysqli_query($conn, $query);
             margin-bottom: 20px;
         }
 
-        .star-rating label { font-size: 2.5rem; color: #333; cursor: pointer; }
-        .star-rating input { display: none; }
+        .star-rating label {
+            font-size: 2.5rem;
+            color: #333;
+            cursor: pointer;
+        }
+
+        .star-rating input {
+            display: none;
+        }
+
         .star-rating label:hover,
         .star-rating label:hover~label,
-        .star-rating input:checked~label { color: #ffd700; }
+        .star-rating input:checked~label {
+            color: #ffd700;
+        }
 
-        footer { text-align: center; padding: 40px; color: #444; font-size: 0.8rem; }
+        footer {
+            text-align: center;
+            padding: 40px;
+            color: #444;
+            font-size: 0.8rem;
+        }
     </style>
 </head>
 <body>
