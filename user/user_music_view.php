@@ -102,7 +102,7 @@ footer { text-align:center; padding:40px; font-size:0.7rem; color:#444; }
         ?>
         <div class="album-card" data-title="<?= strtolower($row['title']); ?>" data-artist="<?= strtolower($row['artist']); ?>">
             <div class="disc-wrapper">
-                <i class="bi bi-disc-fill text-muted" style="font-size:4rem;"></i>
+             
                 <button class="play-btn"><i class="bi bi-play-fill"></i></button>
                 <img src="music_img.jpg" alt="">
             </div>
