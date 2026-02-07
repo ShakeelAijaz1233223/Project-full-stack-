@@ -26,6 +26,7 @@ $albums = mysqli_query($conn, $query);
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -137,7 +138,8 @@ $albums = mysqli_query($conn, $query);
             margin-bottom: 15px;
         }
 
-        .media-wrapper img, .media-wrapper video {
+        .media-wrapper img,
+        .media-wrapper video {
             width: 100%;
             height: 100%;
             object-fit: cover;
@@ -166,7 +168,9 @@ $albums = mysqli_query($conn, $query);
 
         .custom-controls {
             position: absolute;
-            bottom: 0; left: 0; right: 0;
+            bottom: 0;
+            left: 0;
+            right: 0;
             background: linear-gradient(transparent, rgba(0, 0, 0, 0.9));
             padding: 10px;
             z-index: 11;
@@ -174,7 +178,9 @@ $albums = mysqli_query($conn, $query);
             transition: 0.3s;
         }
 
-        .media-wrapper:hover .custom-controls { opacity: 1; }
+        .media-wrapper:hover .custom-controls {
+            opacity: 1;
+        }
 
         .progress {
             width: 100%;
@@ -266,13 +272,28 @@ $albums = mysqli_query($conn, $query);
             margin-bottom: 20px;
         }
 
-        .star-rating label { font-size: 2.5rem; color: #333; cursor: pointer; }
-        .star-rating input { display: none; }
+        .star-rating label {
+            font-size: 2.5rem;
+            color: #333;
+            cursor: pointer;
+        }
+
+        .star-rating input {
+            display: none;
+        }
+
         .star-rating label:hover,
         .star-rating label:hover~label,
-        .star-rating input:checked~label { color: #ffd700; }
+        .star-rating input:checked~label {
+            color: #ffd700;
+        }
 
-        footer { text-align: center; padding: 40px; color: #444; font-size: 0.8rem; }
+        footer {
+            text-align: center;
+            padding: 40px;
+            color: #444;
+            font-size: 0.8rem;
+        }
     </style>
 </head>
 
@@ -388,7 +409,7 @@ $albums = mysqli_query($conn, $query);
         // Progress Update
         document.querySelectorAll('video').forEach(video => {
             const progress = video.closest('.media-wrapper').querySelector('.progress');
-            if(progress) {
+            if (progress) {
                 video.addEventListener('timeupdate', () => {
                     progress.value = (video.currentTime / video.duration) * 100;
                 });
@@ -404,8 +425,11 @@ $albums = mysqli_query($conn, $query);
             document.getElementById('reviewOverlay').style.display = 'flex';
         }
 
-        function closeReview() { document.getElementById('reviewOverlay').style.display = 'none'; }
+        function closeReview() {
+            document.getElementById('reviewOverlay').style.display = 'none';
+        }
     </script>
 
 </body>
+
 </html>
