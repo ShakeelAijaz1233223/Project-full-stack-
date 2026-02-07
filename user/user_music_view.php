@@ -367,7 +367,15 @@ $music = mysqli_query($conn, $query);
             ?>
                 <div class="music-card" data-search="<?= strtolower($row['title'] . ' ' . $row['artist']); ?>">
                     <div class="media-wrapper">
-                        <div class="vinyl-disc"></div>
+                        <?php
+                        // Safe cover path
+                        $coverPath = "../admin/uploads/music_covers/" . ($row['cover_image'] ?? 'default.jpg');
+                        ?>
+
+                        <!-- Cover Image -->
+                        <div class="cover-image">
+                            <img src="<?= $coverPath ?>" alt="Music Cover">
+                        </div>
                         <button class="play-btn" onclick="toggleAudio('<?= $row['id'] ?>', this)">
                             <i class="bi bi-play-fill"></i>
                         </button>
@@ -378,30 +386,7 @@ $music = mysqli_query($conn, $query);
                             </button>
                         </div>
                     </div>
-                     <div class="media-wrapper">
-    <?php 
-        // Safe cover path
-        $coverPath = "../admin/uploads/music_covers/" . ($row['cover_image'] ?? 'default.jpg'); 
-    ?>
-    
-    <!-- Cover Image -->
-    <div class="cover-image">
-        <img src="<?= $coverPath ?>" alt="Music Cover">
-    </div>
 
-    <!-- Play button -->
-    <button class="play-btn" onclick="toggleAudio('<?= $row['id'] ?>', this)">
-        <i class="bi bi-play-fill"></i>
-    </button>
-
-    <!-- Custom controls -->
-    <div class="custom-controls">
-        <input type="range" class="progress" min="0" max="100" value="0">
-        <button class="control-btn" onclick="muteAudio('<?= $row['id'] ?>', this)">
-            <i class="bi bi-volume-up"></i>
-        </button>
-    </div>  
-</div>  
 
                     <p class="title"><?= htmlspecialchars($row['title']) ?></p>
 
