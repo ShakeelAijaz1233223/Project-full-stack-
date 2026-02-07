@@ -19,10 +19,10 @@ $stmt->bind_param("i", $admin_id);
 $stmt->execute();
 
 /* ===============================
-    3. DELETE VIDEO (POST Method)
+    3. DELETE REVIEW (GET Method FIX)
 ================================ */
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_id'])) {
-    $id = (int)$_POST['delete_id'];
+if (isset($_GET['delete'])) {
+    $id = (int)$_GET['delete'];
 
     $stmt = $conn->prepare("SELECT file FROM videos WHERE id = ?");
     $stmt->bind_param("i", $id);
@@ -39,14 +39,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_id'])) {
         $del->bind_param("i", $id);
         $del->execute();
     }
-    // PHP_SELF use karne se "Not Found" error kabhi nahi aayega
+
     header("Location: " . $_SERVER['PHP_SELF'] . "?status=deleted");
     exit;
 }
 
-// Fetch videos for display
+/* ===============================
+    4. FETCH DATA (VARIABLE FIX)
+================================ */
 $videos = mysqli_query($conn, "SELECT * FROM videos ORDER BY id DESC");
 ?>
+
 
 <!DOCTYPE html>
 <html lang="en">
