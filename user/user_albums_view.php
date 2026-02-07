@@ -43,279 +43,223 @@ $albums = mysqli_query($conn, $query);
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
     <style>
-        :root {
-            --primary-gradient: linear-gradient(135deg, #ff0055, #7000ff);
-            --bg-dark: #080808;
-            --card-bg: rgba(255, 255, 255, 0.03);
-            --glass-border: rgba(255, 255, 255, 0.1);
-            --text-main: #ffffff;
-            --text-dim: #a0a0a0;
-            --accent: #ff0055;
-        }
+     <style>
+:root {
+    --bg: #080808;
+    --card: #111;
+    --accent: #ff0055;
+    --accent-grad: linear-gradient(45deg, #ff0055, #ff5e00);
+    --text-main: #fff;
+    --text-muted: #aaa;
+}
 
-        body {
-            background-color: var(--bg-dark);
-            color: var(--text-main);
-            font-family: 'Inter', sans-serif;
-            margin: 0;
-        }
+/* --- Body & Wrapper --- */
+body {
+    background: var(--bg);
+    color: var(--text-main);
+    font-family: 'Inter', sans-serif;
+    margin: 0;
+}
+.studio-wrapper {
+    width: 95%;
+    margin: 0 auto;
+    padding: 20px 0;
+}
 
-        .studio-wrapper {
-            width: 95%;
-            margin: 0 auto;
-            padding: 20px 0;
-        }
+/* --- Header --- */
+.header-section {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #222;
+    padding-bottom: 15px;
+    margin-bottom: 25px;
+}
+.search-box {
+    background: #151515;
+    border: 1px solid #333;
+    color: white;
+    border-radius: 6px;
+    padding: 6px 15px;
+    width: 250px;
+}
 
-        .header-section {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 25px;
-            border-bottom: 1px solid #1a1a1a;
-            padding-bottom: 15px;
-        }
+/* --- Album Grid & Cards --- */
+.grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 20px;
+}
+.album-card {
+    background: var(--card);
+    border-radius: 15px;
+    padding: 12px;
+    border: 1px solid #1a1a1a;
+    transition: 0.3s;
+    position: relative;
+}
+.album-card:hover {
+    border-color: var(--accent);
+    transform: translateY(-5px);
+}
 
-        .search-box {
-            background: #1a1a1a;
-            border: 1px solid #222;
-            color: white;
-            border-radius: 8px;
-            padding: 8px 15px;
-            width: 250px;
-            font-size: 0.85rem;
-        }
+/* --- Media Wrapper --- */
+.media-wrapper {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 16/9;
+    background: #000;
+    border-radius: 10px;
+    overflow: hidden;
+    margin-bottom: 10px;
+}
+.media-wrapper img,
+.media-wrapper video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+}
+.album-card:hover .media-wrapper img,
+.album-card:hover .media-wrapper video {
+    transform: scale(1.05);
+}
 
-        .grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 30px;
-            padding: 20px;
-        }
+/* --- Play Button --- */
+.play-btn {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 35px;
+    height: 35px;
+    background: var(--accent-grad);
+    border-radius: 50%;
+    border: none;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    cursor: pointer;
+    z-index: 5;
+    transition: 0.3s;
+}
+.album-card:hover .play-btn { opacity: 1; }
 
-        .album-card {
-            background: rgba(255, 255, 255, 0.05) !important;
-            backdrop-filter: blur(15px);
-            border: 1px solid rgba(255, 255, 255, 0.2) !important;
-            border-radius: 25px !important;
-            padding: 20px;
-            transition: transform 0.5s ease, box-shadow 0.5s ease, border-color 0.5s ease, background 0.5s ease;
-            position: relative;
-            overflow: hidden;
-            width: 100%;
-            display: flex;
-            flex-direction: column;
-            justify-content: flex-start;
-        }
+/* --- Custom Controls --- */
+.custom-controls {
+    position: absolute;
+    bottom: 5px;
+    left: 0;
+    right: 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 10px;
+    background: rgba(0,0,0,0.6);
+    backdrop-filter: blur(4px);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    border-radius: 0 0 8px 8px;
+}
+.media-wrapper:hover .custom-controls { opacity: 1; }
+.custom-controls button {
+    background: none;
+    border: none;
+    color: white;
+    cursor: pointer;
+}
+.custom-controls input[type="range"] {
+    flex: 1;
+    margin: 0 5px;
+    accent-color: var(--accent);
+}
 
-        .album-card:hover {
-            transform: translateY(-15px) scale(1.05);
-            background: rgba(255, 255, 255, 0.08) !important;
-            border-color: rgba(255, 0, 85, 0.6) !important;
-            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.6);
-        }
+/* --- Titles & Artists --- */
+.title {
+    font-size: 0.9rem;
+    font-weight: 600;
+    margin: 5px 0 2px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.artist {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    margin-bottom: 8px;
+}
 
-        .media-wrapper {
-            border-radius: 15px !important;
-            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.5);
-            position: relative;
-            aspect-ratio: 16/9;
-            overflow: hidden;
-            background: #000;
-            margin-bottom: 15px;
-        }
+/* --- Stars --- */
+.stars-row {
+    color: #ffca08;
+    font-size: 0.75rem;
+    margin-bottom: 10px;
+}
 
-        .media-wrapper img,
-        .media-wrapper video {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            transition: transform 0.6s ease;
-        }
+/* --- Review Button --- */
+.btn-rev-pop {
+    background: var(--accent) !important;
+    border: none;
+    color: #fff;
+    font-size: 0.75rem;
+    padding: 6px;
+    width: 100%;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+.btn-rev-pop:hover {
+    filter: brightness(1.2);
+}
 
-        .album-card:hover .media-wrapper img,
-        .album-card:hover .media-wrapper video {
-            transform: scale(1.15);
-        }
+/* --- Review Overlay --- */
+#reviewOverlay {
+    display: none;
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(0,0,0,0.9);
+    backdrop-filter: blur(4px);
+    z-index: 9999;
+    align-items: center;
+    justify-content: center;
+}
+.review-modal {
+    background: var(--card);
+    width: 90%;
+    max-width: 380px;
+    padding: 25px;
+    border-radius: 15px;
+    border: 1px solid #222;
+}
+.star-input {
+    display: flex;
+    flex-direction: row-reverse;
+    justify-content: center;
+    gap: 8px;
+    margin-bottom: 15px;
+}
+.star-input input { display: none; }
+.star-input label {
+    font-size: 2rem;
+    color: #222;
+    cursor: pointer;
+}
+.star-input label:hover,
+.star-input label:hover~label,
+.star-input input:checked~label { color: #ffca08; }
 
-        .album-card h3 {
-            color: #fff;
-            font-size: 1.7rem;
-            margin: 10px 0 5px;
-        }
+/* --- Footer --- */
+footer {
+    text-align: center;
+    padding: 30px;
+    font-size: 0.7rem;
+    color: #444;
+}
+</style>
 
-        .album-card p {
-            color: rgba(255, 255, 255, 0.8);
-            font-size: 1.05rem;
-        }
-
-        .album-card .play-btn {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background: rgba(255, 0, 85, 0.7);
-            border: none;
-            padding: 9px;
-            border-radius: 50%;
-            color: #fff;
-            cursor: pointer;
-            transition: transform 0.3s ease, background 0.3s ease;
-            z-index: 5;
-        }
-
-        .album-card .play-btn:hover {
-            transform: translate(-50%, -50%) scale(1.1);
-            background: rgba(255, 0, 85, 0.9);
-        }
-
-        .custom-controls {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            background: rgba(0, 0, 0, 0.6) !important;
-            backdrop-filter: blur(5px);
-            display: flex;
-            align-items: center;
-            padding: 5px 10px;
-            gap: 8px;
-            opacity: 0;
-            transition: opacity 0.3s;
-            z-index: 5;
-        }
-
-        .media-wrapper:hover .custom-controls {
-            opacity: 1;
-        }
-
-        .custom-controls button {
-            background: none;
-            border: none;
-            color: #fff;
-            cursor: pointer;
-        }
-
-        .custom-controls input[type="range"] {
-            flex: 1;
-            accent-color: var(--accent);
-        }
-
-        .card-body {
-            padding: 15px 5px 5px 5px !important;
-            text-align: left !important;
-        }
-
-        .title {
-            font-size: 1.1rem !important;
-            font-weight: 800 !important;
-            color: var(--text-main);
-            letter-spacing: 0.5px;
-            margin-bottom: 2px;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-
-        .artist {
-            font-size: 0.85rem !important;
-            color: var(--text-dim) !important;
-            font-weight: 500;
-            margin-bottom: 10px;
-        }
-
-        .stars-row {
-            color: #ffca08;
-            font-size: 0.8rem;
-            display: flex;
-            align-items: center;
-            gap: 3px;
-            margin-bottom: 15px;
-        }
-
-        .btn-rev-pop {
-            background: var(--primary-gradient) !important;
-            border: none !important;
-            border-radius: 12px !important;
-            color: white !important;
-            font-weight: 700 !important;
-            font-size: 0.8rem !important;
-            padding: 10px !important;
-            width: 100%;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            transition: 0.3s ease;
-            box-shadow: 0 4px 15px rgba(255, 0, 85, 0.3);
-        }
-
-        .btn-rev-pop:hover {
-            box-shadow: 0 6px 20px rgba(255, 0, 85, 0.5);
-            filter: brightness(1.2);
-        }
-
-        .btn-back {
-            background: #1a1a1a;
-            border: 1px solid #222;
-            color: #fff;
-            padding: 6px 12px;
-            border-radius: 8px;
-            text-decoration: none;
-            font-size: 0.85rem;
-            display: flex;
-            align-items: center;
-            gap: 5px;
-        }
-
-        #reviewOverlay {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.9);
-            z-index: 10000;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .review-modal {
-            background: #111;
-            width: 90%;
-            max-width: 380px;
-            padding: 30px;
-            border-radius: 20px;
-            border: 1px solid var(--glass-border);
-        }
-
-        .star-input {
-            display: flex;
-            flex-direction: row-reverse;
-            justify-content: center;
-            gap: 10px;
-        }
-
-        .star-input input {
-            display: none;
-        }
-
-        .star-input label {
-            font-size: 2.5rem;
-            color: #222;
-            cursor: pointer;
-        }
-
-        .star-input label:hover,
-        .star-input label:hover~label,
-        .star-input input:checked~label {
-            color: #ffca08;
-        }
-
-        footer {
-            padding: 40px;
-            text-align: center;
-            font-size: 0.7rem;
-            color: #444;
-        }
     </style>
 </head>
 
