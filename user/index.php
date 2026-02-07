@@ -259,14 +259,17 @@ if (isset($_SESSION['email']) && isset($conn)) {
 
         /* --- HERO SECTION --- */
         .hero {
-            height: 100vh;
-            position: relative;
-            overflow: hidden;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: url('https://images.unsplash.com/photo-1514525253440-b393452e23f9?q=80&w=1920&auto=format&fit=crop') no-repeat center center/cover;
-        }
+    min-height: calc(100vh - 80px);
+    margin-top: 80px;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: url('https://images.unsplash.com/photo-1514525253440-b393452e23f9?q=80&w=1920&auto=format&fit=crop')
+        no-repeat center / cover;
+}
+
 
         .hero-title {
             font-size: 3rem;
