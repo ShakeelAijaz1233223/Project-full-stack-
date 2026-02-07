@@ -300,7 +300,7 @@ if (isset($_SESSION['email']) && isset($conn)) {
         }
 
         .hero-overlay {
-            position: absolute;
+            position: relative;
             inset: 0;
             background: url("bgimage.png");
         }
