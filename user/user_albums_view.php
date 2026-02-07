@@ -66,7 +66,6 @@ $albums = mysqli_query($conn, $query);
             padding: 20px 0;
         }
 
-        /* Header Section */
         .header-section {
             display: flex;
             justify-content: space-between;
@@ -86,26 +85,18 @@ $albums = mysqli_query($conn, $query);
             font-size: 0.85rem;
         }
 
-        /* New Album Card Styling */
-        /* Grid layout */
         .grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            /* Bigger cards */
             gap: 30px;
-            /* More spacing */
             padding: 20px;
         }
 
-        /* Album card styling */
         .album-card {
             background: rgba(255, 255, 255, 0.05) !important;
-            /* Glassy effect */
             backdrop-filter: blur(15px);
-            /* Stronger blur */
             border: 1px solid rgba(255, 255, 255, 0.2) !important;
             border-radius: 25px !important;
-            /* Bigger round corners */
             padding: 20px;
             transition: transform 0.5s ease, box-shadow 0.5s ease, border-color 0.5s ease, background 0.5s ease;
             position: relative;
@@ -116,7 +107,6 @@ $albums = mysqli_query($conn, $query);
             justify-content: flex-start;
         }
 
-        /* Hover effect */
         .album-card:hover {
             transform: translateY(-15px) scale(1.05);
             background: rgba(255, 255, 255, 0.08) !important;
@@ -124,19 +114,16 @@ $albums = mysqli_query($conn, $query);
             box-shadow: 0 25px 50px rgba(0, 0, 0, 0.6);
         }
 
-        /* Media wrapper (image/video container) */
         .media-wrapper {
             border-radius: 15px !important;
             box-shadow: 0 15px 30px rgba(0, 0, 0, 0.5);
             position: relative;
             aspect-ratio: 16/9;
-            /* Wider video look */
             overflow: hidden;
             background: #000;
             margin-bottom: 15px;
         }
 
-        /* Media inside card */
         .media-wrapper img,
         .media-wrapper video {
             width: 100%;
@@ -145,18 +132,14 @@ $albums = mysqli_query($conn, $query);
             transition: transform 0.6s ease;
         }
 
-        /* Hover zoom for media */
         .album-card:hover .media-wrapper img,
         .album-card:hover .media-wrapper video {
             transform: scale(1.15);
-            /* Bigger zoom on hover */
         }
 
-        /* Album title & info */
         .album-card h3 {
             color: #fff;
             font-size: 1.7rem;
-            /* Bigger font */
             margin: 10px 0 5px;
         }
 
@@ -165,28 +148,27 @@ $albums = mysqli_query($conn, $query);
             font-size: 1.05rem;
         }
 
-        /* Play button centered */
         .album-card .play-btn {
-            position: relative;
-            padding-bottom: 100px;
+            position: absolute;
+            top: 50%;
+            left: 50%;
             transform: translate(-50%, -50%);
-            background: rgba(255, 0, 85, 0.3);
+            background: rgba(255, 0, 85, 0.7);
             border: none;
-            padding: 16px 20px;
-            /* Slightly bigger */
+            padding: 20px;
             border-radius: 50%;
             color: #fff;
+            font-size: 24px;
             cursor: pointer;
             transition: transform 0.3s ease, background 0.3s ease;
+            z-index: 5;
         }
 
         .album-card .play-btn:hover {
-            background: rgba(255, 0, 85, 0.6);
-            /* transform: scale(1.3); Pop effect */
+            transform: translate(-50%, -50%) scale(1.1);
+            background: rgba(255, 0, 85, 0.9);
         }
 
-
-        /* Video Controls Overlay */
         .custom-controls {
             position: absolute;
             bottom: 0;
@@ -219,7 +201,6 @@ $albums = mysqli_query($conn, $query);
             accent-color: var(--accent);
         }
 
-        /* Text Styling */
         .card-body {
             padding: 15px 5px 5px 5px !important;
             text-align: left !important;
@@ -243,7 +224,6 @@ $albums = mysqli_query($conn, $query);
             margin-bottom: 10px;
         }
 
-        /* Rating Stars */
         .stars-row {
             color: #ffca08;
             font-size: 0.8rem;
@@ -253,7 +233,6 @@ $albums = mysqli_query($conn, $query);
             margin-bottom: 15px;
         }
 
-        /* Button Styling */
         .btn-rev-pop {
             background: var(--primary-gradient) !important;
             border: none !important;
@@ -274,7 +253,6 @@ $albums = mysqli_query($conn, $query);
             filter: brightness(1.2);
         }
 
-        /* Modals & Other Components */
         .btn-back {
             background: #1a1a1a;
             border: 1px solid #222;
@@ -367,18 +345,14 @@ $albums = mysqli_query($conn, $query);
                             <video id="vid-<?= $row['id']; ?>" preload="metadata" poster="../admin/uploads/albums/<?= $row['cover']; ?>">
                                 <source src="../admin/uploads/albums/<?= $row['video']; ?>" type="video/mp4">
                             </video>
-                            <div class="album-card">
-                                <img src="album-cover.jpg" alt="Album Cover" class="album-cover">
-                                <button class="play-btn"><i class="bi bi-play-fill"></i></button>
-                                <div class="custom-controls">
-                                    <input type="range" class="progress" min="0" max="100" value="0">
-                                    <button class="mute-btn"><i class="bi bi-volume-up"></i></button>
-                                    <button class="fullscreen-btn"><i class="bi bi-arrows-fullscreen"></i></button>
-                                </div>
+                            <button class="play-btn"><i class="bi bi-play-fill"></i></button>
+                            <div class="custom-controls">
+                                <input type="range" class="progress" min="0" max="100" value="0">
+                                <button class="mute-btn"><i class="bi bi-volume-up"></i></button>
+                                <button class="fullscreen-btn"><i class="bi bi-arrows-fullscreen"></i></button>
                             </div>
-
                         <?php else: ?>
-                            <img src="../admin/uploads/albums/<?= $row['cover']; ?>">
+                            <img src="../admin/uploads/albums/<?= $row['cover']; ?>" class="album-cover">
                         <?php endif; ?>
                     </div>
 
