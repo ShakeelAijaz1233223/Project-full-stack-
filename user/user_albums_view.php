@@ -316,10 +316,12 @@ $albums = mysqli_query($conn, $query);
 
                 <p class="title"><?= htmlspecialchars($row['title']) ?></p>
                 
-               <div class="meta-info">
+               <<div class="meta-info">
     <span class="artist-tag"><?= htmlspecialchars($row['artist']) ?></span>
-    <span><?= htmlspecialchars($row['title']) ?></span>
+    <span class="album-tag"><?= htmlspecialchars($row['title']) ?></span>
+    <span class="year-tag"><?= htmlspecialchars($row['year']) ?></span>
 </div>
+
 
 
                 <div class="stars-display">
