@@ -143,7 +143,7 @@ $albums = mysqli_query($conn, $query);
             backdrop-filter: blur(5px);
             display: flex;
             align-items: center;
-            padding: 5px 10px;
+            padding: 5px 100px;
             gap: 8px;
             opacity: 0;
             transition: opacity 0.3s;
