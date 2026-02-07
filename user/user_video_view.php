@@ -30,209 +30,192 @@ $videos = mysqli_query($conn, $query);
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
     <style>
-      :root {
-    --primary-gradient: linear-gradient(135deg, #ff0055, #7000ff);
-    --bg-dark: #080808;
-    --card-bg: rgba(255, 255, 255, 0.03);
-    --glass-border: rgba(255, 255, 255, 0.1);
-    --text-main: #ffffff;
-    --text-dim: #a0a0a0;
-    --accent: #ff0055;
-}
+        :root {
+            --bg: #080808;
+            --card: #111;
+            --accent: #ff0055;
+            --accent-grad: linear-gradient(45deg, #ff0055, #ff5e00);
+        }
 
-body {
-    background-color: var(--bg-dark);
-    color: var(--text-main);
-    font-family: 'Inter', sans-serif;
-}
+        body {
+            background: var(--bg);
+            color: #fff;
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
+        }
 
-.studio-wrapper {
-    width: 95%;
-    margin: 0 auto;
-    padding: 20px 0;
-}
+        .studio-wrapper {
+            width: 95%;
+            margin: 0 auto;
+            padding: 20px 0;
+        }
 
-.header-section {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 25px;
-    border-bottom: 1px solid #1a1a1a;
-    padding-bottom: 15px;
-}
+        /* Header */
+        .header-section {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #222;
+            padding-bottom: 15px;
+            margin-bottom: 25px;
+        }
 
-.search-box {
-    background: #1a1a1a;
-    border: 1px solid #222;
-    color: white;
-    border-radius: 8px;
-    padding: 8px 15px;
-    width: 250px;
-    font-size: 0.85rem;
-}
+        .search-box {
+            background: #151515;
+            border: 1px solid #333;
+            color: white;
+            border-radius: 6px;
+            padding: 6px 15px;
+            width: 250px;
+        }
 
-.grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: 30px;
-    padding: 20px 0;
-}
+        /* Grid */
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 15px;
+        }
 
-.video-card {
-    background: var(--card-bg);
-    backdrop-filter: blur(15px);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    border-radius: 25px;
-    padding: 20px;
-    transition: transform 0.5s ease, box-shadow 0.5s ease, border-color 0.5s ease, background 0.5s ease;
-    position: relative;
-    overflow: hidden;
-    display: flex;
-    flex-direction: column;
-}
+        .video-card {
+            background: var(--card);
+            border-radius: 12px;
+            padding: 12px;
+            border: 1px solid #1a1a1a;
+            transition: 0.3s;
+            position: relative;
+        }
 
-.video-card:hover {
-    transform: translateY(-15px) scale(1.05);
-    background: rgba(255, 255, 255, 0.08);
-    border-color: rgba(255, 0, 85, 0.6);
-    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.6);
-}
+        .video-card:hover {
+            border-color: var(--accent);
+            transform: translateY(-5px);
+        }
 
-.media-wrapper {
-    border-radius: 15px;
-    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.5);
-    position: relative;
-    aspect-ratio: 16/9;
-    overflow: hidden;
-    background: #000;
-    margin-bottom: 15px;
-}
+        /* Media */
+        .media-wrapper {
+            position: relative;
+            width: 100%;
+            aspect-ratio: 1/1;
+            background: #000;
+            border-radius: 8px;
+            overflow: hidden;
+            margin-bottom: 10px;
+        }
 
-.media-wrapper video {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    transition: transform 0.6s ease;
-}
+        video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
 
-.video-card:hover .media-wrapper video {
-    transform: scale(1.15);
-}
+        .play-btn {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 40px;
+            height: 40px;
+            background: var(--accent-grad);
+            border-radius: 50%;
+            border: none;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: 0.3s;
+            z-index: 5;
+        }
 
-.play-btn {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background: rgba(255, 0, 85, 0.3);
-    border: none;
-    padding: 16px 20px;
-    border-radius: 50%;
-    color: #fff;
-    font-size: 24px;
-    cursor: pointer;
-    transition: transform 0.3s ease, background 0.3s ease;
-    z-index: 5;
-}
+        .video-card:hover .play-btn {
+            opacity: 1;
+        }
 
-.play-btn:hover {
-    background: rgba(255, 0, 85, 0.6);
-    transform: translate(-50%, -50%) scale(1.1);
-}
+        .title {
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin: 0;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
 
-.title {
-    font-size: 1.1rem;
-    font-weight: 800;
-    color: var(--text-main);
-    letter-spacing: 0.5px;
-    margin-bottom: 2px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
+        .stars-display {
+            color: #ffca08;
+            font-size: 0.7rem;
+            margin: 5px 0;
+        }
 
-.stars-display {
-    color: #ffca08;
-    font-size: 0.8rem;
-    display: flex;
-    align-items: center;
-    gap: 3px;
-    margin-bottom: 15px;
-}
+        .rev-btn {
+            background: #222;
+            color: #fff;
+            border: none;
+            font-size: 0.7rem;
+            width: 100%;
+            padding: 5px;
+            border-radius: 5px;
+            transition: 0.3s;
+        }
 
-.rev-btn {
-    background: var(--primary-gradient);
-    border: none;
-    border-radius: 12px;
-    color: white;
-    font-weight: 700;
-    font-size: 0.8rem;
-    padding: 10px;
-    width: 100%;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    transition: 0.3s ease;
-    box-shadow: 0 4px 15px rgba(255, 0, 85, 0.3);
-}
+        .rev-btn:hover {
+            background: var(--accent);
+        }
 
-.rev-btn:hover {
-    box-shadow: 0 6px 20px rgba(255, 0, 85, 0.5);
-    filter: brightness(1.2);
-}
+        /* Review Overlay Focus */
+        #reviewOverlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 9999;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(5px);
+        }
 
-#reviewOverlay {
-    display: none;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.9);
-    z-index: 10000;
-    align-items: center;
-    justify-content: center;
-}
+        .review-box {
+            background: #151515;
+            width: 90%;
+            max-width: 400px;
+            padding: 30px;
+            border-radius: 20px;
+            border: 1px solid #333;
+        }
 
-.review-box {
-    background: #111;
-    width: 90%;
-    max-width: 400px;
-    padding: 30px;
-    border-radius: 20px;
-    border: 1px solid var(--glass-border);
-}
+        /* Star Input */
+        .star-rating {
+            display: flex;
+            flex-direction: row-reverse;
+            justify-content: center;
+            gap: 8px;
+            margin-bottom: 20px;
+        }
 
-.star-rating {
-    display: flex;
-    flex-direction: row-reverse;
-    justify-content: center;
-    gap: 10px;
-    margin-bottom: 20px;
-}
+        .star-rating input {
+            display: none;
+        }
 
-.star-rating input {
-    display: none;
-}
+        .star-rating label {
+            font-size: 2.5rem;
+            color: #222;
+            cursor: pointer;
+            transition: 0.2s;
+        }
 
-.star-rating label {
-    font-size: 2.5rem;
-    color: #222;
-    cursor: pointer;
-}
+        .star-rating label:hover,
+        .star-rating label:hover~label,
+        .star-rating input:checked~label {
+            color: #ffca08;
+        }
 
-.star-rating label:hover,
-.star-rating label:hover~label,
-.star-rating input:checked~label {
-    color: #ffca08;
-}
-
-footer {
-    padding: 40px;
-    text-align: center;
-    font-size: 0.7rem;
-    color: #444;
-}
-
+        footer {
+            text-align: center;
+            padding: 40px;
+            font-size: 0.7rem;
+            color: #444;
+        }
     </style>
 </head>
 
@@ -243,8 +226,7 @@ footer {
             <h4 class="m-0 fw-bold">VIDEO<span style="color: var(--accent);">STUDIO</span></h4>
             <div class="d-flex gap-2">
                 <input type="text" id="search" class="search-box" placeholder="Search videos...">
-            </div>
-            <a href="index.php" class="btn-back"><i class="bi bi-arrow-left"></i>Back</a>            
+<a href="index.php" class="btn-back"><i class="bi bi-arrow-left"></i> Back</a>            </div>
         </div>
 
         <div class="grid" id="videoGrid">
@@ -304,108 +286,46 @@ footer {
     <footer>&copy; 2026 VIDEO STUDIO &bull; SYSTEM PRO</footer>
 
     <script>
-      // ------------------------
-// Search Filter
-// ------------------------
-document.getElementById("search").addEventListener("input", function() {
-    let val = this.value.toLowerCase().trim();
-    document.querySelectorAll(".video-card").forEach(card => {
-        let text = card.dataset.title;
-        card.style.display = text.includes(val) ? "block" : "none";
-    });
-});
-
-// ------------------------
-// Video Player Controls
-// ------------------------
-document.querySelectorAll('.media-wrapper').forEach(wrapper => {
-    const video = wrapper.querySelector('video');
-    if (!video) return;
-
-    // Create custom controls
-    let controls = document.createElement('div');
-    controls.className = 'custom-controls';
-    controls.innerHTML = `
-        <input type="range" class="progress" min="0" max="100" value="0">
-        <button class="mute-btn"><i class="bi bi-volume-up"></i></button>
-        <button class="fullscreen-btn"><i class="bi bi-arrows-fullscreen"></i></button>
-    `;
-    wrapper.appendChild(controls);
-
-    const playBtn = wrapper.querySelector('.play-btn');
-    const progress = wrapper.querySelector('.progress');
-    const muteBtn = wrapper.querySelector('.mute-btn');
-    const fullscreenBtn = wrapper.querySelector('.fullscreen-btn');
-
-    // Play/Pause
-    playBtn.addEventListener('click', (e) => {
-        e.stopPropagation();
-        document.querySelectorAll('video').forEach(v => {
-            if (v !== video) {
-                v.pause();
-               
-                let btn = v.closest('.media-wrapper').querySelector('.play-btn i');
-                if(btn) btn.className = 'bi bi-play-fill';
-            }
+        // Search
+        document.getElementById("search").addEventListener("input", function() {
+            let val = this.value.toLowerCase();
+            document.querySelectorAll(".video-card").forEach(card => {
+                card.style.display = card.dataset.title.includes(val) ? "block" : "none";
+            });
         });
 
-        if (video.paused) {
-            video.play();
-            playBtn.querySelector('i').className = 'bi bi-pause-fill';
-        } else {
-            video.pause();
-            playBtn.querySelector('i').className = 'bi bi-play-fill';
+        // Video Toggle
+        function toggleVideo(id, btn) {
+            const video = document.getElementById('vid-' + id);
+            const icon = btn.querySelector('i');
+
+            document.querySelectorAll('video').forEach(v => {
+                if (v !== video) {
+                    v.pause();
+                    v.muted = true;
+                }
+            });
+
+            if (video.paused) {
+                video.muted = false;
+                video.play();
+                icon.className = 'bi bi-pause-fill';
+            } else {
+                video.pause();
+                icon.className = 'bi bi-play-fill';
+            }
         }
-    });
 
-    // Update progress bar
-    video.addEventListener('timeupdate', () => {
-        progress.value = (video.currentTime / video.duration) * 100 || 0;
-    });
+        // Review Logic
+        function openReview(id, title) {
+            document.getElementById('revVideoId').value = id;
+            document.getElementById('revTitle').innerText = title;
+            document.getElementById('reviewOverlay').style.display = 'flex';
+        }
 
-    // Seek video
-    progress.addEventListener('input', () => {
-        video.currentTime = (progress.value / 100) * video.duration;
-    });
-
-    // Mute toggle
-    muteBtn.addEventListener('click', (e) => {
-        e.stopPropagation();
-        video.muted = !video.muted;
-        muteBtn.innerHTML = video.muted ? '<i class="bi bi-volume-mute"></i>' : '<i class="bi bi-volume-up"></i>';
-    });
-
-    // Fullscreen
-    fullscreenBtn.addEventListener('click', (e) => {
-        e.stopPropagation();
-        if (video.requestFullscreen) video.requestFullscreen();
-    });
-
-    // Show controls on hover
-    wrapper.addEventListener('mouseenter', () => controls.style.opacity = 1);
-    wrapper.addEventListener('mouseleave', () => controls.style.opacity = 0);
-});
-
-// ------------------------
-// Review Modal Logic
-// ------------------------
-function openReview(id, title) {
-    document.getElementById('revVideoId').value = id;
-    document.getElementById('revTitle').innerText = title;
-    document.getElementById('reviewOverlay').style.display = 'flex';
-}
-
-function closeReview() {
-    document.getElementById('reviewOverlay').style.display = 'none';
-}
-
-// ------------------------
-// Optional: click outside to close review
-// ------------------------
-document.getElementById('reviewOverlay').addEventListener('click', (e) => {
-    if (e.target.id === 'reviewOverlay') closeReview();
-});
-
+        function closeReview() {
+            document.getElementById('reviewOverlay').style.display = 'none';
+        }
     </script>
 </body>
 
