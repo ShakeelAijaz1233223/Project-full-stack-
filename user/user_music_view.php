@@ -391,7 +391,7 @@ $music = mysqli_query($conn, $query);
                             <button class="control-btn" onclick="muteAudio('<?= $row['id'] ?>', this)">
                                 <i class="bi bi-volume-up"></i>
                             </button>
-                        </div>
+                        </div>  
                     </div>
 
                    <div class="meta-info">
