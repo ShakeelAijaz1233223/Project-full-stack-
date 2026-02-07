@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Feb 02, 2026 at 12:11 PM
+-- Generation Time: Feb 04, 2026 at 12:36 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -48,7 +48,7 @@ CREATE TABLE `admin_users` (
 --
 
 INSERT INTO `admin_users` (`id`, `name`, `email`, `phone`, `address`, `password`, `role`, `status`, `avatar`, `created_at`, `last_login`, `updated_at`, `last_seen`) VALUES
-(1, 'Shakeel Ahmed', 'admin@example.com', '', '', 'admin11', 'admin', 'active', 'avatar_1_1769860062.jpg', '2026-01-31 09:07:09', NULL, '2026-02-01 13:24:29', '2026-02-01 18:24:29');
+(1, 'Admin Dashboard', 'admin@gmail.com', '', '', 'admin123', 'admin', 'active', 'avatar_1_1769860062.jpg', '2026-01-31 09:07:09', NULL, '2026-02-04 11:32:58', '2026-02-04 16:32:58');
 
 -- --------------------------------------------------------
 
@@ -59,15 +59,14 @@ INSERT INTO `admin_users` (`id`, `name`, `email`, `phone`, `address`, `password`
 CREATE TABLE `albums` (
   `id` int(11) NOT NULL,
   `title` varchar(255) NOT NULL,
-  `artist` varchar(255) DEFAULT '',
-  `cover` varchar(255) DEFAULT '',
-  `description` text DEFAULT NULL,
-  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
-  `cover_image` varchar(255) NOT NULL DEFAULT 'default_album.png',
-  `full_cover_image_path` varchar(255) DEFAULT NULL,
+  `artist` varchar(255) DEFAULT NULL,
+  `year` int(11) NOT NULL,
+  `genre` varchar(100) DEFAULT NULL,
+  `language` varchar(100) DEFAULT NULL,
+  `cover` varchar(255) DEFAULT NULL,
   `audio` varchar(255) DEFAULT NULL,
   `video` varchar(255) DEFAULT NULL,
-  `album_year` year(4) DEFAULT NULL
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -104,6 +103,13 @@ CREATE TABLE `music` (
   `cover_image` varchar(255) NOT NULL DEFAULT 'default_music.png',
   `full_cover_image_path` varchar(255) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `music`
+--
+
+INSERT INTO `music` (`id`, `title`, `artist`, `file`, `album_id`, `genre`, `duration`, `description`, `created_at`, `cover_image`, `full_cover_image_path`) VALUES
+(22, 'aaaaaaa', NULL, '1770198438_698315a6055ba.mp3', NULL, NULL, NULL, NULL, '2026-02-04 09:47:18', '1770198438_698315a6055be.jpg', NULL);
 
 -- --------------------------------------------------------
 
@@ -170,7 +176,7 @@ CREATE TABLE `settings` (
 --
 
 INSERT INTO `settings` (`id`, `site_name`, `site_email`) VALUES
-(1, 'My Sound Website', 'Shakeel@gmail.com');
+(1, 'Admin Dashboard', 'admin@gmail.com');
 
 -- --------------------------------------------------------
 
@@ -196,7 +202,7 @@ CREATE TABLE `users` (
 
 INSERT INTO `users` (`id`, `name`, `email`, `phone`, `address`, `password`, `status`, `created_at`, `last_seen`) VALUES
 (1, 'shayan', 'shayan@gmail.com', '1234567890', 'home', '$2y$10$UUHMjQNZwUlA1vD0fu/Ig.Jf3/rYWma.E7GTfNsYxVlXV8xN2m2mO', 'active', '2026-01-30 19:16:14', '2026-01-31 14:18:45'),
-(2, 'ali', 'ali@gamil.com', '1234567890', 'home', '$2y$10$nwOn6UD1vBLk0b3VygsgiOBfjSgHWrsTpaCWZeCcgIymOWC83to1G', 'active', '2026-01-31 09:16:13', '2026-02-02 16:07:12');
+(2, 'ali', 'ali@gamil.com', '1234567890', 'home', '$2y$10$nwOn6UD1vBLk0b3VygsgiOBfjSgHWrsTpaCWZeCcgIymOWC83to1G', 'active', '2026-01-31 09:16:13', '2026-02-04 15:26:17');
 
 -- --------------------------------------------------------
 
@@ -326,7 +332,7 @@ ALTER TABLE `admin_users`
 -- AUTO_INCREMENT for table `albums`
 --
 ALTER TABLE `albums`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=29;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `contact_messages`
@@ -338,7 +344,7 @@ ALTER TABLE `contact_messages`
 -- AUTO_INCREMENT for table `music`
 --
 ALTER TABLE `music`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=24;
 
 --
 -- AUTO_INCREMENT for table `playlists`
