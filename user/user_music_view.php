@@ -232,6 +232,12 @@ footer { text-align:center; padding:40px; font-size:0.7rem; color:#444; }
             <audio id="audio-<?= $row['id']; ?>">
                 <source src="../admin/uploads/music/<?= $row['file']; ?>" type="audio/mpeg">
             </audio>
+             <button class="play-btn"><i class="bi bi-play-fill"></i></button>
+                            <div class="custom-controls">
+                                <input type="range" class="progress" min="0" max="100" value="0">
+                                <button class="mute-btn"><i class="bi bi-volume-up"></i></button>
+                                <button class="fullscreen-btn"><i class="bi bi-arrows-fullscreen"></i></button>
+                            </div>
         </div>
         <?php endwhile; ?>
     </div>
