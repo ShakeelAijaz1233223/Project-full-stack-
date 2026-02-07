@@ -46,11 +46,12 @@ body { background: var(--bg); color: #fff; font-family: 'Inter', sans-serif; mar
 
 /* Grid & Cards */
 .grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(220px,1fr)); gap:20px; }
-.album-card { background: var(--card); border-radius: 15px; padding:12px; border:1px solid #1a1a1a; transition:0.3s; position:relative; }
+.album-card { background: var(--card); border-radius: 15px; padding:12px; border:1px solid #1a1a1a; transition:0.3s; position:relative; overflow:hidden; }
 .album-card:hover { transform:translateY(-5px); border-color: var(--accent); }
 
 /* Disc / Media wrapper */
-.disc-wrapper { position:relative; width:100%; aspect-ratio:16/9; background:#000; border-radius:10px; overflow:hidden; margin-bottom:10px; display:flex; align-items:center; justify-content:center; }
+.disc-wrapper { position:relative; width:100%; aspect-ratio:16/9; background:#000; border-radius:10px; overflow:hidden; margin-bottom:10px; display:flex; align-items:center; justify-content:center; animation: floatDisc 2s ease-in-out infinite; }
+@keyframes floatDisc { 0%,100%{transform:translateY(0);}50%{transform:translateY(-5px);} }
 .album-card audio { display:none; }
 
 /* Play Button */
@@ -59,9 +60,13 @@ body { background: var(--bg); color: #fff; font-family: 'Inter', sans-serif; mar
 .play-btn:hover { transform:translate(-50%,-50%) scale(1.2); }
 
 /* Titles & stars */
-.title { font-weight:600; font-size:0.85rem; margin:5px 0; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-.artist { font-size:0.75rem; color:var(--text-muted); margin-bottom:5px; }
-.stars-display { color:#ffca08; font-size:0.75rem; margin-bottom:8px; }
+.title { font-weight:600; font-size:0.85rem; margin:5px 0; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; transition: color 0.3s, transform 0.3s; }
+.artist { font-size:0.75rem; color:var(--text-muted); margin-bottom:5px; transition: color 0.3s, transform 0.3s; }
+.album-card:hover .title { color: var(--accent); transform: translateY(-2px);}
+.album-card:hover .artist { color: #ff416c; transform: translateY(-2px); }
+
+.stars-display { color:#ffca08; font-size:0.75rem; margin-bottom:8px; text-align:center; transition: transform 0.3s; }
+.album-card:hover .stars-display { transform: scale(1.1); }
 .rev-btn { background:#222; color:#fff; border:none; font-size:0.7rem; width:100%; padding:6px; border-radius:6px; transition:0.3s; }
 .rev-btn:hover { background:var(--accent); }
 
@@ -102,9 +107,7 @@ footer { text-align:center; padding:40px; font-size:0.7rem; color:#444; }
         ?>
         <div class="album-card" data-title="<?= strtolower($row['title']); ?>" data-artist="<?= strtolower($row['artist']); ?>">
             <div class="disc-wrapper">
-             
                 <button class="play-btn"><i class="bi bi-play-fill"></i></button>
-                
             </div>
             <div class="custom-controls">
                 <input type="range" class="progress" min="0" max="100" value="0">
@@ -165,13 +168,16 @@ albumCards.forEach(card=>{
     btn.addEventListener('click', ()=>{
         // Pause others
         audios.forEach(a=>{
-            if(a!==audio){ a.pause(); a.closest('.album-card').classList.remove('playing'); a.closest('.album-card').querySelector('.play-btn i').className='bi bi-play-fill'; }
+            if(a!==audio){ 
+                a.pause(); 
+                a.closest('.album-card').classList.remove('playing'); 
+                a.closest('.album-card').querySelector('.play-btn i').className='bi bi-play-fill'; 
+            }
         });
 
         if(audio.paused){ audio.play(); card.classList.add('playing'); btn.querySelector('i').className='bi bi-pause-fill'; }
         else{ audio.pause(); card.classList.remove('playing'); btn.querySelector('i').className='bi bi-play-fill'; }
 
-        // Update progress
         audio.addEventListener('timeupdate', ()=>{
             progress.value = (audio.currentTime/audio.duration)*100;
         });
