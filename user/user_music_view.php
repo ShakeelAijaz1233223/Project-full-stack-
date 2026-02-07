@@ -151,62 +151,95 @@ body {
 .rev-btn:hover { background:var(--accent); }
 
 /* Custom controls */
-/* Custom controls redesigned like music card style */
+/* Custom Controls Container */
 .custom-controls {
     display: flex;
     align-items: center;
     gap: 10px;
     margin-top: 10px;
-    background: #1a1a1a;
-    padding: 6px 10px;
-    border-radius: 12px;
-    border: 1px solid #222;
+    padding: 5px 0;
 }
 
+/* Progress Bar */
 .custom-controls input[type="range"] {
-    flex: 1;
     -webkit-appearance: none;
-    background: #333;
+    width: 100%;
     height: 6px;
+    background: #222;
     border-radius: 5px;
     cursor: pointer;
+    transition: background 0.3s;
 }
 .custom-controls input[type="range"]::-webkit-slider-thumb {
     -webkit-appearance: none;
     width: 14px;
     height: 14px;
-    border-radius: 50%;
     background: var(--accent);
-    border: 2px solid #fff;
-    cursor: pointer;
-    transition: 0.3s;
+    border-radius: 50%;
+    border: 2px solid #111;
+    transition: transform 0.2s;
+}
+.custom-controls input[type="range"]::-webkit-slider-thumb:hover {
+    transform: scale(1.2);
 }
 .custom-controls input[type="range"]::-moz-range-thumb {
     width: 14px;
     height: 14px;
-    border-radius: 50%;
     background: var(--accent);
-    border: 2px solid #fff;
-    cursor: pointer;
-    transition: 0.3s;
+    border-radius: 50%;
+    border: 2px solid #111;
 }
 
+/* Buttons */
 .custom-controls button {
-    background: #111;
-    border: 1px solid #222;
+    background: #1a1a1a;
+    border: 1px solid #333;
     color: #fff;
     padding: 6px 10px;
-    border-radius: 10px;
+    border-radius: 8px;
     cursor: pointer;
-    transition: 0.3s;
-    font-size: 0.9rem;
     display: flex;
     align-items: center;
     justify-content: center;
+    transition: all 0.3s;
+    font-size: 1rem;
 }
 .custom-controls button:hover {
     background: var(--accent);
+    transform: scale(1.1);
     color: #fff;
+}
+
+/* Play Button on Disc */
+.play-btn {
+    width: 50px;
+    height: 50px;
+    font-size: 1.5rem;
+    border-radius: 50%;
+    border: none;
+    background: var(--accent-grad);
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    box-shadow: 0 0 15px var(--accent);
+    transition: transform 0.3s, opacity 0.3s;
+    opacity: 0;
+}
+.album-card:hover .play-btn { opacity: 1; }
+.play-btn:hover { transform: translate(-50%, -50%) scale(1.2); }
+
+/* Fullscreen Highlight */
+.album-card.fullscreen .disc-wrapper {
+    border: 3px solid var(--accent);
+    box-shadow: 0 0 25px var(--accent);
+    transform: scale(1.05);
+    transition: transform 0.3s, box-shadow 0.3s;
 }
 
 
