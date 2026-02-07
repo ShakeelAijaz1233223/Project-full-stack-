@@ -91,7 +91,6 @@ body {
     border:1px solid #1a1a1a;
     transition:0.3s;
     position:relative;
-    overflow: hidden;
 }
 
 .album-card:hover { transform:translateY(-5px); border-color: var(--accent); }
@@ -105,11 +104,6 @@ body {
     border-radius:10px;
     overflow:hidden;
     margin-bottom:10px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: rgba(255,255,255,0.1);
-    font-size: 3rem;
 }
 
 .album-card audio { display:none; }
@@ -120,8 +114,8 @@ body {
     top:50%;
     left:50%;
     transform:translate(-50%,-50%);
-    width:50px;
-    height:50px;
+    width:40px;
+    height:40px;
     border-radius:50%;
     border:none;
     background:var(--accent-grad);
@@ -131,12 +125,9 @@ body {
     justify-content:center;
     opacity:0;
     cursor:pointer;
-    font-size:1.5rem;
-    box-shadow: 0 0 15px var(--accent);
-    transition: transform 0.3s, opacity 0.3s;
+    transition:0.3s;
 }
 .album-card:hover .play-btn { opacity:1; }
-.play-btn:hover { transform: translate(-50%, -50%) scale(1.2); }
 
 .playing .disc-wrapper { animation: rotate 3s linear infinite; border:3px solid var(--accent); }
 @keyframes rotate { from { transform:rotate(0deg);} to {transform:rotate(360deg);} }
@@ -159,73 +150,99 @@ body {
 }
 .rev-btn:hover { background:var(--accent); }
 
-/* --- Custom Controls Overlay --- */
+/* Custom controls */
+/* Custom Controls Container */
 .custom-controls {
-    position: absolute;
-    bottom:5px;
-    left:0;
-    right:0;
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-    padding: 0 10px;
-    background: rgba(0,0,0,0.6);
-    backdrop-filter: blur(4px);
-    opacity:0;
-    transition: opacity 0.3s ease;
-    border-radius:0 0 8px 8px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 10px;
+    padding: 5px 0;
 }
-.album-card:hover .custom-controls { opacity:1; }
 
-/* Progress Slider */
+/* Progress Bar */
 .custom-controls input[type="range"] {
-    flex:1;
-    margin:0 5px;
-    -webkit-appearance:none;
-    height:6px;
-    border-radius:5px;
-    cursor:pointer;
-    accent-color: var(--accent);
-    background: rgba(255,255,255,0.15);
+    -webkit-appearance: none;
+    width: 100%;
+    height: 6px;
+    background: #222;
+    border-radius: 5px;
+    cursor: pointer;
     transition: background 0.3s;
 }
-.custom-controls input[type="range"]:hover { background: rgba(255,255,255,0.25); }
 .custom-controls input[type="range"]::-webkit-slider-thumb {
-    -webkit-appearance:none;
-    width:14px;
-    height:14px;
-    border-radius:50%;
+    -webkit-appearance: none;
+    width: 14px;
+    height: 14px;
     background: var(--accent);
-    border:2px solid #111;
+    border-radius: 50%;
+    border: 2px solid #111;
     transition: transform 0.2s;
 }
-.custom-controls input[type="range"]::-webkit-slider-thumb:hover { transform: scale(1.3); }
+.custom-controls input[type="range"]::-webkit-slider-thumb:hover {
+    transform: scale(1.2);
+}
 .custom-controls input[type="range"]::-moz-range-thumb {
-    width:14px;
-    height:14px;
-    border-radius:50%;
+    width: 14px;
+    height: 14px;
     background: var(--accent);
-    border:2px solid #111;
+    border-radius: 50%;
+    border: 2px solid #111;
 }
 
-/* Buttons inside controls */
+/* Buttons */
 .custom-controls button {
-    background:none;
-    border:none;
-    color:#fff;
-    cursor:pointer;
-    font-size:1.1rem;
-    transition: color 0.2s, transform 0.2s;
+    background: #1a1a1a;
+    border: 1px solid #333;
+    color: #fff;
+    padding: 6px 10px;
+    border-radius: 8px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s;
+    font-size: 1rem;
 }
-.custom-controls button:hover { color:var(--accent); transform: scale(1.2); }
+.custom-controls button:hover {
+    background: var(--accent);
+    transform: scale(1.1);
+    color: #fff;
+}
 
-/* Fullscreen highlight */
+/* Play Button on Disc */
+.play-btn {
+    width: 50px;
+    height: 50px;
+    font-size: 1.5rem;
+    border-radius: 50%;
+    border: none;
+    background: var(--accent-grad);
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    box-shadow: 0 0 15px var(--accent);
+    transition: transform 0.3s, opacity 0.3s;
+    opacity: 0;
+}
+.album-card:hover .play-btn { opacity: 1; }
+.play-btn:hover { transform: translate(-50%, -50%) scale(1.2); }
+
+/* Fullscreen Highlight */
 .album-card.fullscreen .disc-wrapper {
-    border:3px solid var(--accent);
-    box-shadow:0 0 25px var(--accent);
+    border: 3px solid var(--accent);
+    box-shadow: 0 0 25px var(--accent);
     transform: scale(1.05);
     transition: transform 0.3s, box-shadow 0.3s;
 }
+
+
 
 /* Review overlay */
 #reviewOverlay {
@@ -239,6 +256,7 @@ body {
     align-items:center;
     justify-content:center;
 }
+
 .review-box {
     background:#151515;
     width:90%; max-width:400px;
@@ -303,6 +321,8 @@ footer { text-align:center; padding:40px; font-size:0.7rem; color:#444; }
             </div>
             <button class="rev-btn" onclick="openReview('<?= $row['id']; ?>','<?= addslashes($row['title']); ?>')">REVIEW</button>
 
+            <!-- Custom controls -->
+
             <audio id="audio-<?= $row['id']; ?>">
                 <source src="../admin/uploads/music/<?= $row['file']; ?>" type="audio/mpeg">
             </audio>
@@ -343,25 +363,41 @@ const audios = document.querySelectorAll('audio');
 function togglePlay(btn){
     const card=btn.closest('.album-card');
     const audio=card.querySelector('audio');
-    audios.forEach(a=>{ if(a!==audio){ a.pause(); a.closest('.album-card').classList.remove('playing'); }});
+    // Pause all others
+    audios.forEach(a=>{
+        if(a!==audio){ a.pause(); a.closest('.album-card').classList.remove('playing'); }
+    });
     if(audio.paused){ audio.play(); card.classList.add('playing'); btn.querySelector('i').className='bi bi-pause-fill'; }
     else{ audio.pause(); card.classList.remove('playing'); btn.querySelector('i').className='bi bi-play-fill'; }
 
+    // Update progress
     audio.addEventListener('timeupdate', ()=>{
         const progress = card.querySelector('.progress');
         progress.value = (audio.currentTime/audio.duration)*100;
     });
 
+    // Progress seek
     const progress = card.querySelector('.progress');
-    progress.oninput = ()=>{ audio.currentTime = (progress.value/100)*audio.duration; }
+    progress.oninput = ()=>{
+        audio.currentTime = (progress.value/100)*audio.duration;
+    }
 
+    // Mute toggle
     const muteBtn = card.querySelector('.mute-btn');
-    muteBtn.onclick = ()=>{ audio.muted = !audio.muted; muteBtn.innerHTML = audio.muted ? '<i class="bi bi-volume-mute"></i>' : '<i class="bi bi-volume-up"></i>'; }
+    muteBtn.onclick = ()=>{
+        audio.muted = !audio.muted;
+        muteBtn.innerHTML = audio.muted ? '<i class="bi bi-volume-mute"></i>' : '<i class="bi bi-volume-up"></i>';
+    }
 
+    // Fullscreen pseudo (just highlight disc)
     const fsBtn = card.querySelector('.fullscreen-btn');
-    fsBtn.onclick = ()=>{ card.classList.toggle('fullscreen'); card.style.zIndex = card.classList.contains('fullscreen') ? 999 : 1; }
+    fsBtn.onclick = ()=>{
+        card.classList.toggle('fullscreen');
+        card.style.zIndex = card.classList.contains('fullscreen') ? 999 : 1;
+    }
 }
 
+// Search filter
 document.getElementById('search').addEventListener('input',function(){
     const val = this.value.toLowerCase();
     document.querySelectorAll('.album-card').forEach(card=>{
@@ -370,8 +406,13 @@ document.getElementById('search').addEventListener('input',function(){
     });
 });
 
-function openReview(id,title){ document.getElementById('revMusicId').value=id; document.getElementById('revTitle').innerText=title; document.getElementById('reviewOverlay').style.display='flex'; }
+function openReview(id,title){
+    document.getElementById('revMusicId').value=id;
+    document.getElementById('revTitle').innerText=title;
+    document.getElementById('reviewOverlay').style.display='flex';
+}
 function closeReview(){ document.getElementById('reviewOverlay').style.display='none'; }
+
 </script>
 </body>
 </html>
