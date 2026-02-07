@@ -98,7 +98,7 @@ $result = mysqli_query($conn, $query);
                                     <?= date('d M Y', strtotime($row['created_at'])) ?>
                                 </td>
                                 <td class="text-center">
-                                    <a href="album_reviews_manage.php?delete=<?= $row['id'] ?>" 
+                                    <a href="album_review.php<?= $row['id'] ?>" 
                                        class="btn-delete" 
                                        onclick="return confirm('Are you sure? This will delete the review from the database.');">
                                         <i class="bi bi-trash3"></i>
