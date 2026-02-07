@@ -753,7 +753,7 @@ if (isset($_SESSION['email']) && isset($conn)) {
                 <a href="contact.php">Contact</a>
             </nav>
 
-            < <div class="user-actions">
+             <div class="user-actions">
             <?php if ($user): ?>
                 <div class="user-dropdown">
                     <div class="user-trigger">
