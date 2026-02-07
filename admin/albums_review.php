@@ -2,48 +2,20 @@
 // session_start();
 include "../config/db.php";
 
-// 1. Handle Delete Review
+// 1. Handle Delete Review - DYNAMIC REDIRECTION FIXED
 if (isset($_GET['delete'])) {
     $id = (int)$_GET['delete'];
-    mysqli_query($conn, "DELETE FROM album_reviews WHERE id = $id");
-    header("Location: /admin/album_review.php?status=deleted");
-
-    exit();
-}/* ===============================
-    2. UPDATE ADMIN LAST SEEN
-================================ */
-$admin_id = (int)$_SESSION['admin_id'];
-$stmt = $conn->prepare("UPDATE admin_users SET last_seen = NOW() WHERE id = ?");
-$stmt->bind_param("i", $admin_id);
-$stmt->execute();
-
-/* ===============================
-    3. DELETE VIDEO (POST Method)
-================================ */
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_id'])) {
-    $id = (int)$_POST['delete_id'];
+    $delete = mysqli_query($conn, "DELETE FROM album_reviews WHERE id = $id");
     
-    $stmt = $conn->prepare("SELECT file FROM videos WHERE id = ?");
-    $stmt->bind_param("i", $id);
-    $stmt->execute();
-    $res = $stmt->get_result();
-    
-    if ($row = $res->fetch_assoc()) {
-        $filepath = "../uploads/videos/" . $row['file'];
-        if (!empty($row['file']) && file_exists($filepath)) {
-            unlink($filepath); 
-        }
-        
-        $del = $conn->prepare("DELETE FROM videos WHERE id = ?");
-        $del->bind_param("i", $id);
-        $del->execute();
+    if($delete) {
+        // basename($_SERVER['PHP_SELF']) use karne se "Not Found" error kabhi nahi aayega
+        $current_file = basename($_SERVER['PHP_SELF']);
+        header("Location: $current_file?status=deleted");
+        exit();
     }
-    // PHP_SELF use karne se "Not Found" error kabhi nahi aayega
-    header("Location: " . $_SERVER['PHP_SELF'] . "?status=deleted");
-    exit;
 }
 
-// 2. Fetch all reviews with Album Titles
+// 2. Fetch all reviews
 $query = "SELECT album_reviews.*, albums.title as album_name, albums.cover 
           FROM album_reviews 
           JOIN albums ON album_reviews.album_id = albums.id 
@@ -63,24 +35,27 @@ $result = mysqli_query($conn, $query);
         body { background-color: var(--bg-dark); color: #fff; font-family: 'Inter', sans-serif; }
         .table-container { background: var(--card-bg); border-radius: 15px; padding: 20px; border: 1px solid #222; margin-top: 30px; }
         .table { color: #fff; border-color: #222; }
-        .table thead { background: #1a1a1a; }
-        .album-img { width: 40px; height: 40px; border-radius: 5px; object-fit: cover; margin-right: 10px; }
-        .stars { color: #ffca08; }
-        .btn-action { padding: 4px 8px; font-size: 0.8rem; }
-        .status-msg { font-size: 0.85rem; padding: 10px; border-radius: 5px; margin-bottom: 20px; }
-        .badge-rating { background: var(--accent); color: white; font-size: 0.75rem; }
+        .table thead { background: #1a1a1a; border-bottom: 2px solid var(--accent); }
+        .album-img { width: 45px; height: 45px; border-radius: 6px; object-fit: cover; margin-right: 12px; border: 1px solid #333; }
+        .stars { color: #ffca08; font-size: 0.9rem; }
+        .btn-action { padding: 6px 10px; border-radius: 8px; transition: 0.3s; }
+        /* Success alert design */
+        .alert-custom { background: #198754; color: white; border: none; border-radius: 10px; font-weight: 500; }
     </style>
 </head>
 <body>
 
 <div class="container py-5">
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h3 class="fw-bold">ALBUM <span style="color: var(--accent);">REVIEWS</span></h3>
-        <a href="index.php" class="btn btn-outline-light btn-sm"><i class="bi bi-speedometer2"></i> Dashboard</a>
+        <h3 class="fw-bold m-0">ALBUM <span style="color: var(--accent);">REVIEWS</span></h3>
+        <a href="index.php" class="btn btn-outline-light btn-sm px-4 rounded-pill"><i class="bi bi-speedometer2"></i> Dashboard</a>
     </div>
 
-    <?php if(isset($_GET['status'])): ?>
-        <div class="alert alert-danger status-msg bg-danger text-white border-0">Review deleted successfully!</div>
+    <?php if(isset($_GET['status']) && $_GET['status'] == 'deleted'): ?>
+        <div class="alert alert-custom alert-dismissible fade show shadow-sm" role="alert">
+            <i class="bi bi-check-circle-fill me-2"></i> Review deleted successfully!
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="alert"></button>
+        </div>
     <?php endif; ?>
 
     <div class="table-container shadow-lg">
@@ -101,33 +76,37 @@ $result = mysqli_query($conn, $query);
                             <tr>
                                 <td>
                                     <div class="d-flex align-items-center">
-                                        <img src="uploads/albums/<?= $row['cover'] ?>" class="album-img">
+                                        <img src="uploads/albums/<?= $row['cover'] ?>" class="album-img" onerror="this.src='https://via.placeholder.com/45'">
                                         <span class="fw-semibold"><?= htmlspecialchars($row['album_name']) ?></span>
                                     </div>
                                 </td>
                                 <td>
                                     <div class="stars">
-                                        <?php for($i=1; $i<=5; $i++) echo ($i <= $row['rating']) ? '★' : '☆'; ?>
+                                        <?php for($i=1; $i<=5; $i++) echo ($i <= $row['rating']) ? '★' : '<span style="color:#333">★</span>'; ?>
                                     </div>
                                     <small class="text-muted"><?= $row['rating'] ?>/5</small>
                                 </td>
                                 <td style="max-width: 300px;">
-                                    <div class="text-truncate" title="<?= htmlspecialchars($row['comment']) ?>">
+                                    <div class="text-truncate text-secondary" title="<?= htmlspecialchars($row['comment']) ?>">
                                         <?= htmlspecialchars($row['comment']) ?>
                                     </div>
                                 </td>
                                 <td><small class="text-muted"><?= date('d M, Y', strtotime($row['created_at'])) ?></small></td>
                                 <td class="text-center">
-                                    <a href="?delete=<?= $row['id'] ?>" class="btn btn-outline-danger btn-action" 
+                                    <a href="<?= basename($_SERVER['PHP_SELF']) ?>?delete=<?= $row['id'] ?>" 
+                                       class="btn btn-outline-danger btn-action" 
                                        onclick="return confirm('Are you sure you want to delete this review?')">
-                                        <i class="bi bi-trash"></i>
-                                    </button>
+                                        <i class="bi bi-trash3-fill"></i>
+                                    </a>
                                 </td>
                             </tr>
                         <?php endwhile; ?>
                     <?php else: ?>
                         <tr>
-                            <td colspan="5" class="text-center py-5 text-muted">No reviews found yet.</td>
+                            <td colspan="5" class="text-center py-5 text-muted">
+                                <i class="bi bi-chat-left-dots fs-1 d-block mb-2"></i>
+                                No reviews found yet.
+                            </td>
                         </tr>
                     <?php endif; ?>
                 </tbody>
@@ -136,5 +115,6 @@ $result = mysqli_query($conn, $query);
     </div>
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
