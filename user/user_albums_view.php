@@ -169,12 +169,13 @@ $albums = mysqli_query($conn, $query);
     color: #fff;
     cursor: pointer;
     transition: transform 0.3s ease, background 0.3s ease;
+    
 }
 
 
 .album-card .play-btn:hover {
     background: rgba(255, 0, 85, 0.6);
-    transform: scale(1.2);
+    /* transform: scale(1.2); */
 }
 
 
