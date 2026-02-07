@@ -346,12 +346,7 @@ $music = mysqli_query($conn, $query);
     <span class="artist-tag">Artist: <?= htmlspecialchars($row['artist']) ?></span>
     <span class="album-tag">Album: <?= htmlspecialchars($row['album']) ?></span>
     <span class="year-tag">Year: <?= htmlspecialchars($row['year']) ?></span>
-    <span class="file-tag">File: <?= htmlspecialchars($row['file']) ?></span>
     <span class="album-id-tag">Album ID: <?= htmlspecialchars($row['album_id']) ?></span>
-    <span class="genre-tag">Genre: <?= htmlspecialchars($row['genre']) ?></span>
-    <span class="duration-tag">Duration: <?= htmlspecialchars($row['duration']) ?></span>
-    <span class="desc-tag">Description: <?= htmlspecialchars(substr($row['description'],0,60)) ?>...</span>
-    <span class="created-tag">Uploaded: <?= date('d M Y', strtotime($row['created_at'])) ?></span>
 </div>
 
                     <div class="stars-display">
