@@ -1102,6 +1102,44 @@ header {
 
         // Start the animation
         type();
+
+        // 
+
+         // --- Hamburger Menu Toggle ---
+    const hamburger = document.getElementById('hamburger');
+    const navLinks = document.getElementById('nav-links');
+
+    hamburger.addEventListener('click', () => {
+        hamburger.classList.toggle('active'); // Animate hamburger into X
+        navLinks.classList.toggle('show');    // Slide mobile menu in/out
+    });
+
+    // --- Optional: Close menu when link is clicked on mobile ---
+    const links = navLinks.querySelectorAll('a');
+    links.forEach(link => {
+        link.addEventListener('click', () => {
+            if(window.innerWidth <= 992){ // Only for mobile
+                hamburger.classList.remove('active');
+                navLinks.classList.remove('show');
+            }
+        });
+    });
+
+    // --- Optional: Close dropdown if clicked outside ---
+    document.addEventListener('click', function(event) {
+        const dropdown = document.querySelector('.user-dropdown');
+        if(dropdown && !dropdown.contains(event.target)){
+            const content = dropdown.querySelector('.dropdown-content');
+            content.style.opacity = '0';
+            content.style.visibility = 'hidden';
+            content.style.transform = 'translateY(10px)';
+        } else if(dropdown && dropdown.contains(event.target)){
+            const content = dropdown.querySelector('.dropdown-content');
+            content.style.opacity = '1';
+            content.style.visibility = 'visible';
+            content.style.transform = 'translateY(0)';
+        }
+    });
     </script>
 </body>
 
