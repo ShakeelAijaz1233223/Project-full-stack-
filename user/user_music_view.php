@@ -17,11 +17,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['submit_review'])) {
 }
 
 // Fetch Music with Average Ratings
-$query = "SELECT music.*, 
+ $query = "SELECT music.*, 
           (SELECT AVG(rating) FROM reviews WHERE reviews.music_id = music.id) as avg_rating,
           (SELECT COUNT(*) FROM reviews WHERE reviews.music_id = music.id) as total_reviews
           FROM music ORDER BY id DESC";
-$music = mysqli_query($conn, $query);
+ $music = mysqli_query($conn, $query);
 ?>
 
 <!DOCTYPE html>
@@ -68,6 +68,8 @@ $music = mysqli_query($conn, $query);
             border-bottom: 1px solid #222;
             padding-bottom: 15px;
             margin-bottom: 30px;
+            flex-wrap: wrap;
+            gap: 15px;
         }
 
         .search-box {
@@ -98,6 +100,7 @@ $music = mysqli_query($conn, $query);
             gap: 8px;
             font-size: 0.9rem;
             transition: 0.3s;
+            white-space: nowrap;
         }
 
         .btn-back:hover {
@@ -141,6 +144,22 @@ $music = mysqli_query($conn, $query);
             margin-bottom: 15px;
         }
 
+        .cover-image {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .cover-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 15px;
+        }
+
         .vinyl-disc {
             width: 80%;
             height: 80%;
@@ -149,6 +168,8 @@ $music = mysqli_query($conn, $query);
             border: 2px solid #222;
             animation: rotate 5s linear infinite;
             animation-play-state: paused;
+            position: relative;
+            z-index: 2;
         }
 
         .music-card.playing .vinyl-disc {
@@ -306,6 +327,7 @@ $music = mysqli_query($conn, $query);
             z-index: 9999;
             align-items: center;
             justify-content: center;
+            padding: 15px;
         }
 
         .review-box {
@@ -347,6 +369,177 @@ $music = mysqli_query($conn, $query);
             color: #444;
             font-size: 0.8rem;
         }
+
+        /* --- RESPONSIVE ADJUSTMENTS --- */
+        @media (max-width: 1200px) {
+            .studio-wrapper {
+                width: 96%;
+            }
+        }
+
+        @media (max-width: 992px) {
+            .grid {
+                grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+                gap: 20px;
+            }
+            
+            .header-section {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .search-box {
+                width: 100%;
+            }
+            
+            .d-flex.gap-2 {
+                flex-direction: column;
+                gap: 10px !important;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .studio-wrapper {
+                width: 98%;
+                padding: 20px 0;
+            }
+            
+            .grid {
+                grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+                gap: 15px;
+            }
+            
+            .music-card {
+                padding: 10px;
+            }
+            
+            .play-btn {
+                width: 45px;
+                height: 45px;
+                font-size: 1.3rem;
+            }
+            
+            .custom-controls {
+                padding: 8px;
+            }
+            
+            .progress {
+                height: 6px;
+            }
+            
+            .title {
+                font-size: 0.9rem;
+            }
+            
+            .meta-info {
+                font-size: 0.7rem;
+                gap: 5px;
+            }
+            
+            .stars-display {
+                font-size: 0.75rem;
+            }
+            
+            .rev-btn {
+                padding: 10px;
+                font-size: 0.85rem;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .grid {
+                grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+                gap: 12px;
+            }
+            
+            .music-card {
+                padding: 8px;
+            }
+            
+            .play-btn {
+                width: 40px;
+                height: 40px;
+                font-size: 1.1rem;
+            }
+            
+            .title {
+                font-size: 0.85rem;
+            }
+            
+            .meta-info {
+                font-size: 0.65rem;
+            }
+            
+            .stars-display {
+                font-size: 0.7rem;
+            }
+            
+            .review-box {
+                padding: 20px;
+                width: 95%;
+            }
+            
+            .star-rating label {
+                font-size: 2rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 10px;
+            }
+            
+            .studio-wrapper {
+                padding: 15px 0;
+            }
+            
+            .header-section {
+                margin-bottom: 20px;
+                padding-bottom: 10px;
+            }
+            
+            h4 {
+                font-size: 1.2rem;
+            }
+            
+            .btn-back {
+                padding: 8px 15px;
+                font-size: 0.85rem;
+            }
+            
+            .review-box {
+                padding: 15px;
+            }
+            
+            .star-rating label {
+                font-size: 1.8rem;
+            }
+            
+            footer {
+                padding: 30px 15px;
+                font-size: 0.75rem;
+            }
+        }
+
+        @media (max-width: 360px) {
+            .grid {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+            
+            .media-wrapper {
+                aspect-ratio: 16 / 9;
+            }
+            
+            .review-box {
+                padding: 15px;
+            }
+            
+            .star-rating label {
+                font-size: 1.6rem;
+            }
+        }
     </style>
 </head>
 
@@ -376,6 +569,7 @@ $music = mysqli_query($conn, $query);
                         <div class="cover-image">
                             <img src="<?= $coverPath ?>" alt="Music Cover">
                         </div>
+                        <div class="vinyl-disc"></div>
                         <button class="play-btn" onclick="toggleAudio('<?= $row['id'] ?>', this)">
                             <i class="bi bi-play-fill"></i>
                         </button>
