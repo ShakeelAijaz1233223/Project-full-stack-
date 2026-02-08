@@ -16,7 +16,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit_review'])) {
 }
 
 /* ===== Fetch Videos ===== */
-$videos = mysqli_query($conn, "
+ $videos = mysqli_query($conn, "
     SELECT v.*,
     (SELECT AVG(rating) FROM video_reviews WHERE video_id=v.id) avg_rating,
     (SELECT COUNT(*) FROM video_reviews WHERE video_id=v.id) total_reviews
@@ -68,6 +68,8 @@ body{
     border-bottom: 1px solid #222;
     padding-bottom: 15px;
     margin-bottom: 30px;
+    flex-wrap: wrap;
+    gap: 15px;
 }
 
 .search-box {
@@ -98,6 +100,7 @@ body{
     gap: 8px;
     font-size: 0.9rem;
     transition: 0.3s;
+    white-space: nowrap;
 }
 
 .btn-back:hover {
@@ -230,6 +233,7 @@ body{
     z-index: 9999;
     align-items: center;
     justify-content: center;
+    padding: 15px;
 }
 
 .review-box {
@@ -255,6 +259,169 @@ body{
 .star-rating label:hover ~ label { color: #ffd700; }
 
 footer { text-align: center; padding: 50px; color: #444; font-size: 0.8rem; }
+
+/* --- RESPONSIVE ADJUSTMENTS --- */
+@media (max-width: 1200px) {
+    .studio-wrapper {
+        width: 96%;
+    }
+}
+
+@media (max-width: 992px) {
+    .grid {
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+        gap: 20px;
+    }
+    
+    .header-section {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .search-box {
+        width: 100%;
+    }
+    
+    .d-flex.gap-2 {
+        flex-direction: column;
+        gap: 10px !important;
+    }
+}
+
+@media (max-width: 768px) {
+    .studio-wrapper {
+        width: 98%;
+        padding: 20px 0;
+    }
+    
+    .grid {
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        gap: 15px;
+    }
+    
+    .card-video {
+        padding: 10px;
+    }
+    
+    .play-trigger {
+        width: 50px;
+        height: 50px;
+        font-size: 1.5rem;
+    }
+    
+    .v-title {
+        font-size: 0.9rem;
+    }
+    
+    .v-meta {
+        font-size: 0.7rem;
+        gap: 5px;
+    }
+    
+    .stars {
+        font-size: 0.75rem;
+    }
+    
+    .rev-btn {
+        padding: 12px;
+        font-size: 0.85rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .grid {
+        grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+        gap: 12px;
+    }
+    
+    .card-video {
+        padding: 8px;
+    }
+    
+    .play-trigger {
+        width: 45px;
+        height: 45px;
+        font-size: 1.3rem;
+    }
+    
+    .v-title {
+        font-size: 0.85rem;
+    }
+    
+    .v-meta {
+        font-size: 0.65rem;
+    }
+    
+    .stars {
+        font-size: 0.7rem;
+    }
+    
+    .review-box {
+        padding: 20px;
+        width: 95%;
+    }
+    
+    .star-rating label {
+        font-size: 2rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+    }
+    
+    .studio-wrapper {
+        padding: 15px 0;
+    }
+    
+    .header-section {
+        margin-bottom: 20px;
+        padding-bottom: 10px;
+    }
+    
+    h4 {
+        font-size: 1.2rem;
+    }
+    
+    .btn-back {
+        padding: 8px 15px;
+        font-size: 0.85rem;
+    }
+    
+    .media-container {
+        aspect-ratio: 16 / 9;
+    }
+    
+    .review-box {
+        padding: 15px;
+    }
+    
+    .star-rating label {
+        font-size: 1.8rem;
+    }
+    
+    footer {
+        padding: 30px 15px;
+        font-size: 0.75rem;
+    }
+}
+
+@media (max-width: 360px) {
+    .grid {
+        grid-template-columns: 1fr;
+        gap: 15px;
+    }
+    
+    .review-box {
+        padding: 15px;
+    }
+    
+    .star-rating label {
+        font-size: 1.6rem;
+    }
+}
 </style>
 </head>
 
