@@ -356,13 +356,12 @@ if (isset($_SESSION['email']) && isset($conn)) {
         }
 
         #animated-text {
-            display: inline-block;
-            white-space: nowrap;
-            overflow: hidden;
-            border-right: 3px solid #fff;
-            /* Cursor effect */
-            padding-right: 5px;
-            animation: blink-cursor 0.7s steps(1) infinite;
+           display: inline-block;
+    white-space: nowrap;
+    overflow: hidden;
+    border-right: 3px solid #fff; /* Cursor effect */
+    padding-right: 5px;
+    animation: blink-cursor 0.7s steps(1) infinite;
         }
 
         @keyframes blink-cursor {
