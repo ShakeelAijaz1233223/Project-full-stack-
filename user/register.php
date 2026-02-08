@@ -367,7 +367,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     <div class="register-container">
         <div class="register-card animate__animated animate__fadeIn">
-            <div class="logo">SOU<span>N</span>D</div>
+            <div class="logo">REG<span>IS</span>TER</div>
             <p class="subtitle">Create your account to start listening</p>
 
             <?php if($error): ?>
