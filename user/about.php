@@ -137,14 +137,23 @@ if (isset($_SESSION['email'])) {
             color: #fff;
             padding: 10px 15px;
             text-decoration: none;
-            display: block;
+            display: flex;
+            align-items: center;
+            gap: 12px;
             font-size: 12px;
             font-weight: 600;
             border-radius: 10px;
+            transition: 0.3s;
+        }
+
+        .dropdown-content a i {
+            color: var(--primary);
+            width: 15px;
         }
 
         .dropdown-content a:hover {
             background: rgba(255, 0, 85, 0.1);
+            transform: translateX(5px);
         }
 
         /* --- ABOUT PAGE SPECIFIC CONTENT --- */
@@ -275,7 +284,7 @@ if (isset($_SESSION['email'])) {
             font-weight: 600;
             padding: 10px 0;
             border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-             text-decoration: none;
+            text-decoration: none;
         }
 
         .mobile-menu-links a:hover,
@@ -295,6 +304,7 @@ if (isset($_SESSION['email'])) {
             color: #fff;
             font-size: 14px;
             padding: 10px 0;
+            text-decoration: none;
         }
 
         .mobile-menu-user a:hover {
@@ -338,12 +348,10 @@ if (isset($_SESSION['email'])) {
 
             nav {
                 display: none;
-               
             }
 
             .menu-btn {
                 display: block;
-                
             }
         }
 
@@ -420,8 +428,6 @@ if (isset($_SESSION['email'])) {
             .mobile-menu {
                 width: 280px;
                 right: -280px;
-
-                 text-decoration: none;
             }
         }
 
@@ -457,7 +463,20 @@ if (isset($_SESSION['email'])) {
         </nav>
         <div class="user-actions">
             <?php if ($user): ?>
-                
+                <div class="user-dropdown">
+                    <div class="user-trigger">
+                        <div style="width: 25px; height: 25px; background: var(--primary); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 800;">
+                            <?= strtoupper(substr($user['name'], 0, 1)); ?>
+                        </div>
+                        <span style="font-size: 12px; font-weight: 700;"><?= htmlspecialchars($user['name']); ?></span>
+                        <i class="fas fa-chevron-down" style="font-size: 9px; opacity: 0.5;"></i>
+                    </div>
+                    <div class="dropdown-content">
+                        <a href="user_setting.php"><i class="fas fa-cog"></i> Settings</a>
+                        <div style="height: 1px; background: var(--border-glass); margin: 5px 0;"></div>
+                        <a href="user_logout.php" style="color: #ff4d4d;"><i class="fas fa-power-off"></i> Logout</a>
+                    </div>
+                </div>
             <?php else: ?>
                 <a href="login.php" style="background: var(--primary); padding: 8px 22px; border-radius: 30px; text-decoration: none; color: white; font-size: 11px; font-weight: 800; transition: 0.3s;">LOGIN</a>
             <?php endif; ?>
@@ -488,7 +507,7 @@ if (isset($_SESSION['email'])) {
                     </div>
                     <div>
                         <div style="font-size: 14px; font-weight: 700;"><?= htmlspecialchars($user['name']); ?></div>
-                        <div style="font-size: 12px; color: var(--text-muted);"><?= htmlspecialchars($user['email']); ?></div>
+                        <div style="font-size: 12px; color: rgba(255, 255, 255, 0.5);"><?= htmlspecialchars($user['email']); ?></div>
                     </div>
                 </div>
                 <a href="user_setting.php"><i class="fas fa-cog"></i> Settings</a>
