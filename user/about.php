@@ -3,7 +3,7 @@ session_start();
 include_once("../config/db.php");
 
 // User check for Header consistency
-$user = null;
+ $user = null;
 if (isset($_SESSION['email'])) {
     $email = mysqli_real_escape_string($conn, $_SESSION['email']);
     $res = mysqli_query($conn, "SELECT * FROM users WHERE email='$email' LIMIT 1");
@@ -222,21 +222,139 @@ if (isset($_SESSION['email'])) {
             text-transform: uppercase;
         }
 
+        /* Mobile Menu Styles */
+        .menu-btn {
+            display: none;
+            color: #fff;
+            font-size: 20px;
+            cursor: pointer;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border-glass);
+            padding: 8px 12px;
+            border-radius: 8px;
+        }
+
+        .mobile-menu {
+            position: fixed;
+            top: 0;
+            right: -300px;
+            width: 300px;
+            height: 100vh;
+            background: rgba(5, 5, 5, 0.98);
+            backdrop-filter: blur(20px);
+            z-index: 1002;
+            padding: 80px 20px 20px;
+            transition: right 0.3s ease;
+            overflow-y: auto;
+            border-left: 1px solid var(--border-glass);
+        }
+
+        .mobile-menu.active {
+            right: 0;
+        }
+
+        .mobile-menu-close {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            color: #fff;
+            font-size: 24px;
+            cursor: pointer;
+        }
+
+        .mobile-menu-links {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .mobile-menu-links a {
+            color: #fff;
+            font-size: 16px;
+            font-weight: 600;
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .mobile-menu-links a:hover,
+        .mobile-menu-links a.active {
+            color: var(--primary);
+        }
+
+        .mobile-menu-user {
+            padding-top: 20px;
+            border-top: 1px solid var(--border-glass);
+        }
+
+        .mobile-menu-user a {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #fff;
+            font-size: 14px;
+            padding: 10px 0;
+        }
+
+        .mobile-menu-user a:hover {
+            color: var(--primary);
+        }
+
+        .mobile-menu-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1001;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s, visibility 0.3s;
+        }
+
+        .mobile-menu-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
         /* --- RESPONSIVE ADJUSTMENTS --- */
-        @media (max-width: 992px) {
+        @media (max-width: 1200px) {
             .about-content {
                 padding: 80px 10%;
+            }
+        }
+
+        @media (max-width: 992px) {
+            .about-content {
+                padding: 80px 8%;
             }
 
             .stats {
                 grid-template-columns: 1fr 1fr;
                 gap: 20px;
             }
+
+            nav {
+                display: none;
+            }
+
+            .menu-btn {
+                display: block;
+            }
         }
 
         @media (max-width: 768px) {
+            header {
+                padding: 15px 5%;
+            }
+
+            .about-hero {
+                height: 45vh;
+            }
+
             .about-content {
-                padding: 70px 5%;
+                padding: 60px 5%;
             }
 
             .stats {
@@ -255,6 +373,10 @@ if (isset($_SESSION['email'])) {
             .about-content p {
                 font-size: 1rem;
             }
+
+            .user-trigger span {
+                display: none;
+            }
         }
 
         @media (max-width: 480px) {
@@ -265,6 +387,10 @@ if (isset($_SESSION['email'])) {
 
             .about-hero h1 {
                 font-size: clamp(1.5rem, 6vw, 2.5rem);
+            }
+
+            .about-content {
+                padding: 50px 5%;
             }
 
             .about-content h2 {
@@ -287,6 +413,11 @@ if (isset($_SESSION['email'])) {
             .stat-box p {
                 font-size: 0.85rem;
             }
+
+            .mobile-menu {
+                width: 280px;
+                right: -280px;
+            }
         }
 
         @media (max-width: 360px) {
@@ -297,6 +428,11 @@ if (isset($_SESSION['email'])) {
             footer {
                 font-size: 9px;
                 padding: 30px 5%;
+            }
+
+            .mobile-menu {
+                width: 250px;
+                right: -250px;
             }
         }
     </style>
@@ -333,8 +469,43 @@ if (isset($_SESSION['email'])) {
             <?php else: ?>
                 <a href="login.php" style="background: var(--primary); padding: 8px 22px; border-radius: 30px; text-decoration: none; color: white; font-size: 11px; font-weight: 800; transition: 0.3s;">LOGIN</a>
             <?php endif; ?>
+            <div class="menu-btn" id="menuBtn">
+                <i class="fas fa-bars"></i>
+            </div>
         </div>
     </header>
+
+    <!-- Mobile Menu -->
+    <div class="mobile-menu-overlay" id="mobileMenuOverlay"></div>
+    <div class="mobile-menu" id="mobileMenu">
+        <div class="mobile-menu-close" id="mobileMenuClose">
+            <i class="fas fa-times"></i>
+        </div>
+        <div class="mobile-menu-links">
+            <a href="index.php">Home</a>
+            <a href="user_music_view.php">Music</a>
+            <a href="user_video_view.php">Videos</a>
+            <a href="about.php" style="color:var(--primary)">About</a>
+            <a href="contact.php">Contact</a>
+        </div>
+        <div class="mobile-menu-user">
+            <?php if ($user): ?>
+                <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 15px; padding-bottom: 15px; border-bottom: 1px solid var(--border-glass);">
+                    <div style="width: 40px; height: 40px; background: var(--primary); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 800;">
+                        <?= strtoupper(substr($user['name'], 0, 1)); ?>
+                    </div>
+                    <div>
+                        <div style="font-size: 14px; font-weight: 700;"><?= htmlspecialchars($user['name']); ?></div>
+                        <div style="font-size: 12px; color: var(--text-muted);"><?= htmlspecialchars($user['email']); ?></div>
+                    </div>
+                </div>
+                <a href="user_setting.php"><i class="fas fa-cog"></i> Settings</a>
+                <a href="user_logout.php" style="color: #ff4d4d;"><i class="fas fa-power-off"></i> Logout</a>
+            <?php else: ?>
+                <a href="login.php" style="background: var(--primary); padding: 10px 20px; border-radius: 30px; text-align: center; margin-top: 10px;">LOGIN</a>
+            <?php endif; ?>
+        </div>
+    </div>
 
     <section class="about-hero">
         <h1 class="animate__animated animate__fadeInDown" style="font-family:'Syncopate'; font-size: clamp(2.5rem, 8vw, 4rem);">OUR STORY</h1>
@@ -361,6 +532,37 @@ if (isset($_SESSION['email'])) {
     </section>
 
     <footer>&copy; 2026 SOUND PORTAL | ALL RIGHTS RESERVED</footer>
+
+    <script>
+        // Mobile Menu
+        const menuBtn = document.getElementById('menuBtn');
+        const mobileMenu = document.getElementById('mobileMenu');
+        const mobileMenuClose = document.getElementById('mobileMenuClose');
+        const mobileMenuOverlay = document.getElementById('mobileMenuOverlay');
+        const mobileMenuLinks = document.querySelectorAll('.mobile-menu-links a');
+
+        function openMobileMenu() {
+            mobileMenu.classList.add('active');
+            mobileMenuOverlay.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeMobileMenu() {
+            mobileMenu.classList.remove('active');
+            mobileMenuOverlay.classList.remove('active');
+            document.body.style.overflow = '';
+        }
+
+        menuBtn.addEventListener('click', openMobileMenu);
+        mobileMenuClose.addEventListener('click', closeMobileMenu);
+        mobileMenuOverlay.addEventListener('click', closeMobileMenu);
+
+        mobileMenuLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                closeMobileMenu();
+            });
+        });
+    </script>
 </body>
 
 </html>
