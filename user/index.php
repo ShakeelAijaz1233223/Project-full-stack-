@@ -149,10 +149,12 @@ if (isset($_SESSION['email']) && isset($conn)) {
 
          /* --- MOBILE MENU BUTTON --- */
         .menu-btn {
-            display: none;
-            color: #fff;
-            font-size: 20px;
-            cursor: pointer;
+             display: none;
+    width: 32px;
+    height: 22px;
+    position: relative;
+    cursor: pointer;
+    z-index: 1100;
         }
 
         /* --- USER DROPDOWN --- */
