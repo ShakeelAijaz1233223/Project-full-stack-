@@ -330,17 +330,20 @@ if (isset($_SESSION['email']) && isset($conn)) {
         }
 
         /* --- HERO SECTION --- */
-       .hero {
-    min-height: calc(100vh - 80px);
-    margin-top: 70px;
-    position: relative;
-    overflow: hidden;
-    display: flex;
-    align-items: center;    /* vertically center */
-    justify-content: center; /* horizontally center */
-    background: url('https://images.unsplash.com/photo-1514525253440-b393452e23f9?q=80&w=1920&auto=format&fit=crop') no-repeat center / cover;
-    text-align: center; /* optional, for multi-line text */
-}
+        .hero {
+            min-height: calc(100vh - 80px);
+            margin-top: 70px;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            /* vertically center */
+            justify-content: center;
+            /* horizontally center */
+            background: url('https://images.unsplash.com/photo-1514525253440-b393452e23f9?q=80&w=1920&auto=format&fit=crop') no-repeat center / cover;
+            text-align: center;
+            /* optional, for multi-line text */
+        }
 
 
         .hero-title {
@@ -349,16 +352,19 @@ if (isset($_SESSION['email']) && isset($conn)) {
             color: #fff;
             font-family: sans-serif;
         }
-#animated-text {
-    display: inline-block;
-    white-space: nowrap;
-    overflow: hidden;
-    border-right: 3px solid #fff; /* cursor effect */
-    padding-right: 5px;
-    animation: blink-cursor 0.7s steps(1) infinite;
-    font-size: 2.5rem;  /* adjust size as needed */
-    font-weight: 700;
-}
+
+        #animated-text {
+            display: inline-block;
+            white-space: nowrap;
+            overflow: hidden;
+            border-right: 3px solid #fff;
+            /* cursor effect */
+            padding-right: 5px;
+            animation: blink-cursor 0.7s steps(1) infinite;
+            font-size: 2.5rem;
+            /* adjust size as needed */
+            font-weight: 700;
+        }
 
         @keyframes blink-cursor {
 
@@ -551,7 +557,7 @@ if (isset($_SESSION['email']) && isset($conn)) {
             overflow: hidden;
             transition: 0.4s;
             position: relative;
-            
+
         }
 
         .media-card:hover {
@@ -1010,7 +1016,6 @@ if (isset($_SESSION['email']) && isset($conn)) {
             <div class="footer-grid">
                 <div class="footer-brand">
                     <a href="#" class="logo">SOU<span>N</span>D</a>
-                    <p>The thirst for learning, upgrading technical skills and applying the concepts in real life environment. A project implementation at your fingertips.</p>
                 </div>
                 <div class="footer-col">
                     <h4>EXPLORE</h4>
@@ -1075,7 +1080,7 @@ if (isset($_SESSION['email']) && isset($conn)) {
 
         // Animation Text
 
-        const texts = ["MUSIC'S & SOUND'S", "VIDIO'S & ALBUMS" ];
+        const texts = ["MUSIC'S & SOUND'S", "VIDIO'S & ALBUMS"];
         const animatedText = document.getElementById("animated-text");
         let textIndex = 0;
         let charIndex = 0;
