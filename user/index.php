@@ -193,7 +193,7 @@ if (isset($_SESSION['email']) && isset($conn)) {
             color: var(--primary);
         }
 
-       /* USER DROPDOWN */
+        /* USER DROPDOWN */
         .user-btn {
             padding: 8px 20px;
             background: var(--glass);
@@ -263,7 +263,7 @@ if (isset($_SESSION['email']) && isset($conn)) {
             transform: translateX(5px);
         }
 
-              /* HERO */
+        /* HERO */
         .hero {
             min-height: calc(100vh-80px);
             margin-top: 70px;
@@ -1254,8 +1254,8 @@ if (isset($_SESSION['email']) && isset($conn)) {
     </footer>
 
     <!-- Scripts -->
-   <script>
-/* ================= SETTINGS ================= */
+    <script>
+       /* ================= SETTINGS ================= */
 
 // Scroll Header Logic
 const header = document.getElementById('header');
@@ -1287,15 +1287,13 @@ let textIndex = 0;
 let charIndex = 0;
 
 function type() {
-    // Set color based on word
     animatedText.style.color = texts[textIndex] === "REVOLUTION" ? "#ff0055" : "#fff";
-
     if (charIndex < texts[textIndex].length) {
         animatedText.textContent += texts[textIndex].charAt(charIndex);
         charIndex++;
         setTimeout(type, 150);
     } else {
-        setTimeout(deleteText, 1000); // wait then delete
+        setTimeout(deleteText, 1000);
     }
 }
 
@@ -1306,34 +1304,36 @@ function deleteText() {
         setTimeout(deleteText, 100);
     } else {
         textIndex = (textIndex + 1) % texts.length;
-        setTimeout(type, 500); // small delay before next word
+        setTimeout(type, 500);
     }
 }
-
-// Start text animation
 type();
-  // Desktop dropdown toggle
+
+// Desktop user dropdown toggle
 document.querySelectorAll('.user-dropdown').forEach(drop => {
-    drop.querySelector('.user-btn').addEventListener('click', () => {
-        drop.classList.toggle('active');
-    });
+    const trigger = drop.querySelector('.user-trigger');
+    if (trigger) {
+        trigger.addEventListener('click', () => drop.classList.toggle('active'));
+    }
 });
 
 // Hamburger menu toggle
 const menuBtn = document.getElementById('menu-btn');
 const mobileMenu = document.getElementById('mobile-menu');
-menuBtn.addEventListener('click', () => {
-    menuBtn.classList.toggle('open');  // Animate hamburger
-    mobileMenu.classList.toggle('active'); // Slide menu
-});
+
+function toggleMobileMenu() {
+    menuBtn.classList.toggle('open');
+    mobileMenu.classList.toggle('active');
+}
 
 // Mobile user dropdown toggle
 const mobileUserDropdown = document.getElementById('mobile-user-dropdown');
-const mobileUserBtn = mobileUserDropdown.querySelector('.mobile-user-btn');
-mobileUserBtn.addEventListener('click', () => {
-    mobileUserDropdown.classList.toggle('active');
-});
-</script>
+if (mobileUserDropdown) {
+    const mobileUserBtn = mobileUserDropdown.querySelector('.mobile-user-btn');
+    mobileUserBtn.addEventListener('click', () => mobileUserDropdown.classList.toggle('active'));
+}
+
+    </script>
 
 </body>
 
