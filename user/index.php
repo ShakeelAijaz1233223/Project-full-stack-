@@ -740,109 +740,42 @@ if (isset($_SESSION['email']) && isset($conn)) {
 <body>
 
     <!-- Header -->
-<header id="header">
-    <div class="container nav-wrapper">
-        <a href="index.php" class="logo">SOU<span>N</span>D</a>
+    <header id="header">
+        <div class="container nav-wrapper">
+            <a href="index.php" class="logo">SOU<span>N</span>D</a>
 
-        <!-- Hamburger for full menu -->
-        <div class="hamburger" onclick="toggleMenu()">
-            <div></div>
-            <div></div>
-            <div></div>
-        </div>
+            <nav class="nav-links">
+                <a href="#home" class="active">Home</a>
+                <a href="about.php">About</a>
+                <a href="user_music_view.php">Music</a>
+                <a href="user_video_view.php">Videos</a>
+                <a href="user_albums_view.php">Albums</a>
+                <a href="#features">Features</a>
+                <a href="contact.php">Contact</a>
+            </nav>
 
-        <!-- Full menu (links + user options) -->
-        <nav class="nav-links" id="fullMenu">
-            <a href="#home" class="active">Home</a>
-            <a href="about.php">About</a>
-            <a href="user_music_view.php">Music</a>
-            <a href="user_video_view.php">Videos</a>
-            <a href="user_albums_view.php">Albums</a>
-            <a href="#features">Features</a>
-            <a href="contact.php">Contact</a>
-
-            <div class="user-actions-mobile">
+            <div class="user-actions">
                 <?php if ($user): ?>
-                    <a href="user_profile.php"><i class="fas fa-user"></i> Profile</a>
-                    <a href="user_setting.php"><i class="fas fa-cog"></i> Settings</a>
-                    <a href="user_logout.php" style="color: #ff4d4d;"><i class="fas fa-power-off"></i> Logout</a>
+                    <div class="user-dropdown">
+                        <div class="user-trigger">
+                            <div style="width: 25px; height: 25px; background: var(--primary); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 800;">
+                                <?= strtoupper(substr($user['name'], 0, 1)); ?>
+                            </div>
+                            <span style="font-size: 12px; font-weight: 700;"><?= htmlspecialchars($user['name']); ?></span>
+                            <i class="fas fa-chevron-down" style="font-size: 9px; opacity: 0.5;"></i>
+                        </div>
+                        <div class="dropdown-content">
+                            <a href="user_setting.php"><i class="fas fa-cog"></i> Settings</a>
+                            <div style="height: 1px; background: var(--border-glass); margin: 5px 0;"></div>
+                            <a href="user_logout.php" style="color: #ff4d4d;"><i class="fas fa-power-off"></i> Logout</a>
+                        </div>
+                    </div>
                 <?php else: ?>
-                    <a href="login.php" style="background: var(--primary); padding: 8px 22px; border-radius: 30px; color: white;">LOGIN</a>
+                    <a href="login.php" style="background: var(--primary); padding: 8px 22px; border-radius: 30px; text-decoration: none; color: white; font-size: 11px; font-weight: 800; transition: 0.3s;">LOGIN</a>
                 <?php endif; ?>
             </div>
-        </nav>
-    </div>
-</header>
-
-<!-- CSS -->
-<style>
-/* Hamburger styling */
-.hamburger {
-    width: 25px;
-    height: 20px;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    cursor: pointer;
-}
-.hamburger div {
-    height: 3px;
-    background-color: var(--primary);
-    border-radius: 2px;
-}
-
-/* Full menu styling */
-.nav-links {
-    display: flex;
-    gap: 15px;
-}
-.nav-links a {
-    text-decoration: none;
-    color: #333;
-    font-size: 12px;
-    font-weight: 600;
-}
-.user-actions-mobile {
-    display: none;
-    flex-direction: column;
-    margin-top: 10px;
-}
-.user-actions-mobile a {
-    padding: 8px 0;
-}
-
-/* Mobile view */
-@media screen and (max-width: 768px) {
-    .nav-links {
-        display: none;
-        flex-direction: column;
-        position: absolute;
-        top: 60px;
-        left: 0;
-        width: 100%;
-        background: #fff;
-        padding: 15px 20px;
-        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-        z-index: 99;
-    }
-    .nav-links a {
-        padding: 10px 0;
-        font-size: 14px;
-    }
-    .user-actions-mobile {
-        display: flex;
-    }
-}
-</style>
-
-<!-- JS -->
-<script>
-function toggleMenu() {
-    const menu = document.getElementById('fullMenu');
-    menu.style.display = menu.style.display === 'flex' ? 'none' : 'flex';
-}
-</script>
-
+        </div>
+    </header>
 
     <!-- 1. HERO SECTION -->
     <section class="hero" id="home">
