@@ -809,7 +809,8 @@ if (isset($_SESSION['email']) && isset($conn)) {
                 <a href="#features">Features</a>
                 <a href="contact.php">Contact</a>
             </nav>
-
+            
+            <div class="dropdown-content">
             <div class="user-actions">
                 <?php if ($user): ?>
                     <div class="user-dropdown">
@@ -823,7 +824,6 @@ if (isset($_SESSION['email']) && isset($conn)) {
                         </div>
 
                         <!-- Dropdown content -->
-                        <div class="dropdown-content">
                             <a href="user_setting.php"><i class="fas fa-cog"></i> Settings</a>
                             <div style="height: 1px; background: var(--border-glass); margin: 5px 0;"></div>
                             <a href="user_logout.php" style="color: #ff4d4d;"><i class="fas fa-power-off"></i> Logout</a>
