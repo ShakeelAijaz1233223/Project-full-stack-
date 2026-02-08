@@ -367,16 +367,8 @@ if (isset($_SESSION['email']) && isset($conn)) {
 
         @keyframes blink-cursor {
 
-            0%,
-            50%,
-            100% {
-                border-color: transparent;
-            }
-
-            25%,
-            75% {
-                border-color: #fff;
-            }
+              0%, 50%, 100% { border-color: #fff; }
+    25%, 75% { border-color: transparent; }
         }
 
         .hero-overlay {
