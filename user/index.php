@@ -705,7 +705,6 @@ header {
 </head>
 
 <body>
-
 <!-- HEADER -->
 <header id="header">
     <div class="container nav-wrapper">
@@ -750,6 +749,7 @@ header {
         </div>
     </div>
 </header>
+
 
 
     <!-- 1. HERO SECTION -->
