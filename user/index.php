@@ -1016,6 +1016,7 @@ if (isset($_SESSION['email']) && isset($conn)) {
             <div class="footer-grid">
                 <div class="footer-brand">
                     <a href="#" class="logo">SOU<span>N</span>D</a>
+                    <p>The thirst for learning, upgrading technical skills and applying the concepts in real life environment. A project implementation at your fingertips.</p>
                 </div>
                 <div class="footer-col">
                     <h4>EXPLORE</h4>
