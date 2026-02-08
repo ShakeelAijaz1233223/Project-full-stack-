@@ -1146,6 +1146,16 @@ header {
 
         // Start the animation
         type();
+
+        // 
+
+        const hamburger = document.querySelector('.user-hamburger');
+const userDropdown = document.querySelector('.user-dropdown');
+
+hamburger?.addEventListener('click', () => {
+    hamburger.classList.toggle('active');
+    userDropdown.querySelector('.dropdown-content').classList.toggle('show'); 
+});
     </script>
 </body>
 
