@@ -1085,79 +1085,72 @@ if (isset($_SESSION['email']) && isset($conn)) {
     </footer>
 
     <!-- Scripts -->
-    <script>
-        // Scroll Header Logic
-        const header = document.getElementById('header');
-        window.addEventListener('scroll', () => {
-            if (window.scrollY > 50) {
-                header.style.background = 'rgba(5, 5, 5, 0.98)';
-                header.style.padding = '15px 0';
-            } else {
-                header.style.background = 'rgba(5, 5, 5, 0.85)';
-                header.style.padding = '20px 0';
-            }
-        });
+   <script>
+/* ================= SETTINGS ================= */
 
-        // Intersection Observer for Reveal Animations
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('active');
-                }
-            });
-        }, {
-            threshold: 0.1
-        });
+// Scroll Header Logic
+const header = document.getElementById('header');
+window.addEventListener('scroll', () => {
+    if (window.scrollY > 50) {
+        header.style.background = 'rgba(5, 5, 5, 0.98)';
+        header.style.padding = '15px 0';
+    } else {
+        header.style.background = 'rgba(5, 5, 5, 0.85)';
+        header.style.padding = '20px 0';
+    }
+});
 
-        document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
-
-
-        // Animation Text
-
-        const texts = ["VISUAL AUDIO", "REVOLUTION"];
-        const animatedText = document.getElementById("animated-text");
-        let textIndex = 0;
-        let charIndex = 0;
-
-        function type() {
-            // Set color based on word
-            if (texts[textIndex] === "REVOLUTION") {
-                animatedText.style.color = "#ff0055"; // Primary color
-            } else {
-                animatedText.style.color = "#fff"; // Default color
-            }
-
-            if (charIndex < texts[textIndex].length) {
-                animatedText.textContent += texts[textIndex].charAt(charIndex);
-                charIndex++;
-                setTimeout(type, 150);
-            } else {
-                // Wait 1 second then delete
-                setTimeout(deleteText, 1000);
-            }
+// Intersection Observer for Reveal Animations
+const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+        if (entry.isIntersecting) {
+            entry.target.classList.add('active');
         }
+    });
+}, { threshold: 0.1 });
 
-        function deleteText() {
-            if (charIndex > 0) {
-                animatedText.textContent = texts[textIndex].substring(0, charIndex - 1);
-                charIndex--;
-                setTimeout(deleteText, 100);
-            } else {
-                // Move to next text
-                textIndex = (textIndex + 1) % texts.length;
-                setTimeout(type, 500); // small delay before typing next word
-            }
-        }
+document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
 
-        // Start the animation
-        type();
-// Dropdown Logic for User Menu
-        document.addEventListener("DOMContentLoaded", function() {
+// Animated Text Logic
+const texts = ["VISUAL AUDIO", "REVOLUTION"];
+const animatedText = document.getElementById("animated-text");
+let textIndex = 0;
+let charIndex = 0;
+
+function type() {
+    // Set color based on word
+    animatedText.style.color = texts[textIndex] === "REVOLUTION" ? "#ff0055" : "#fff";
+
+    if (charIndex < texts[textIndex].length) {
+        animatedText.textContent += texts[textIndex].charAt(charIndex);
+        charIndex++;
+        setTimeout(type, 150);
+    } else {
+        setTimeout(deleteText, 1000); // wait then delete
+    }
+}
+
+function deleteText() {
+    if (charIndex > 0) {
+        animatedText.textContent = texts[textIndex].substring(0, charIndex - 1);
+        charIndex--;
+        setTimeout(deleteText, 100);
+    } else {
+        textIndex = (textIndex + 1) % texts.length;
+        setTimeout(type, 500); // small delay before next word
+    }
+}
+
+// Start text animation
+type();
+
+// ================= USER DROPDOWN =================
+document.addEventListener("DOMContentLoaded", function() {
     const userDropdown = document.querySelector(".user-dropdown");
 
     // Toggle dropdown on click
     userDropdown.addEventListener("click", function(e) {
-        e.stopPropagation(); // Prevent bubbling
+        e.stopPropagation();
         userDropdown.classList.toggle("active");
     });
 
@@ -1166,7 +1159,8 @@ if (isset($_SESSION['email']) && isset($conn)) {
         userDropdown.classList.remove("active");
     });
 });
-    </script>
+</script>
+
 </body>
 
 </html>
