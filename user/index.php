@@ -31,15 +31,15 @@ function getMediaImage($fileName, $type)
 // --- DATA FETCHING ---
 
 // 1. Latest Music (Requirement: 5 items)
- $latestMusicQuery = "SELECT * FROM music ORDER BY id DESC LIMIT 5";
- $latestMusic = isset($conn) ? mysqli_query($conn, $latestMusicQuery) : false;
+$latestMusicQuery = "SELECT * FROM music ORDER BY id DESC LIMIT 5";
+$latestMusic = isset($conn) ? mysqli_query($conn, $latestMusicQuery) : false;
 
 // 2. Latest Videos (Requirement: 5 items)
- $latestVideosQuery = "SELECT * FROM videos ORDER BY id DESC LIMIT 5";
- $latestVideos = isset($conn) ? mysqli_query($conn, $latestVideosQuery) : false;
+$latestVideosQuery = "SELECT * FROM videos ORDER BY id DESC LIMIT 5";
+$latestVideos = isset($conn) ? mysqli_query($conn, $latestVideosQuery) : false;
 
 // 3. User Session Check
- $user = null;
+$user = null;
 if (isset($_SESSION['email']) && isset($conn)) {
     $email = mysqli_real_escape_string($conn, $_SESSION['email']);
     $res = mysqli_query($conn, "SELECT * FROM users WHERE email='$email' LIMIT 1");
@@ -332,7 +332,7 @@ if (isset($_SESSION['email']) && isset($conn)) {
             background: var(--primary);
             border-color: var(--primary);
         }
-        
+
 
         /* --- HERO SECTION --- */
         .hero {
@@ -343,7 +343,7 @@ if (isset($_SESSION['email']) && isset($conn)) {
             display: flex;
             align-items: center;
             justify-content: center;
-              height: 100vh;   
+            height: 100vh;
             background: url('https://images.unsplash.com/photo-1514525253440-b393452e23f9?q=80&w=1920&auto=format&fit=crop') no-repeat center / cover;
         }
 
@@ -356,12 +356,13 @@ if (isset($_SESSION['email']) && isset($conn)) {
         }
 
         #animated-text {
-           display: inline-block;
-    white-space: nowrap;
-    overflow: hidden;
-    border-right: 3px solid #fff; /* Cursor effect */
-    padding-right: 5px;
-    animation: blink-cursor 0.7s steps(1) infinite;
+            display: inline-block;
+            white-space: nowrap;
+            overflow: hidden;
+            border-right: 3px solid #fff;
+            /* Cursor effect */
+            padding-right: 5px;
+            animation: blink-cursor 0.7s steps(1) infinite;
         }
 
         @keyframes blink-cursor {
@@ -556,7 +557,7 @@ if (isset($_SESSION['email']) && isset($conn)) {
             overflow: hidden;
             transition: 0.4s;
             position: relative;
-            
+
         }
 
         .media-card:hover {
@@ -810,7 +811,7 @@ if (isset($_SESSION['email']) && isset($conn)) {
             .container {
                 padding: 0 4%;
             }
-            
+
             .media-scroller {
                 grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
             }
@@ -1426,7 +1427,7 @@ if (isset($_SESSION['email']) && isset($conn)) {
 
         // Animation Text
 
-        const texts = ["MUSIC'S & SOUND'S", "VIDIO'S & ALBUMS" ];
+        const texts = ["MUSIC'S & SOUND'S", "VIDIO'S & ALBUMS"];
         const animatedText = document.getElementById("animated-text");
         let textIndex = 0;
         let charIndex = 0;
