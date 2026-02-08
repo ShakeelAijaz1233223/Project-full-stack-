@@ -912,6 +912,7 @@ if (isset($_SESSION['email']) && isset($conn)) {
             </nav>
 
             <div class="user-actions">
+                
                 <?php if ($user): ?>
                     <div class="user-dropdown">
                         <div class="user-trigger">
@@ -933,6 +934,15 @@ if (isset($_SESSION['email']) && isset($conn)) {
             </div>
         </div>
     </header>
+    <div class="mobile-menu" id="mobile-menu">
+        <nav class="nav-links">
+            <a href="#">Home</a>
+            <a href="#">About</a>
+            <a href="#">Services</a>
+            <a href="#">Contact</a>
+        </nav>
+        
+    </div>
 
     <!-- 1. HERO SECTION -->
     <section class="hero" id="home">
