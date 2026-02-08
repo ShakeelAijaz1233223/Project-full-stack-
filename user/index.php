@@ -168,9 +168,7 @@ if (isset($_SESSION['email']) && isset($conn)) {
             transition: var(--transition);
         }
 
-        .user-dropdown {
-            position: relative;
-        }
+      
 
         .dropdown-content {
             position: absolute;
