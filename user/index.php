@@ -1151,7 +1151,7 @@ if (isset($_SESSION['email']) && isset($conn)) {
 
         // Start the animation
         type();
-// Dropdown
+// Dropdown Logic for User Menu
         document.addEventListener("DOMContentLoaded", function() {
     const userDropdown = document.querySelector(".user-dropdown");
 
