@@ -329,6 +329,47 @@ if (isset($_SESSION['email']) && isset($conn)) {
             border-color: var(--primary);
         }
 
+        /* Hamburger styling */
+.user-hamburger {
+    position: relative;
+    display: inline-block;
+}
+
+.hamburger-icon {
+    width: 25px;
+    height: 18px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    cursor: pointer;
+}
+
+.hamburger-icon span {
+    display: block;
+    height: 3px;
+    width: 100%;
+    background: var(--primary);
+    border-radius: 2px;
+    transition: 0.3s;
+}
+
+/* Dropdown hidden by default */
+.user-hamburger .dropdown-content {
+    display: none;
+    position: absolute;
+    right: 0;
+    background: #fff;
+    min-width: 150px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    border-radius: 6px;
+    padding: 10px 0;
+    z-index: 10;
+}
+
+/* Show dropdown */
+.user-hamburger.active .dropdown-content {
+    display: block;
+}
         /* --- HERO SECTION --- */
         .hero {
             min-height: calc(100vh - 80px);
