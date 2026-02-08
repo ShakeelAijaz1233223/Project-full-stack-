@@ -1150,9 +1150,7 @@ if (isset($_SESSION['email']) && isset($conn)) {
 
         // Start the animation
         type();
-        function toggleUserDropdown(el) {
-    el.parentElement.classList.toggle('active');
-}
+        
     </script>
 </body>
 
