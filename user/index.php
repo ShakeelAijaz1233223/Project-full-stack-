@@ -217,23 +217,26 @@ if (isset($_SESSION['email']) && isset($conn)) {
         }
 
         /* --- HEADER --- */
-        header {
-            position: fixed;
-            top: 0;
-            width: 100%;
-            z-index: 1000;
-            background: rgba(5, 5, 5, 0.85);
-            backdrop-filter: blur(20px);
-            border-bottom: 1px solid var(--border-glass);
-            padding: 20px 0;
-            transition: 0.3s;
-        }
+       header {
+    position: fixed;
+    top:0;
+    width:100%;
+    z-index:1000;
+    background: rgba(5,5,5,0.85);
+    backdrop-filter: blur(20px);
+    border-bottom:1px solid var(--border-glass);
+    padding: 20px 0;
+    transition: var(--transition);
+}
 
         .nav-wrapper {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 5%;
+}
 
         .logo {
             font-family: var(--font-head);
