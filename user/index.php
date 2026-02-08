@@ -329,47 +329,6 @@ if (isset($_SESSION['email']) && isset($conn)) {
             border-color: var(--primary);
         }
 
-        /* Hamburger styling */
-.user-hamburger {
-    position: relative;
-    display: inline-block;
-}
-
-.hamburger-icon {
-    width: 25px;
-    height: 18px;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    cursor: pointer;
-}
-
-.hamburger-icon span {
-    display: block;
-    height: 3px;
-    width: 100%;
-    background: var(--primary);
-    border-radius: 2px;
-    transition: 0.3s;
-}
-
-/* Dropdown hidden by default */
-.user-hamburger .dropdown-content {
-    display: none;
-    position: absolute;
-    right: 0;
-    background: #fff;
-    min-width: 150px;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-    border-radius: 6px;
-    padding: 10px 0;
-    z-index: 10;
-}
-
-/* Show dropdown */
-.user-hamburger.active .dropdown-content {
-    display: block;
-}
         /* --- HERO SECTION --- */
         .hero {
             min-height: calc(100vh - 80px);
@@ -780,28 +739,29 @@ if (isset($_SESSION['email']) && isset($conn)) {
 <body>
 
     <!-- Header -->
-<header id="header">
-    <div class="container nav-wrapper">
-        <a href="index.php" class="logo">SOU<span>N</span>D</a>
+    <header id="header">
+        <div class="container nav-wrapper">
+            <a href="index.php" class="logo">SOU<span>N</span>D</a>
 
-        <nav class="nav-links">
-            <a href="#home" class="active">Home</a>
-            <a href="about.php">About</a>
-            <a href="user_music_view.php">Music</a>
-            <a href="user_video_view.php">Videos</a>
-            <a href="user_albums_view.php">Albums</a>
-            <a href="#features">Features</a>
-            <a href="contact.php">Contact</a>
-        </nav>
+            <nav class="nav-links">
+                <a href="#home" class="active">Home</a>
+                <a href="about.php">About</a>
+                <a href="user_music_view.php">Music</a>
+                <a href="user_video_view.php">Videos</a>
+                <a href="user_albums_view.php">Albums</a>
+                <a href="#features">Features</a>
+                <a href="contact.php">Contact</a>
+            </nav>
 
-        <div class="user-actions">
+             <div class="user-actions">
             <?php if ($user): ?>
-                <!-- Hamburger menu for user -->
-                <div class="user-hamburger">
-                    <div class="hamburger-icon" onclick="toggleUserDropdown(this)">
-                        <span></span>
-                        <span></span>
-                        <span></span>
+                <div class="user-dropdown">
+                    <div class="user-trigger">
+                        <div style="width: 25px; height: 25px; background: var(--primary); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 800;">
+                            <?= strtoupper(substr($user['name'], 0, 1)); ?>
+                        </div>
+                        <span style="font-size: 12px; font-weight: 700;"><?= htmlspecialchars($user['name']); ?></span>
+                        <i class="fas fa-chevron-down" style="font-size: 9px; opacity: 0.5;"></i>
                     </div>
                     <div class="dropdown-content">
                         <a href="user_setting.php"><i class="fas fa-cog"></i> Settings</a>
@@ -813,8 +773,8 @@ if (isset($_SESSION['email']) && isset($conn)) {
                 <a href="login.php" style="background: var(--primary); padding: 8px 22px; border-radius: 30px; text-decoration: none; color: white; font-size: 11px; font-weight: 800; transition: 0.3s;">LOGIN</a>
             <?php endif; ?>
         </div>
-    </div>
-</header>
+        </div>
+    </header>
 
     <!-- 1. HERO SECTION -->
     <section class="hero" id="home">
@@ -1150,7 +1110,6 @@ if (isset($_SESSION['email']) && isset($conn)) {
 
         // Start the animation
         type();
-        
     </script>
 </body>
 
