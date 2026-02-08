@@ -781,7 +781,7 @@ if (isset($_SESSION['email']) && isset($conn)) {
     <section class="hero" id="home">
         <div class="hero-overlay"></div>
         <div class="hero-content animate__animated animate__fadeInUp">
-            <span class="hero-subtitle">Welcome to the future</span>
+            <span class="hero-subtitle">Welcome to the SOUND </span>
             <h1 class="hero-title">
                 <span id="animated-text"></span>
             </h1>
