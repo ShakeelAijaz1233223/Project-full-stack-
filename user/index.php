@@ -1257,7 +1257,7 @@ if (isset($_SESSION['email']) && isset($conn)) {
                             <div class="card-img video">
                                 <img src="<?= $thumb ?>" alt="Thumb">
                                 <a href="user_video_view.php?id=<?= $vid['id'] ?>" class="play-overlay">
-                                    <!-- <div class="play-btn" style="background:var(--secondary); box-shadow:0 0 20px var(--secondary);"><i class="fas fa-play"></i></div> -->
+                               
                                 </a>
                             </div>
                             <div class="card-info">
