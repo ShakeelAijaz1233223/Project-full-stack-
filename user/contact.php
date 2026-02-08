@@ -1,7 +1,7 @@
 <?php
 session_start();
 include_once("../config/db.php");
-$message_status = "";
+ $message_status = "";
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $name = strip_tags(trim($_POST['name']));
@@ -13,7 +13,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 }
 
 // User check for Header consistency
-$user = null;
+ $user = null;
 if (isset($_SESSION['email'])) {
     $email = mysqli_real_escape_string($conn, $_SESSION['email']);
     $res = mysqli_query($conn, "SELECT * FROM users WHERE email='$email' LIMIT 1");
@@ -146,13 +146,23 @@ if (isset($_SESSION['email'])) {
             color: #fff;
             padding: 10px 15px;
             text-decoration: none;
-            display: block;
+            display: flex;
+            align-items: center;
+            gap: 12px;
             font-size: 12px;
+            font-weight: 600;
             border-radius: 10px;
+            transition: 0.3s;
+        }
+
+        .dropdown-content a i {
+            color: var(--primary);
+            width: 15px;
         }
 
         .dropdown-content a:hover {
             background: rgba(255, 0, 85, 0.1);
+            transform: translateX(5px);
         }
 
         /* --- CONTACT CONTENT --- */
@@ -285,6 +295,104 @@ if (isset($_SESSION['email'])) {
             text-transform: uppercase;
         }
 
+        /* Mobile Menu Styles */
+        .menu-btn {
+            display: none;
+            color: #fff;
+            font-size: 20px;
+            cursor: pointer;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border-glass);
+            padding: 8px 12px;
+            border-radius: 8px;
+        }
+
+        .mobile-menu {
+            position: fixed;
+            top: 0;
+            right: -300px;
+            width: 300px;
+            height: 100vh;
+            background: rgba(5, 5, 5, 0.98);
+            backdrop-filter: blur(20px);
+            z-index: 1002;
+            padding: 80px 20px 20px;
+            transition: right 0.3s ease;
+            overflow-y: auto;
+            border-left: 1px solid var(--border-glass);
+        }
+
+        .mobile-menu.active {
+            right: 0;
+        }
+
+        .mobile-menu-close {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            color: #fff;
+            font-size: 24px;
+            cursor: pointer;
+        }
+
+        .mobile-menu-links {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .mobile-menu-links a {
+            color: #fff;
+            font-size: 16px;
+            font-weight: 600;
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            text-decoration: none;
+        }
+
+        .mobile-menu-links a:hover,
+        .mobile-menu-links a.active {
+            color: var(--primary);
+        }
+
+        .mobile-menu-user {
+            padding-top: 20px;
+            border-top: 1px solid var(--border-glass);
+        }
+
+        .mobile-menu-user a {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #fff;
+            font-size: 14px;
+            padding: 10px 0;
+            text-decoration: none;
+        }
+
+        .mobile-menu-user a:hover {
+            color: var(--primary);
+        }
+
+        .mobile-menu-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1001;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s, visibility 0.3s;
+        }
+
+        .mobile-menu-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
         /* --- RESPONSIVE ADJUSTMENTS --- */
         @media (max-width: 1200px) {
             .content-grid {
@@ -314,6 +422,14 @@ if (isset($_SESSION['email'])) {
             .info-text p {
                 font-size: 15px;
             }
+
+            nav {
+                display: none;
+            }
+
+            .menu-btn {
+                display: block;
+            }
         }
 
         @media (max-width: 768px) {
@@ -321,24 +437,20 @@ if (isset($_SESSION['email'])) {
                 padding: 15px 5%;
             }
 
-            nav ul {
-                gap: 15px;
-                flex-wrap: wrap;
-                justify-content: center;
-                margin-top: 10px;
+            .page-container {
+                padding: 120px 5% 40px;
             }
 
-            nav ul li a {
-                font-size: 10px;
+            .hero-title {
+                margin-bottom: 40px;
             }
 
-            .user-trigger span {
-                display: none;
-            }
-
-            /* Hide username for very small screens */
             .hero-title h1 {
                 font-size: clamp(1.8rem, 5vw, 3rem);
+            }
+
+            .content-grid {
+                gap: 30px;
             }
 
             .form-card {
@@ -355,11 +467,15 @@ if (isset($_SESSION['email'])) {
                 padding: 16px;
                 font-size: 11px;
             }
+
+            .user-trigger span {
+                display: none;
+            }
         }
 
         @media (max-width: 480px) {
             .page-container {
-                padding: 130px 5% 30px;
+                padding: 110px 5% 30px;
             }
 
             .hero-title h1 {
@@ -393,6 +509,11 @@ if (isset($_SESSION['email'])) {
                 padding: 14px;
                 font-size: 10px;
             }
+
+            .mobile-menu {
+                width: 280px;
+                right: -280px;
+            }
         }
 
         @media (max-width: 360px) {
@@ -403,6 +524,11 @@ if (isset($_SESSION['email'])) {
             footer {
                 font-size: 9px;
                 padding: 30px 5%;
+            }
+
+            .mobile-menu {
+                width: 250px;
+                right: -250px;
             }
         }
     </style>
@@ -439,8 +565,43 @@ if (isset($_SESSION['email'])) {
             <?php else: ?>
                 <a href="login.php" style="background: var(--primary); padding: 8px 22px; border-radius: 30px; text-decoration: none; color: white; font-size: 11px; font-weight: 800; transition: 0.3s;">LOGIN</a>
             <?php endif; ?>
+            <div class="menu-btn" id="menuBtn">
+                <i class="fas fa-bars"></i>
+            </div>
         </div>
     </header>
+
+    <!-- Mobile Menu -->
+    <div class="mobile-menu-overlay" id="mobileMenuOverlay"></div>
+    <div class="mobile-menu" id="mobileMenu">
+        <div class="mobile-menu-close" id="mobileMenuClose">
+            <i class="fas fa-times"></i>
+        </div>
+        <div class="mobile-menu-links">
+            <a href="index.php">Home</a>
+            <a href="user_music_view.php">Music</a>
+            <a href="user_video_view.php">Videos</a>
+            <a href="about.php">About</a>
+            <a href="contact.php" style="color:var(--primary)">Contact</a>
+        </div>
+        <div class="mobile-menu-user">
+            <?php if ($user): ?>
+                <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 15px; padding-bottom: 15px; border-bottom: 1px solid var(--border-glass);">
+                    <div style="width: 40px; height: 40px; background: var(--primary); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 800;">
+                        <?= strtoupper(substr($user['name'], 0, 1)); ?>
+                    </div>
+                    <div>
+                        <div style="font-size: 14px; font-weight: 700;"><?= htmlspecialchars($user['name']); ?></div>
+                        <div style="font-size: 12px; color: rgba(255, 255, 255, 0.5);"><?= htmlspecialchars($user['email']); ?></div>
+                    </div>
+                </div>
+                <a href="user_setting.php"><i class="fas fa-cog"></i> Settings</a>
+                <a href="user_logout.php" style="color: #ff4d4d;"><i class="fas fa-power-off"></i> Logout</a>
+            <?php else: ?>
+                <a href="login.php" style="background: var(--primary); padding: 10px 20px; border-radius: 30px; text-align: center; margin-top: 10px;">LOGIN</a>
+            <?php endif; ?>
+        </div>
+    </div>
 
     <div class="page-container">
         <div class="hero-title animate__animated animate__fadeInDown">
@@ -490,6 +651,37 @@ if (isset($_SESSION['email'])) {
     </div>
 
     <footer>&copy; 2026 SOUND  | ALL RIGHTS RESERVED</footer>
+
+    <script>
+        // Mobile Menu
+        const menuBtn = document.getElementById('menuBtn');
+        const mobileMenu = document.getElementById('mobileMenu');
+        const mobileMenuClose = document.getElementById('mobileMenuClose');
+        const mobileMenuOverlay = document.getElementById('mobileMenuOverlay');
+        const mobileMenuLinks = document.querySelectorAll('.mobile-menu-links a');
+
+        function openMobileMenu() {
+            mobileMenu.classList.add('active');
+            mobileMenuOverlay.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeMobileMenu() {
+            mobileMenu.classList.remove('active');
+            mobileMenuOverlay.classList.remove('active');
+            document.body.style.overflow = '';
+        }
+
+        menuBtn.addEventListener('click', openMobileMenu);
+        mobileMenuClose.addEventListener('click', closeMobileMenu);
+        mobileMenuOverlay.addEventListener('click', closeMobileMenu);
+
+        mobileMenuLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                closeMobileMenu();
+            });
+        });
+    </script>
 </body>
 
 </html>
