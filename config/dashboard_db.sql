@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Feb 04, 2026 at 12:36 PM
+-- Generation Time: Feb 08, 2026 at 07:17 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -48,7 +48,7 @@ CREATE TABLE `admin_users` (
 --
 
 INSERT INTO `admin_users` (`id`, `name`, `email`, `phone`, `address`, `password`, `role`, `status`, `avatar`, `created_at`, `last_login`, `updated_at`, `last_seen`) VALUES
-(1, 'Admin Dashboard', 'admin@gmail.com', '', '', 'admin123', 'admin', 'active', 'avatar_1_1769860062.jpg', '2026-01-31 09:07:09', NULL, '2026-02-04 11:32:58', '2026-02-04 16:32:58');
+(1, 'Admin Dashboard', 'admin@gmail.com', '', '', 'admin123', 'admin', 'active', 'avatar_1_1769860062.jpg', '2026-01-31 09:07:09', NULL, '2026-02-08 07:47:51', '2026-02-08 12:47:51');
 
 -- --------------------------------------------------------
 
@@ -66,6 +66,29 @@ CREATE TABLE `albums` (
   `cover` varchar(255) DEFAULT NULL,
   `audio` varchar(255) DEFAULT NULL,
   `video` varchar(255) DEFAULT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `albums`
+--
+
+INSERT INTO `albums` (`id`, `title`, `artist`, `year`, `genre`, `language`, `cover`, `audio`, `video`, `created_at`) VALUES
+(2, 'asdf', 'asdf', 2026, 'Pop', 'asdf', '1770453202_6986f8d23767d.jpeg', '', '1770453202_6986f8d237aaf.mp4', '2026-02-07 08:33:22'),
+(3, 'Shakeel ahmed', 'ShakeelHussan', 2017, 'Pop', 'English', '1770465976_69872ab853984.jpeg', '', '1770465976_69872ab853d01.mp4', '2026-02-07 12:06:16'),
+(4, 'ali', 'ali', 2000, 'Pop', 'en', '1770474637_69874c8d1324b.jpg', '', '1770474637_69874c8d137f5.mp4', '2026-02-07 14:30:37');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `album_reviews`
+--
+
+CREATE TABLE `album_reviews` (
+  `id` int(11) NOT NULL,
+  `album_id` int(11) NOT NULL,
+  `rating` int(11) NOT NULL,
+  `comment` text NOT NULL,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -94,6 +117,8 @@ CREATE TABLE `music` (
   `id` int(11) NOT NULL,
   `title` varchar(200) DEFAULT NULL,
   `artist` varchar(100) DEFAULT NULL,
+  `album` varchar(255) DEFAULT NULL,
+  `year` year(4) DEFAULT NULL,
   `file` varchar(255) DEFAULT NULL,
   `album_id` int(11) DEFAULT NULL,
   `genre` varchar(50) DEFAULT NULL,
@@ -108,8 +133,22 @@ CREATE TABLE `music` (
 -- Dumping data for table `music`
 --
 
-INSERT INTO `music` (`id`, `title`, `artist`, `file`, `album_id`, `genre`, `duration`, `description`, `created_at`, `cover_image`, `full_cover_image_path`) VALUES
-(22, 'aaaaaaa', NULL, '1770198438_698315a6055ba.mp3', NULL, NULL, NULL, NULL, '2026-02-04 09:47:18', '1770198438_698315a6055be.jpg', NULL);
+INSERT INTO `music` (`id`, `title`, `artist`, `album`, `year`, `file`, `album_id`, `genre`, `duration`, `description`, `created_at`, `cover_image`, `full_cover_image_path`) VALUES
+(28, 'shakeel', 'ali', 'ali', '2001', '1770477244_698756bc9a342.mp3', NULL, NULL, NULL, NULL, '2026-02-07 15:14:04', '1770477244_698756bc9a346.jpg', NULL);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `music_reviews`
+--
+
+CREATE TABLE `music_reviews` (
+  `id` int(11) NOT NULL,
+  `music_id` int(11) NOT NULL,
+  `rating` int(1) NOT NULL CHECK (`rating` >= 1 and `rating` <= 5),
+  `comment` text NOT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
@@ -162,6 +201,27 @@ CREATE TABLE `playlist_videos` (
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `reviews`
+--
+
+CREATE TABLE `reviews` (
+  `id` int(11) NOT NULL,
+  `music_id` int(11) NOT NULL,
+  `rating` int(11) NOT NULL,
+  `comment` text NOT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `reviews`
+--
+
+INSERT INTO `reviews` (`id`, `music_id`, `rating`, `comment`, `created_at`) VALUES
+(12, 26, 4, 'ASDFSADFASDF', '2026-02-07 14:52:44');
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `settings`
 --
 
@@ -202,7 +262,7 @@ CREATE TABLE `users` (
 
 INSERT INTO `users` (`id`, `name`, `email`, `phone`, `address`, `password`, `status`, `created_at`, `last_seen`) VALUES
 (1, 'shayan', 'shayan@gmail.com', '1234567890', 'home', '$2y$10$UUHMjQNZwUlA1vD0fu/Ig.Jf3/rYWma.E7GTfNsYxVlXV8xN2m2mO', 'active', '2026-01-30 19:16:14', '2026-01-31 14:18:45'),
-(2, 'ali', 'ali@gamil.com', '1234567890', 'home', '$2y$10$nwOn6UD1vBLk0b3VygsgiOBfjSgHWrsTpaCWZeCcgIymOWC83to1G', 'active', '2026-01-31 09:16:13', '2026-02-04 15:26:17');
+(2, 'ali', 'ali@gamil.com', '1234567890', 'home', '$2y$10$nwOn6UD1vBLk0b3VygsgiOBfjSgHWrsTpaCWZeCcgIymOWC83to1G', 'active', '2026-01-31 09:16:13', '2026-02-08 23:14:47');
 
 -- --------------------------------------------------------
 
@@ -213,6 +273,9 @@ INSERT INTO `users` (`id`, `name`, `email`, `phone`, `address`, `password`, `sta
 CREATE TABLE `videos` (
   `id` int(11) NOT NULL,
   `title` varchar(200) DEFAULT NULL,
+  `artist` varchar(255) DEFAULT NULL,
+  `album` varchar(255) DEFAULT NULL,
+  `year` varchar(10) DEFAULT NULL,
   `file` varchar(255) DEFAULT NULL,
   `album_id` int(11) DEFAULT NULL,
   `genre` varchar(50) DEFAULT NULL,
@@ -224,6 +287,14 @@ CREATE TABLE `videos` (
   `file_path` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Dumping data for table `videos`
+--
+
+INSERT INTO `videos` (`id`, `title`, `artist`, `album`, `year`, `file`, `album_id`, `genre`, `duration`, `description`, `created_at`, `thumbnail`, `full_thumbnail_path`, `file_path`) VALUES
+(20, 'muskan', 'muskannazx', 'song', '2010', '1770469633_698739010bb7a.mp4', NULL, NULL, NULL, NULL, '2026-02-07 13:07:13', '1770469633_698739010bb7e.jpg', NULL, ''),
+(21, 'asdfasdf', 'asdf', 'as', '2001', '1770469886_698739feb0648.mp4', NULL, NULL, NULL, NULL, '2026-02-07 13:11:26', '1770469886_698739feb064b.jpg', NULL, '');
+
 -- --------------------------------------------------------
 
 --
@@ -234,6 +305,20 @@ CREATE TABLE `video_likes` (
   `id` int(11) NOT NULL,
   `video_id` int(11) NOT NULL,
   `user_email` varchar(255) NOT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `video_reviews`
+--
+
+CREATE TABLE `video_reviews` (
+  `id` int(11) NOT NULL,
+  `video_id` int(11) NOT NULL,
+  `rating` int(11) NOT NULL,
+  `comment` text NOT NULL,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -255,6 +340,13 @@ ALTER TABLE `albums`
   ADD PRIMARY KEY (`id`);
 
 --
+-- Indexes for table `album_reviews`
+--
+ALTER TABLE `album_reviews`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `album_id` (`album_id`);
+
+--
 -- Indexes for table `contact_messages`
 --
 ALTER TABLE `contact_messages`
@@ -265,7 +357,17 @@ ALTER TABLE `contact_messages`
 --
 ALTER TABLE `music`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `album_id` (`album_id`);
+  ADD KEY `album_id` (`album_id`),
+  ADD KEY `idx_title` (`title`),
+  ADD KEY `idx_artist` (`artist`),
+  ADD KEY `idx_album` (`album`);
+
+--
+-- Indexes for table `music_reviews`
+--
+ALTER TABLE `music_reviews`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `music_id` (`music_id`);
 
 --
 -- Indexes for table `playlists`
@@ -289,6 +391,12 @@ ALTER TABLE `playlist_videos`
   ADD PRIMARY KEY (`id`),
   ADD KEY `playlist_id` (`playlist_id`),
   ADD KEY `video_id` (`video_id`);
+
+--
+-- Indexes for table `reviews`
+--
+ALTER TABLE `reviews`
+  ADD PRIMARY KEY (`id`);
 
 --
 -- Indexes for table `settings`
@@ -319,6 +427,13 @@ ALTER TABLE `video_likes`
   ADD UNIQUE KEY `unique_video_user` (`video_id`,`user_email`);
 
 --
+-- Indexes for table `video_reviews`
+--
+ALTER TABLE `video_reviews`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `video_id` (`video_id`);
+
+--
 -- AUTO_INCREMENT for dumped tables
 --
 
@@ -332,7 +447,13 @@ ALTER TABLE `admin_users`
 -- AUTO_INCREMENT for table `albums`
 --
 ALTER TABLE `albums`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+
+--
+-- AUTO_INCREMENT for table `album_reviews`
+--
+ALTER TABLE `album_reviews`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=22;
 
 --
 -- AUTO_INCREMENT for table `contact_messages`
@@ -344,7 +465,13 @@ ALTER TABLE `contact_messages`
 -- AUTO_INCREMENT for table `music`
 --
 ALTER TABLE `music`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=24;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=30;
+
+--
+-- AUTO_INCREMENT for table `music_reviews`
+--
+ALTER TABLE `music_reviews`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `playlists`
@@ -365,6 +492,12 @@ ALTER TABLE `playlist_videos`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
+-- AUTO_INCREMENT for table `reviews`
+--
+ALTER TABLE `reviews`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
+
+--
 -- AUTO_INCREMENT for table `settings`
 --
 ALTER TABLE `settings`
@@ -380,7 +513,7 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT for table `videos`
 --
 ALTER TABLE `videos`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=24;
 
 --
 -- AUTO_INCREMENT for table `video_likes`
@@ -389,14 +522,32 @@ ALTER TABLE `video_likes`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
+-- AUTO_INCREMENT for table `video_reviews`
+--
+ALTER TABLE `video_reviews`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+
+--
 -- Constraints for dumped tables
 --
+
+--
+-- Constraints for table `album_reviews`
+--
+ALTER TABLE `album_reviews`
+  ADD CONSTRAINT `album_reviews_ibfk_1` FOREIGN KEY (`album_id`) REFERENCES `albums` (`id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `music`
 --
 ALTER TABLE `music`
   ADD CONSTRAINT `music_ibfk_1` FOREIGN KEY (`album_id`) REFERENCES `albums` (`id`) ON DELETE SET NULL;
+
+--
+-- Constraints for table `music_reviews`
+--
+ALTER TABLE `music_reviews`
+  ADD CONSTRAINT `music_reviews_ibfk_1` FOREIGN KEY (`music_id`) REFERENCES `music` (`id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `playlists`
@@ -429,6 +580,12 @@ ALTER TABLE `videos`
 --
 ALTER TABLE `video_likes`
   ADD CONSTRAINT `fk_video` FOREIGN KEY (`video_id`) REFERENCES `videos` (`id`) ON DELETE CASCADE;
+
+--
+-- Constraints for table `video_reviews`
+--
+ALTER TABLE `video_reviews`
+  ADD CONSTRAINT `video_reviews_ibfk_1` FOREIGN KEY (`video_id`) REFERENCES `videos` (`id`) ON DELETE CASCADE;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
