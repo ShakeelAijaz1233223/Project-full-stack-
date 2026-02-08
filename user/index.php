@@ -312,22 +312,7 @@ if (isset($_SESSION['email']) && isset($conn)) {
             color: var(--primary);
         }
 
-        .user-btn {
-            padding: 8px 20px;
-            background: var(--glass);
-            border: 1px solid var(--border-glass);
-            border-radius: 50px;
-            font-size: 12px;
-            font-weight: 700;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .user-btn:hover {
-            background: var(--primary);
-            border-color: var(--primary);
-        }
+      
 
         /* --- HERO SECTION --- */
         .hero {
