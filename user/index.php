@@ -343,6 +343,44 @@ if (isset($_SESSION['email']) && isset($conn)) {
                 display: flex;
             }
         }
+        /* MOBILE NAV LINKS FIX */
+@media (max-width: 992px) {
+    .nav-links {
+        position: fixed;
+        top: 70px;
+        right: -100%;
+        width: 220px;
+        height: calc(100vh - 70px);
+        flex-direction: column;
+        background: var(--bg-dark);
+        padding-top: 20px;
+        gap: 0;
+        transition: 0.3s;
+        z-index: 999;
+    }
+
+    .nav-links.show {
+        right: 0;
+    }
+
+    .nav-links a {
+        padding: 12px 20px;
+        font-size: 14px;
+        color: #fff; /* make links visible */
+        border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
+
+    .nav-links a:hover,
+    .nav-links a.active {
+        color: var(--primary);
+    }
+
+    /* Hamburger visible */
+    .hamburger {
+        display: flex;
+    }
+}
+
 
 
         /* --- HERO SECTION --- */
@@ -1139,23 +1177,24 @@ if (isset($_SESSION['email']) && isset($conn)) {
         // 
 
         // --- Hamburger Menu Toggle ---
-        const hamburger = document.getElementById('hamburger');
-        const navLinks = document.getElementById('nav-links');
+      const hamburger = document.getElementById('hamburger');
+const navLinks = document.getElementById('nav-links');
 
-        hamburger.addEventListener('click', () => {
-            hamburger.classList.toggle('active'); // Animate hamburger
-            navLinks.classList.toggle('show'); // Slide mobile menu
-        });
+hamburger.addEventListener('click', () => {
+    hamburger.classList.toggle('active'); // animate hamburger into X
+    navLinks.classList.toggle('show');    // slide menu in/out
+});
 
-        // Close mobile menu on link click
-        navLinks.querySelectorAll('a').forEach(link => {
-            link.addEventListener('click', () => {
-                if (window.innerWidth <= 992) {
-                    hamburger.classList.remove('active');
-                    navLinks.classList.remove('show');
-                }
-            });
-        });
+// Close mobile menu when a link is clicked
+navLinks.querySelectorAll('a').forEach(link => {
+    link.addEventListener('click', () => {
+        if(window.innerWidth <= 992){
+            hamburger.classList.remove('active');
+            navLinks.classList.remove('show');
+        }
+    });
+});
+
 
         // --- User Dropdown Toggle ---
         const userDropdown = document.querySelector('.user-dropdown');
