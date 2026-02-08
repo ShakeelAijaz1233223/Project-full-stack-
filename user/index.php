@@ -81,7 +81,6 @@ if (isset($_SESSION['email']) && isset($conn)) {
             --border-glass: rgba(255, 255, 255, 0.1);
             --font-head: 'Syncopate', sans-serif;
             --font-body: 'Plus Jakarta Sans', sans-serif;
-            --transition: 0.3s ease;
         }
 
         /* --- GLOBAL RESET --- */
@@ -148,7 +147,7 @@ if (isset($_SESSION['email']) && isset($conn)) {
             color: var(--primary);
         }
 
-        /* --- MOBILE MENU BUTTON --- */
+         /* --- MOBILE MENU BUTTON --- */
         .menu-btn {
             display: none;
             color: #fff;
@@ -219,7 +218,8 @@ if (isset($_SESSION['email']) && isset($conn)) {
             transform: translateX(5px);
         }
 
-        /* Flashing Animation for New Items */
+
+        /* Flashing Animation for New Items (Requirement) */
         @keyframes flash {
             0% {
                 opacity: 1;
@@ -329,65 +329,6 @@ if (isset($_SESSION['email']) && isset($conn)) {
             border-color: var(--primary);
         }
 
-        /* --- HAMBURGER FOR USER DROPDOWN --- */
-        .user-hamburger {
-            display: none;
-            /* desktop hidden */
-            flex-direction: column;
-            justify-content: space-between;
-            width: 25px;
-            height: 18px;
-            cursor: pointer;
-        }
-
-        .user-hamburger span {
-            display: block;
-            height: 3px;
-            width: 100%;
-            background: var(--primary);
-            border-radius: 2px;
-            transition: all 0.3s ease;
-        }
-
-        /* Animate hamburger into X */
-        .user-hamburger.active span:nth-child(1) {
-            transform: rotate(45deg) translate(5px, 5px);
-        }
-
-        .user-hamburger.active span:nth-child(2) {
-            opacity: 0;
-        }
-
-        .user-hamburger.active span:nth-child(3) {
-            transform: rotate(-45deg) translate(5px, -5px);
-        }
-
-        /* Show hamburger only on mobile and hide desktop trigger text */
-        @media (max-width: 992px) {
-            .user-hamburger {
-                display: flex;
-            }
-
-            .user-trigger span,
-            .user-trigger i {
-                display: none;
-            }
-
-            .user-dropdown .dropdown-content {
-                top: 45px;
-                right: 0;
-                display: none;
-                /* hidden by default */
-                position: absolute;
-                width: 150px;
-            }
-
-            .user-dropdown .dropdown-content.show {
-                display: block;
-            }
-        }
-
-
         /* --- HERO SECTION --- */
         .hero {
             min-height: calc(100vh - 80px);
@@ -399,6 +340,7 @@ if (isset($_SESSION['email']) && isset($conn)) {
             justify-content: center;
             background: url('https://images.unsplash.com/photo-1514525253440-b393452e23f9?q=80&w=1920&auto=format&fit=crop') no-repeat center / cover;
         }
+
 
         .hero-title {
             font-size: 3rem;
@@ -412,6 +354,7 @@ if (isset($_SESSION['email']) && isset($conn)) {
             white-space: nowrap;
             overflow: hidden;
             border-right: 3px solid #fff;
+            /* Cursor effect */
             padding-right: 5px;
             animation: blink-cursor 0.7s steps(1) infinite;
         }
@@ -431,11 +374,10 @@ if (isset($_SESSION['email']) && isset($conn)) {
         }
 
         .hero-overlay {
-            position: absolute;
-            inset: 0;
-            background: url("bgimage.png") center / cover no-repeat;
-            z-index: 1;
-            ;
+             position: absolute;
+    inset: 0;
+    background: url("bgimage.png") center / cover no-repeat;
+    z-index: 1;;
         }
 
         .hero-content {
@@ -795,6 +737,7 @@ if (isset($_SESSION['email']) && isset($conn)) {
 </head>
 
 <body>
+
     <!-- Header -->
     <header id="header">
         <div class="container nav-wrapper">
@@ -809,40 +752,29 @@ if (isset($_SESSION['email']) && isset($conn)) {
                 <a href="#features">Features</a>
                 <a href="contact.php">Contact</a>
             </nav>
-            
-            <div class="dropdown-content">
-            <div class="user-actions">
-                <?php if ($user): ?>
-                    <div class="user-dropdown">
-                        <!-- User trigger (desktop) -->
-                        <div class="user-trigger">
-                            <div style="width: 25px; height: 25px; background: var(--primary); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 800;">
-                                <?= strtoupper(substr($user['name'], 0, 1)); ?>
-                            </div>
-                            <span style="font-size: 12px; font-weight: 700;"><?= htmlspecialchars($user['name']); ?></span>
-                            <i class="fas fa-chevron-down" style="font-size: 9px; opacity: 0.5;"></i>
-                        </div>
 
-                        <!-- Dropdown content -->
-                            <a href="user_setting.php"><i class="fas fa-cog"></i> Settings</a>
-                            <div style="height: 1px; background: var(--border-glass); margin: 5px 0;"></div>
-                            <a href="user_logout.php" style="color: #ff4d4d;"><i class="fas fa-power-off"></i> Logout</a>
+             <div class="user-actions">
+            <?php if ($user): ?>
+                <div class="user-dropdown">
+                    <div class="user-trigger">
+                        <div style="width: 25px; height: 25px; background: var(--primary); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 800;">
+                            <?= strtoupper(substr($user['name'], 0, 1)); ?>
                         </div>
-
-                        <!-- Hamburger for mobile -->
-                        <div class="user-hamburger">
-                            <span></span>
-                            <span></span>
-                            <span></span>
-                        </div>
+                        <span style="font-size: 12px; font-weight: 700;"><?= htmlspecialchars($user['name']); ?></span>
+                        <i class="fas fa-chevron-down" style="font-size: 9px; opacity: 0.5;"></i>
                     </div>
-                <?php else: ?>
-                    <a href="login.php" style="background: var(--primary); padding: 8px 22px; border-radius: 30px; text-decoration: none; color: white; font-size: 11px; font-weight: 800; transition: 0.3s;">LOGIN</a>
-                <?php endif; ?>
-            </div>
+                    <div class="dropdown-content">
+                        <a href="user_setting.php"><i class="fas fa-cog"></i> Settings</a>
+                        <div style="height: 1px; background: var(--border-glass); margin: 5px 0;"></div>
+                        <a href="user_logout.php" style="color: #ff4d4d;"><i class="fas fa-power-off"></i> Logout</a>
+                    </div>
+                </div>
+            <?php else: ?>
+                <a href="login.php" style="background: var(--primary); padding: 8px 22px; border-radius: 30px; text-decoration: none; color: white; font-size: 11px; font-weight: 800; transition: 0.3s;">LOGIN</a>
+            <?php endif; ?>
+        </div>
         </div>
     </header>
-
 
     <!-- 1. HERO SECTION -->
     <section class="hero" id="home">
@@ -1178,17 +1110,8 @@ if (isset($_SESSION['email']) && isset($conn)) {
 
         // Start the animation
         type();
-
-        // 
-
-        const hamburger = document.querySelector('.user-hamburger');
-        const dropdownContent = document.querySelector('.user-dropdown .dropdown-content');
-
-        hamburger?.addEventListener('click', () => {
-            hamburger.classList.toggle('active');
-            dropdownContent.classList.toggle('show'); // show/hide dropdown
-        });
     </script>
 </body>
 
 </html>
+
