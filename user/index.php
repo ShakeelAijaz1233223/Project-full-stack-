@@ -739,48 +739,57 @@ header {
 <body>
 
     <!-- Header -->
-    <header id="header">
-        <div class="container nav-wrapper">
-            <a href="index.php" class="logo">SOU<span>N</span>D</a>
+    <!-- ===== HEADER ===== -->
+<header>
+  <div class="container nav-wrapper">
+    <div class="logo">My<span>Media</span></div>
 
-            <nav class="nav-links">
-                <a href="#home" class="active">Home</a>
-                <a href="about.php">About</a>
-                <a href="user_music_view.php">Music</a>
-                <a href="user_video_view.php">Videos</a>
-                <a href="user_albums_view.php">Albums</a>
-                <a href="#features">Features</a>
-                <a href="contact.php">Contact</a>
-            </nav>
-            <div class="menu-btn" onclick="toggleMobileMenu()">
-                <span></span>
-                <span></span>
-                <span></span>
-            </div>
+    <!-- NAV LINKS -->
+    <nav class="nav-links">
+      <a href="#hero" class="active">Home</a>
+      <a href="#about">About</a>
+      <a href="#features">Features</a>
+      <a href="#media">Media</a>
+      <a href="#contact">Contact</a>
+    </nav>
 
+    <!-- USER DROPDOWN -->
+    <div class="user-dropdown">
+      <div class="user-trigger">
+        <i class="fas fa-user-circle fa-2x"></i>
+        <span>Account</span>
+      </div>
+      <div class="dropdown-content">
+        <a href="#"><i class="fas fa-user"></i> Profile</a>
+        <a href="#"><i class="fas fa-cog"></i> Settings</a>
+        <a href="#"><i class="fas fa-sign-out-alt"></i> Logout</a>
+      </div>
+    </div>
 
-            <div class="user-actions">
-                <?php if ($user): ?>
-                    <div class="user-dropdown">
-                        <div class="user-trigger">
-                            <div style="width: 25px; height: 25px; background: var(--primary); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 800;">
-                                <?= strtoupper(substr($user['name'], 0, 1)); ?>
-                            </div>
-                            <span style="font-size: 12px; font-weight: 700;"><?= htmlspecialchars($user['name']); ?></span>
-                            <i class="fas fa-chevron-down" style="font-size: 9px; opacity: 0.5;"></i>
-                        </div>
-                        <div class="dropdown-content">
-                            <a href="user_setting.php"><i class="fas fa-cog"></i> Settings</a>
-                            <div style="height: 1px; background: var(--border-glass); margin: 5px 0;"></div>
-                            <a href="user_logout.php" style="color: #ff4d4d;"><i class="fas fa-power-off"></i> Logout</a>
-                        </div>
-                    </div>
-                <?php else: ?>
-                    <a href="login.php" style="background: var(--primary); padding: 8px 22px; border-radius: 30px; text-decoration: none; color: white; font-size: 11px; font-weight: 800; transition: 0.3s;">LOGIN</a>
-                <?php endif; ?>
-            </div>
-        </div>
-    </header>
+    <!-- HAMBURGER -->
+    <div class="menu-btn">
+      <span></span>
+      <span></span>
+      <span></span>
+    </div>
+  </div>
+
+  <!-- MOBILE MENU -->
+  <div class="mobile-menu">
+    <nav class="nav-links">
+      <a href="#hero" class="active">Home</a>
+      <a href="#about">About</a>
+      <a href="#features">Features</a>
+      <a href="#media">Media</a>
+      <a href="#contact">Contact</a>
+    </nav>
+    <div class="user-actions">
+      <a href="#">Profile</a>
+      <a href="#">Settings</a>
+      <a href="#">Logout</a>
+    </div>
+  </div>
+</header>
 
     <!-- 1. HERO SECTION -->
     <section class="hero" id="home">
