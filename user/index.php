@@ -150,33 +150,59 @@ if (isset($_SESSION['email']) && isset($conn)) {
         }
 
         /* HAMBURGER */
-        .hamburger {
-            display: none;
-            flex-direction: column;
-            gap: 4px;
-            cursor: pointer;
-            z-index: 1002;
-        }
+       /* HAMBURGER */
+.hamburger {
+    display: none; /* hidden on desktop */
+    flex-direction: column;
+    justify-content: space-between;
+    width: 25px;
+    height: 20px;
+    cursor: pointer;
+    z-index: 1002;
+}
+.hamburger span {
+    display: block;
+    width: 100%;
+    height: 3px;
+    background: white;
+    border-radius: 2px;
+    transition: 0.3s;
+}
+/* Animate hamburger into X */
+.hamburger.active span:nth-child(1) {
+    transform: rotate(45deg) translate(5px, 5px);
+}
+.hamburger.active span:nth-child(2) {
+    opacity: 0;
+}
+.hamburger.active span:nth-child(3) {
+    transform: rotate(-45deg) translate(5px, -5px);
+}
 
-        .hamburger span {
-            width: 25px;
-            height: 3px;
-            background: white;
-            border-radius: 2px;
-            transition: 0.3s;
-        }
+/* Show hamburger on mobile */
+@media (max-width: 992px) {
+    .hamburger { display: flex; }
+    .nav-links {
+        position: fixed;
+        top: 70px;
+        right: -100%;
+        width: 220px;
+        height: calc(100vh - 70px);
+        flex-direction: column;
+        background: var(--bg-dark);
+        padding-top: 20px;
+        gap: 0;
+        transition: 0.3s;
+        z-index: 999;
+    }
+    .nav-links.show {
+        right: 0;
+    }
+    .nav-links a {
+        padding: 12px 20px;
+    }
+}
 
-        .hamburger.active span:nth-child(1) {
-            transform: rotate(45deg) translate(5px, 5px);
-        }
-
-        .hamburger.active span:nth-child(2) {
-            opacity: 0;
-        }
-
-        .hamburger.active span:nth-child(3) {
-            transform: rotate(-45deg) translate(5px, -5px);
-        }
 
         /* USER DROPDOWN */
         .user-actions {
@@ -1147,6 +1173,24 @@ if (isset($_SESSION['email']) && isset($conn)) {
                 userDropdown.classList.remove('active');
             }
         });
+        const hamburger = document.getElementById('hamburger');
+const navLinks = document.getElementById('nav-links');
+
+hamburger.addEventListener('click', () => {
+    hamburger.classList.toggle('active'); // animate hamburger into X
+    navLinks.classList.toggle('show');    // slide menu in/out
+});
+
+// Close mobile menu when a link is clicked
+navLinks.querySelectorAll('a').forEach(link => {
+    link.addEventListener('click', () => {
+        if(window.innerWidth <= 992){
+            hamburger.classList.remove('active');
+            navLinks.classList.remove('show');
+        }
+    });
+});
+
     </script>
 </body>
 
