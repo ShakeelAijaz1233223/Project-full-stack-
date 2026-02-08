@@ -715,27 +715,170 @@ if (isset($_SESSION['email']) && isset($conn)) {
             color: var(--text-muted);
         }
 
-        /* Responsive */
-        @media (max-width: 992px) {
+      /* ================================
+   MOBILE HAMBURGER MENU (CSS ONLY)
+================================ */
 
-            .about-grid,
-            .footer-grid,
-            .stats-grid {
-                grid-template-columns: 1fr;
-                gap: 40px;
-            }
+/* Show hamburger on mobile */
+@media (max-width: 992px) {
 
-            .hero-title {
-                font-size: 40px;
-            }
+    .menu-btn {
+        display: block;
+    }
 
-            .nav-links {
-                display: none;
-            }
+    .menu-btn::before,
+    .menu-btn::after,
+    .menu-btn span {
+        content: "";
+        position: absolute;
+        width: 100%;
+        height: 3px;
+        background: #fff;
+        left: 0;
+        transition: 0.4s ease;
+        border-radius: 3px;
+    }
 
+    .menu-btn::before {
+        top: 0;
+    }
 
-            /* Add mobile toggle if needed */
+    .menu-btn span {
+        top: 50%;
+        transform: translateY(-50%);
+    }
+
+    .menu-btn::after {
+        bottom: 0;
+    }
+
+    /* Animate on hover (CSS-only toggle) */
+    header:hover .menu-btn::before {
+        transform: translateY(9px) rotate(45deg);
+    }
+
+    header:hover .menu-btn::after {
+        transform: translateY(-9px) rotate(-45deg);
+    }
+
+    header:hover .menu-btn span {
+        opacity: 0;
+    }
+
+    /* ================================
+       MOBILE NAV PANEL
+    ================================ */
+
+    .nav-links {
+        position: fixed;
+        top: 80px;
+        right: -100%;
+        width: 100%;
+        height: calc(100vh - 80px);
+        background: rgba(5, 5, 5, 0.98);
+        backdrop-filter: blur(25px);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: flex-start;
+        gap: 25px;
+        padding-top: 40px;
+        transition: 0.5s ease;
+        z-index: 999;
+    }
+
+    /* Show menu on header hover */
+    header:hover .nav-links {
+        right: 0;
+    }
+
+    .nav-links a {
+        font-size: 14px;
+        letter-spacing: 2px;
+    }
+
+    /* ================================
+       USER DROPDOWN INSIDE MOBILE MENU
+    ================================ */
+
+    .user-actions {
+        position: fixed;
+        bottom: 20px;
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        z-index: 1000;
+    }
+
+    .user-dropdown {
+        width: 90%;
+        max-width: 320px;
+    }
+
+    .user-trigger {
+        width: 100%;
+        justify-content: center;
+        font-size: 13px;
+        padding: 12px;
+    }
+
+    .dropdown-content {
+        position: relative;
+        top: 10px;
+        right: auto;
+        width: 100%;
+        opacity: 1;
+        visibility: visible;
+        transform: none;
+        display: none;
+        background: rgba(15, 15, 15, 0.95);
+    }
+
+    .user-dropdown:hover .dropdown-content {
+        display: block;
+        animation: dropdownFade 0.4s ease;
+    }
+
+    @keyframes dropdownFade {
+        from {
+            opacity: 0;
+            transform: translateY(10px);
         }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+}
+
+/* ================================
+   EXTRA SMALL DEVICES FIX
+================================ */
+@media (max-width: 480px) {
+
+    .hero-title {
+        font-size: 32px !important;
+    }
+
+    .hero-desc {
+        font-size: 14px;
+    }
+
+    .btn {
+        padding: 12px 26px;
+        font-size: 10px;
+    }
+
+    .media-scroller {
+        grid-template-columns: 1fr;
+    }
+
+    .stats-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
         
         
     </style>
