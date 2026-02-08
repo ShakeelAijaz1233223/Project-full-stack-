@@ -147,7 +147,7 @@ if (isset($_SESSION['email']) && isset($conn)) {
             color: var(--primary);
         }
 
-        /* --- MOBILE MENU BUTTON --- */
+         /* --- MOBILE MENU BUTTON --- */
         .menu-btn {
             display: none;
             color: #fff;
@@ -171,6 +171,7 @@ if (isset($_SESSION['email']) && isset($conn)) {
         .user-dropdown {
             position: relative;
         }
+
         .dropdown-content {
             position: absolute;
             right: 0;
@@ -217,49 +218,6 @@ if (isset($_SESSION['email']) && isset($conn)) {
             transform: translateX(5px);
         }
 
-        /* hUMBER */
-
-        /* Hamburger styling */
-.user-hamburger {
-    position: relative;
-    display: inline-block;
-}
-
-.hamburger-icon {
-    width: 25px;
-    height: 18px;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    cursor: pointer;
-}
-
-.hamburger-icon span {
-    display: block;
-    height: 3px;
-    width: 100%;
-    background: var(--primary);
-    border-radius: 2px;
-    transition: 0.3s;
-}
-
-/* Dropdown hidden by default */
-.user-hamburger .dropdown-content {
-    display: none;
-    position: absolute;
-    right: 0;
-    background: #fff;
-    min-width: 150px;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-    border-radius: 6px;
-    padding: 10px 0;
-    z-index: 10;
-}
-
-/* Show dropdown */
-.user-hamburger.show .dropdown-content {
-    display: block;
-}
 
         /* Flashing Animation for New Items (Requirement) */
         @keyframes flash {
@@ -416,11 +374,10 @@ if (isset($_SESSION['email']) && isset($conn)) {
         }
 
         .hero-overlay {
-            position: absolute;
-            inset: 0;
-            background: url("bgimage.png") center / cover no-repeat;
-            z-index: 1;
-            ;
+             position: absolute;
+    inset: 0;
+    background: url("bgimage.png") center / cover no-repeat;
+    z-index: 1;;
         }
 
         .hero-content {
@@ -796,26 +753,26 @@ if (isset($_SESSION['email']) && isset($conn)) {
                 <a href="contact.php">Contact</a>
             </nav>
 
-            <div class="user-actions">
-                <?php if ($user): ?>
-                    <div class="user-dropdown">
-                        <div class="user-trigger">
-                            <div style="width: 25px; height: 25px; background: var(--primary); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 800;">
-                                <?= strtoupper(substr($user['name'], 0, 1)); ?>
-                            </div>
-                            <span style="font-size: 12px; font-weight: 700;"><?= htmlspecialchars($user['name']); ?></span>
-                            <i class="fas fa-chevron-down" style="font-size: 9px; opacity: 0.5;"></i>
+             <div class="user-actions">
+            <?php if ($user): ?>
+                <div class="user-dropdown">
+                    <div class="user-trigger">
+                        <div style="width: 25px; height: 25px; background: var(--primary); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 800;">
+                            <?= strtoupper(substr($user['name'], 0, 1)); ?>
                         </div>
-                        <div class="dropdown-content">
-                            <a href="user_setting.php"><i class="fas fa-cog"></i> Settings</a>
-                            <div style="height: 1px; background: var(--border-glass); margin: 5px 0;"></div>
-                            <a href="user_logout.php" style="color: #ff4d4d;"><i class="fas fa-power-off"></i> Logout</a>
-                        </div>
+                        <span style="font-size: 12px; font-weight: 700;"><?= htmlspecialchars($user['name']); ?></span>
+                        <i class="fas fa-chevron-down" style="font-size: 9px; opacity: 0.5;"></i>
                     </div>
-                <?php else: ?>
-                    <a href="login.php" style="background: var(--primary); padding: 8px 22px; border-radius: 30px; text-decoration: none; color: white; font-size: 11px; font-weight: 800; transition: 0.3s;">LOGIN</a>
-                <?php endif; ?>
-            </div>
+                    <div class="dropdown-content">
+                        <a href="user_setting.php"><i class="fas fa-cog"></i> Settings</a>
+                        <div style="height: 1px; background: var(--border-glass); margin: 5px 0;"></div>
+                        <a href="user_logout.php" style="color: #ff4d4d;"><i class="fas fa-power-off"></i> Logout</a>
+                    </div>
+                </div>
+            <?php else: ?>
+                <a href="login.php" style="background: var(--primary); padding: 8px 22px; border-radius: 30px; text-decoration: none; color: white; font-size: 11px; font-weight: 800; transition: 0.3s;">LOGIN</a>
+            <?php endif; ?>
+        </div>
         </div>
     </header>
 
@@ -1157,3 +1114,4 @@ if (isset($_SESSION['email']) && isset($conn)) {
 </body>
 
 </html>
+
