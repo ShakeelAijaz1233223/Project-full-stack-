@@ -144,7 +144,7 @@ if (isset($_SESSION['email']) && isset($conn)) {
             color: var(--primary);
         }
 
-        /* --- HEADER --- */
+        /* HEADER */
         header {
             position: fixed;
             top: 0;
@@ -193,7 +193,7 @@ if (isset($_SESSION['email']) && isset($conn)) {
             color: var(--primary);
         }
 
-        /* --- USER BUTTON & DROPDOWN --- */
+       /* USER DROPDOWN */
         .user-btn {
             padding: 8px 20px;
             background: var(--glass);
