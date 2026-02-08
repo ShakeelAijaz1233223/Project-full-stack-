@@ -731,8 +731,10 @@ if (isset($_SESSION['email']) && isset($conn)) {
                 display: none;
             }
 
+
             /* Add mobile toggle if needed */
         }
+        
         
     </style>
 </head>
