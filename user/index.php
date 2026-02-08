@@ -1074,7 +1074,7 @@ if (isset($_SESSION['email']) && isset($conn)) {
 
         // Animation Text
 
-        const texts = ["MUSIC'S & SOUND'S", "VIDIO'S & VISUALS" ," REVOLUTION "];
+        const texts = ["MUSIC'S & SOUND'S", "VIDIO'S & VISUALS" ];
         const animatedText = document.getElementById("animated-text");
         let textIndex = 0;
         let charIndex = 0;
