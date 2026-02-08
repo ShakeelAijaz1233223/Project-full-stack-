@@ -733,26 +733,7 @@ if (isset($_SESSION['email']) && isset($conn)) {
 
             /* Add mobile toggle if needed */
         }
-         /* Responsive */
-        @media (max-width: 992px) {
-
-            .about-grid,
-            .footer-grid,
-            .stats-grid {
-                grid-template-columns: 1fr;
-                gap: 40px;
-            }
-
-            .hero-title {
-                font-size: 40px;
-            }
-
-            .nav-links {
-                display: none;
-            }
-
-            /* Add mobile toggle if needed */
-        }
+        
     </style>
 </head>
 
