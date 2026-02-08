@@ -343,6 +343,7 @@ if (isset($_SESSION['email']) && isset($conn)) {
             display: flex;
             align-items: center;
             justify-content: center;
+              height: 100vh;   
             background: url('https://images.unsplash.com/photo-1514525253440-b393452e23f9?q=80&w=1920&auto=format&fit=crop') no-repeat center / cover;
         }
 
