@@ -168,33 +168,11 @@ if (isset($_SESSION['email']) && isset($conn)) {
             transition: var(--transition);
         }
 
-      
-/* USER DROPDOWN */
-        .user-btn {
-            padding: 8px 20px;
-            background: var(--glass);
-            border: 1px solid var(--border-glass);
-            border-radius: 50px;
-            font-size: 12px;
-            font-weight: 700;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            cursor: pointer;
-            transition: var(--transition);
-        }
-
-        .user-btn:hover {
-            background: var(--primary);
-            border-color: var(--primary);
-        }
-
         .user-dropdown {
             position: relative;
-            cursor: pointer;
         }
 
-        .user-dropdown .dropdown-content {
+        .dropdown-content {
             position: absolute;
             right: 0;
             top: 55px;
@@ -211,7 +189,7 @@ if (isset($_SESSION['email']) && isset($conn)) {
             z-index: 1001;
         }
 
-        .user-dropdown.active .dropdown-content {
+        .user-dropdown:hover .dropdown-content {
             opacity: 1;
             visibility: visible;
             transform: translateY(0);
@@ -220,6 +198,7 @@ if (isset($_SESSION['email']) && isset($conn)) {
         .dropdown-content a {
             color: #fff;
             padding: 10px 15px;
+            text-decoration: none;
             display: flex;
             align-items: center;
             gap: 12px;
@@ -238,136 +217,7 @@ if (isset($_SESSION['email']) && isset($conn)) {
             background: rgba(255, 0, 85, 0.1);
             transform: translateX(5px);
         }
-        /* HAMBUGER */
 
-        /* HAMBURGER MENU */
-        .menu-btn {
-            display: none;
-            width: 32px;
-            height: 22px;
-            position: relative;
-            cursor: pointer;
-            z-index: 1100;
-        }
-
-        .menu-btn span {
-            position: absolute;
-            width: 100%;
-            height: 3px;
-            background: var(--text-main);
-            transition: 0.4s;
-        }
-
-        .menu-btn span:nth-child(1) {
-            top: 0;
-        }
-
-        .menu-btn span:nth-child(2) {
-            top: 9px;
-        }
-
-        .menu-btn span:nth-child(3) {
-            bottom: 0;
-        }
-
-        .menu-btn.open span:nth-child(1) {
-            transform: rotate(45deg);
-            top: 9px;
-        }
-
-        .menu-btn.open span:nth-child(2) {
-            opacity: 0;
-        }
-
-        .menu-btn.open span:nth-child(3) {
-            transform: rotate(-45deg);
-            bottom: 9px;
-        }
-
-        /* MOBILE MENU */
-        .mobile-menu {
-            position: fixed;
-            top: 70px;
-            right: -100%;
-            width: 280px;
-            height: calc(100vh-70px);
-            background: rgba(15, 15, 17, 0.98);
-            backdrop-filter: blur(25px);
-            display: flex;
-            flex-direction: column;
-            padding: 25px;
-            gap: 20px;
-            transition: 0.4s ease;
-            z-index: 1000;
-        }
-
-        .mobile-menu.active {
-            right: 0;
-        }
-
-        .mobile-menu .nav-links {
-            flex-direction: column;
-            display: flex;
-            gap: 15px;
-        }
-
-        .mobile-menu .nav-links a {
-            font-size: 14px;
-            color: #fff;
-            padding: 10px 0;
-        }
-
-        .mobile-menu .user-actions {
-            margin-top: 20px;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-
-        /* MOBILE USER DROPDOWN */
-        .mobile-user-dropdown {
-            display: flex;
-            flex-direction: column;
-        }
-
-        .mobile-user-btn {
-            padding: 10px 15px;
-            background: var(--glass);
-            border-radius: 50px;
-            border: 1px solid var(--border-glass);
-            color: #fff;
-            cursor: pointer;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-size: 14px;
-        }
-
-        .mobile-user-dropdown-content {
-            display: none;
-            flex-direction: column;
-            margin-top: 5px;
-            gap: 10px;
-        }
-
-        .mobile-user-dropdown.active .mobile-user-dropdown-content {
-            display: flex;
-        }
-
-        /* RESPONSIVE */
-        @media (max-width:992px) {
-            .menu-btn {
-                display: block;
-            }
-
-            .nav-links {
-                display: none;
-            }
-
-            .hero-title {
-                font-size: 40px;
-            }
-        }
 
         /* Flashing Animation for New Items (Requirement) */
         @keyframes flash {
@@ -487,12 +337,8 @@ if (isset($_SESSION['email']) && isset($conn)) {
             overflow: hidden;
             display: flex;
             align-items: center;
-            /* vertically center */
             justify-content: center;
-            /* horizontally center */
             background: url('https://images.unsplash.com/photo-1514525253440-b393452e23f9?q=80&w=1920&auto=format&fit=crop') no-repeat center / cover;
-            text-align: center;
-            /* optional, for multi-line text */
         }
 
 
@@ -508,12 +354,9 @@ if (isset($_SESSION['email']) && isset($conn)) {
             white-space: nowrap;
             overflow: hidden;
             border-right: 3px solid #fff;
-            /* cursor effect */
+            /* Cursor effect */
             padding-right: 5px;
             animation: blink-cursor 0.7s steps(1) infinite;
-            font-size: 2.5rem;
-            /* adjust size as needed */
-            font-weight: 700;
         }
 
         @keyframes blink-cursor {
@@ -707,7 +550,7 @@ if (isset($_SESSION['email']) && isset($conn)) {
             overflow: hidden;
             transition: 0.4s;
             position: relative;
-
+            
         }
 
         .media-card:hover {
@@ -912,7 +755,6 @@ if (isset($_SESSION['email']) && isset($conn)) {
             </nav>
 
             <div class="user-actions">
-                
                 <?php if ($user): ?>
                     <div class="user-dropdown">
                         <div class="user-trigger">
@@ -934,15 +776,6 @@ if (isset($_SESSION['email']) && isset($conn)) {
             </div>
         </div>
     </header>
-    <div class="mobile-menu" id="mobile-menu">
-        <nav class="nav-links">
-            <a href="#">Home</a>
-            <a href="#">About</a>
-            <a href="#">Services</a>
-            <a href="#">Contact</a>
-        </nav>
-        
-    </div>
 
     <!-- 1. HERO SECTION -->
     <section class="hero" id="home">
@@ -1241,7 +1074,7 @@ if (isset($_SESSION['email']) && isset($conn)) {
 
         // Animation Text
 
-        const texts = ["MUSIC'S & SOUND'S", "VIDIO'S & ALBUMS"];
+        const texts = ["MUSIC'S & SOUND'S", "VIDIO'S & ALBUMS" ];
         const animatedText = document.getElementById("animated-text");
         let textIndex = 0;
         let charIndex = 0;
