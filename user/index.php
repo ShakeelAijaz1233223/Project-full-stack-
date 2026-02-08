@@ -263,22 +263,22 @@ if (isset($_SESSION['email']) && isset($conn)) {
             transform: translateX(5px);
         }
 
-        /* --- HERO SECTION --- */
+              /* HERO */
         .hero {
-            min-height: calc(100vh - 80px);
+            min-height: calc(100vh-80px);
             margin-top: 70px;
             position: relative;
             overflow: hidden;
             display: flex;
             align-items: center;
             justify-content: center;
-            background: url('https://images.unsplash.com/photo-1514525253440-b393452e23f9?q=80&w=1920&auto=format&fit=crop') no-repeat center / cover;
+            background: url('https://images.unsplash.com/photo-1514525253440-b393452e23f9?q=80&w=1920&auto=format&fit=crop') no-repeat center/cover;
         }
 
         .hero-overlay {
             position: absolute;
             inset: 0;
-            background: url("bgimage.png") center / cover no-repeat;
+            background: url("bgimage.png") center/cover no-repeat;
             z-index: 1;
         }
 
@@ -311,6 +311,175 @@ if (isset($_SESSION['email']) && isset($conn)) {
             color: rgba(255, 255, 255, 0.8);
             margin-bottom: 40px;
             line-height: 1.6;
+        }
+
+        .cta-group {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+        }
+
+        .btn {
+            padding: 15px 40px;
+            border-radius: 50px;
+            font-weight: 700;
+            text-transform: uppercase;
+            font-size: 12px;
+            letter-spacing: 2px;
+            transition: var(--transition);
+            cursor: pointer;
+            border: none;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: #fff;
+            box-shadow: 0 10px 20px rgba(255, 0, 85, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 30px rgba(255, 0, 85, 0.5);
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: #fff;
+        }
+
+        .btn-outline:hover {
+            background: #fff;
+            color: #000;
+        }
+
+        /* HAMBURGER MENU */
+        .menu-btn {
+            display: none;
+            width: 32px;
+            height: 22px;
+            position: relative;
+            cursor: pointer;
+            z-index: 1100;
+        }
+
+        .menu-btn span {
+            position: absolute;
+            width: 100%;
+            height: 3px;
+            background: var(--text-main);
+            transition: 0.4s;
+        }
+
+        .menu-btn span:nth-child(1) {
+            top: 0;
+        }
+
+        .menu-btn span:nth-child(2) {
+            top: 9px;
+        }
+
+        .menu-btn span:nth-child(3) {
+            bottom: 0;
+        }
+
+        .menu-btn.open span:nth-child(1) {
+            transform: rotate(45deg);
+            top: 9px;
+        }
+
+        .menu-btn.open span:nth-child(2) {
+            opacity: 0;
+        }
+
+        .menu-btn.open span:nth-child(3) {
+            transform: rotate(-45deg);
+            bottom: 9px;
+        }
+
+        /* MOBILE MENU */
+        .mobile-menu {
+            position: fixed;
+            top: 70px;
+            right: -100%;
+            width: 280px;
+            height: calc(100vh-70px);
+            background: rgba(15, 15, 17, 0.98);
+            backdrop-filter: blur(25px);
+            display: flex;
+            flex-direction: column;
+            padding: 25px;
+            gap: 20px;
+            transition: 0.4s ease;
+            z-index: 1000;
+        }
+
+        .mobile-menu.active {
+            right: 0;
+        }
+
+        .mobile-menu .nav-links {
+            flex-direction: column;
+            display: flex;
+            gap: 15px;
+        }
+
+        .mobile-menu .nav-links a {
+            font-size: 14px;
+            color: #fff;
+            padding: 10px 0;
+        }
+
+        .mobile-menu .user-actions {
+            margin-top: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        /* MOBILE USER DROPDOWN */
+        .mobile-user-dropdown {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .mobile-user-btn {
+            padding: 10px 15px;
+            background: var(--glass);
+            border-radius: 50px;
+            border: 1px solid var(--border-glass);
+            color: #fff;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 14px;
+        }
+
+        .mobile-user-dropdown-content {
+            display: none;
+            flex-direction: column;
+            margin-top: 5px;
+            gap: 10px;
+        }
+
+        .mobile-user-dropdown.active .mobile-user-dropdown-content {
+            display: flex;
+        }
+
+        /* RESPONSIVE */
+        @media (max-width:992px) {
+            .menu-btn {
+                display: block;
+            }
+
+            .nav-links {
+                display: none;
+            }
+
+            .hero-title {
+                font-size: 40px;
+            }
         }
 
         .cta-group {
