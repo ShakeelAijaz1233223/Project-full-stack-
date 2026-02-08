@@ -757,6 +757,12 @@ if (isset($_SESSION['email']) && isset($conn)) {
                 <a href="#features">Features</a>
                 <a href="contact.php">Contact</a>
             </nav>
+            <div class="menu-btn" onclick="toggleMobileMenu()">
+    <span></span>
+    <span></span>
+    <span></span>
+</div>
+
 
              <div class="user-actions">
             <?php if ($user): ?>
