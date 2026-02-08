@@ -1098,9 +1098,10 @@ if (isset($_SESSION['email']) && isset($conn)) {
         <div class="hero-overlay"></div>
         <div class="hero-content animate__animated animate__fadeInUp">
             <span class="hero-subtitle">Welcome to the SOUND </span>
-            <h1 class="hero-title">
-                <span id="animated-text"></span>
-            </h1>
+                <div class="here-title">
+                    <span id="animated-text"></span>
+                </div>
+            
             <p class="hero-desc">
                 The thirst for learning meeting the rhythm of life. <br>
                 Stream. Review. Rate. Experience entertainment like never before.
