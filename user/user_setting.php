@@ -8,9 +8,9 @@ if (!isset($_SESSION['email'])) {
     exit();
 }
 
-$email = $_SESSION['email'];
-$message = "";
-$error = "";
+ $email = $_SESSION['email'];
+ $message = "";
+ $error = "";
 
 // Handle Password Change Only
 if (isset($_POST['change_password'])) {
@@ -233,7 +233,48 @@ input:focus {
 }
 
 /* RESPONSIVE ADJUSTMENTS */
+@media (max-width: 768px) {
+    body {
+        padding: 55px 15px 20px;
+    }
+    
+    header {
+        padding: 12px 5%;
+    }
+    
+    .logo {
+        font-size: 18px;
+    }
+    
+    .security-card {
+        padding: 25px 15px;
+        border-radius: 25px;
+    }
+
+    .header-text i {
+        font-size: 32px;
+    }
+
+    .header-text h2 {
+        font-size: 16px;
+    }
+
+    input {
+        padding: 11px 13px 11px 38px;
+        font-size: 13px;
+    }
+
+    .btn-submit {
+        padding: 13px;
+        font-size: 12px;
+    }
+}
+
 @media (max-width: 600px) {
+    body {
+        padding: 50px 10px 20px;
+    }
+    
     .security-card {
         padding: 25px 15px;
         border-radius: 20px;
@@ -256,11 +297,37 @@ input:focus {
         padding: 12px;
         font-size: 12px;
     }
+    
+    .form-group {
+        margin-bottom: 18px;
+    }
+    
+    .header-text {
+        margin-bottom: 25px;
+    }
 }
 
-@media (max-width: 400px) {
+@media (max-width: 480px) {
+    body {
+        padding: 45px 10px 20px;
+    }
+    
     header {
         padding: 10px 5%;
+    }
+    
+    .logo {
+        font-size: 16px;
+        letter-spacing: 2px;
+    }
+    
+    .wrapper {
+        padding: 15px;
+    }
+
+    .security-card {
+        padding: 20px 15px;
+        border-radius: 18px;
     }
 
     .header-text i {
@@ -269,10 +336,86 @@ input:focus {
 
     .header-text h2 {
         font-size: 15px;
+        letter-spacing: 1px;
     }
 
     input {
         padding: 10px 10px 10px 35px;
+        font-size: 12px;
+    }
+
+    .btn-submit {
+        padding: 11px;
+        font-size: 11px;
+        letter-spacing: 1px;
+    }
+    
+    .form-group label {
+        font-size: 10px;
+        margin-bottom: 6px;
+    }
+    
+    .alert {
+        padding: 10px;
+        font-size: 12px;
+    }
+    
+    .back-link a {
+        font-size: 11px;
+    }
+}
+
+@media (max-width: 360px) {
+    body {
+        padding: 40px 8px 20px;
+    }
+    
+    header {
+        padding: 8px 5%;
+    }
+    
+    .logo {
+        font-size: 14px;
+    }
+    
+    .wrapper {
+        padding: 10px;
+    }
+
+    .security-card {
+        padding: 18px 12px;
+        border-radius: 15px;
+    }
+
+    .header-text i {
+        font-size: 24px;
+    }
+
+    .header-text h2 {
+        font-size: 14px;
+    }
+
+    input {
+        padding: 9px 9px 9px 32px;
+        font-size: 11px;
+    }
+
+    .btn-submit {
+        padding: 10px;
+        font-size: 10px;
+    }
+    
+    .form-group {
+        margin-bottom: 15px;
+    }
+    
+    .header-text {
+        margin-bottom: 20px;
+    }
+    
+    .input-wrapper i {
+        font-size: 12px;
+        left: 10px;
     }
 }
 
