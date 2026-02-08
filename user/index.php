@@ -766,7 +766,7 @@ if (isset($_SESSION['email']) && isset($conn)) {
                 <div class="user-dropdown">
                     <div class="user-trigger">
                         <div class="user-initial">
-                            <?= strtoupper(substr($user['name'], 0, 1)); ?>
+                            <?= strtoupper(substr($user['name'], 0, 5)); ?>
                         </div>
                         <span><?= htmlspecialchars($user['name']); ?></span>
                         <i class="fas fa-chevron-down"></i>
