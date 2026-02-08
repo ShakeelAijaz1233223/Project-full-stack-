@@ -342,7 +342,7 @@ if (isset($_SESSION['email'])) {
 
             .menu-btn {
                 display: block;
-                 text-decoration: none;
+                
             }
         }
 
@@ -419,6 +419,8 @@ if (isset($_SESSION['email'])) {
             .mobile-menu {
                 width: 280px;
                 right: -280px;
+
+                 text-decoration: none;
             }
         }
 
