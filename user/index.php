@@ -147,14 +147,14 @@ if (isset($_SESSION['email']) && isset($conn)) {
             color: var(--primary);
         }
 
-         /* --- MOBILE MENU BUTTON --- */
+        /* --- MOBILE MENU BUTTON --- */
         .menu-btn {
-             display: none;
-    width: 32px;
-    height: 22px;
-    position: relative;
-    cursor: pointer;
-    z-index: 1100;
+            display: none;
+            width: 32px;
+            height: 22px;
+            position: relative;
+            cursor: pointer;
+            z-index: 1100;
         }
 
         /* --- USER DROPDOWN --- */
@@ -191,11 +191,7 @@ if (isset($_SESSION['email']) && isset($conn)) {
             z-index: 1001;
         }
 
-        .user-dropdown:hover .dropdown-content {
-            opacity: 1;
-            visibility: visible;
-            transform: translateY(0);
-        }
+      
 
         .dropdown-content a {
             color: #fff;
@@ -376,10 +372,11 @@ if (isset($_SESSION['email']) && isset($conn)) {
         }
 
         .hero-overlay {
-             position: absolute;
-    inset: 0;
-    background: url("bgimage.png") center / cover no-repeat;
-    z-index: 1;;
+            position: absolute;
+            inset: 0;
+            background: url("bgimage.png") center / cover no-repeat;
+            z-index: 1;
+            ;
         }
 
         .hero-content {
@@ -715,29 +712,178 @@ if (isset($_SESSION['email']) && isset($conn)) {
             color: var(--text-muted);
         }
 
-        /* Responsive */
-        @media (max-width: 992px) {
+       /* ================= HAMBURGER ICON ================= */
+.menu-btn {
+    display: none;
+    width: 32px;
+    height: 22px;
+    position: relative;
+    cursor: pointer;
+    z-index: 1100;
+}
 
-            .about-grid,
-            .footer-grid,
-            .stats-grid {
-                grid-template-columns: 1fr;
-                gap: 40px;
-            }
+.menu-btn span {
+    position: absolute;
+    width: 100%;
+    height: 3px;
+    background: var(--text-main);
+    transition: 0.3s;
+}
 
-            .hero-title {
-                font-size: 40px;
-            }
+.menu-btn span:nth-child(1) { top: 0; }
+.menu-btn span:nth-child(2) { top: 9px; }
+.menu-btn span:nth-child(3) { bottom: 0; }
 
-            .nav-links {
-                display: none;
-            }
+/* ================= MOBILE MENU ================= */
+.mobile-menu {
+    display: flex;
+    align-items: center;
+    gap: 30px;
+}
 
+.mobile-menu.active {
+    right: 0;
+}
 
-            /* Add mobile toggle if needed */
-        }
-        
-        
+.nav-links {
+    display: flex;
+    gap: 30px;
+}
+
+.nav-links a {
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: rgba(255, 255, 255, 0.7);
+    transition: 0.3s;
+}
+
+.nav-links a:hover,
+.nav-links a.active {
+    color: var(--primary);
+}
+
+/* ================= USER DROPDOWN ================= */
+.user-dropdown {
+    position: relative;
+    cursor: pointer;
+}
+
+.user-dropdown .dropdown-content {
+    position: absolute;
+    right: 0;
+    top: 55px;
+    background: rgba(15,15,17,0.98);
+    backdrop-filter: blur(25px);
+    min-width: 200px;
+    border-radius: 18px;
+    padding: 10px;
+    border: 1px solid var(--border-glass);
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(10px);
+    transition: var(--transition);
+    z-index: 1001;
+}
+
+.user-dropdown.active .dropdown-content {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+.dropdown-content a {
+    color: #fff;
+    padding: 10px 15px;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 12px;
+    font-weight: 600;
+    border-radius: 10px;
+    transition: 0.3s;
+}
+
+.dropdown-content a i {
+    color: var(--primary);
+    width: 15px;
+}
+
+.dropdown-content a:hover {
+    background: rgba(255, 0, 85, 0.1);
+    transform: translateX(5px);
+}
+
+/* ================= RESPONSIVE ================= */
+@media (max-width: 992px) {
+
+    .menu-btn {
+        display: block;
+    }
+
+    .nav-links,
+    .user-actions {
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+        width: 100%;
+    }
+
+    .nav-links {
+        display: none;
+    }
+
+    .mobile-menu {
+        position: fixed;
+        top: 70px; /* header height */
+        right: -100%;
+        width: 280px;
+        height: calc(100vh - 70px);
+        background: rgba(15,15,17,0.98);
+        backdrop-filter: blur(25px);
+        flex-direction: column;
+        padding: 25px;
+        transition: 0.4s ease;
+        z-index: 1100;
+    }
+
+    .mobile-menu.active {
+        right: 0;
+    }
+
+    .mobile-menu .nav-links {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .mobile-menu .nav-links a {
+        font-size: 14px;
+        color: #fff;
+        padding: 10px 0;
+    }
+
+    .mobile-menu .user-actions {
+        margin-top: 20px;
+    }
+}
+
+/* ================= HAMBURGER ANIMATION WHEN OPEN ================= */
+.menu-btn.open span:nth-child(1) {
+    transform: rotate(45deg);
+    top: 9px;
+}
+
+.menu-btn.open span:nth-child(2) {
+    opacity: 0;
+}
+
+.menu-btn.open span:nth-child(3) {
+    transform: rotate(-45deg);
+    bottom: 9px;
+}
+
     </style>
 </head>
 
@@ -758,32 +904,32 @@ if (isset($_SESSION['email']) && isset($conn)) {
                 <a href="contact.php">Contact</a>
             </nav>
             <div class="menu-btn" onclick="toggleMobileMenu()">
-    <span></span>
-    <span></span>
-    <span></span>
-</div>
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
 
 
-             <div class="user-actions">
-            <?php if ($user): ?>
-                <div class="user-dropdown">
-                    <div class="user-trigger">
-                        <div style="width: 25px; height: 25px; background: var(--primary); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 800;">
-                            <?= strtoupper(substr($user['name'], 0, 1)); ?>
+            <div class="user-actions">
+                <?php if ($user): ?>
+                    <div class="user-dropdown">
+                        <div class="user-trigger">
+                            <div style="width: 25px; height: 25px; background: var(--primary); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 800;">
+                                <?= strtoupper(substr($user['name'], 0, 1)); ?>
+                            </div>
+                            <span style="font-size: 12px; font-weight: 700;"><?= htmlspecialchars($user['name']); ?></span>
+                            <i class="fas fa-chevron-down" style="font-size: 9px; opacity: 0.5;"></i>
                         </div>
-                        <span style="font-size: 12px; font-weight: 700;"><?= htmlspecialchars($user['name']); ?></span>
-                        <i class="fas fa-chevron-down" style="font-size: 9px; opacity: 0.5;"></i>
+                        <div class="dropdown-content">
+                            <a href="user_setting.php"><i class="fas fa-cog"></i> Settings</a>
+                            <div style="height: 1px; background: var(--border-glass); margin: 5px 0;"></div>
+                            <a href="user_logout.php" style="color: #ff4d4d;"><i class="fas fa-power-off"></i> Logout</a>
+                        </div>
                     </div>
-                    <div class="dropdown-content">
-                        <a href="user_setting.php"><i class="fas fa-cog"></i> Settings</a>
-                        <div style="height: 1px; background: var(--border-glass); margin: 5px 0;"></div>
-                        <a href="user_logout.php" style="color: #ff4d4d;"><i class="fas fa-power-off"></i> Logout</a>
-                    </div>
-                </div>
-            <?php else: ?>
-                <a href="login.php" style="background: var(--primary); padding: 8px 22px; border-radius: 30px; text-decoration: none; color: white; font-size: 11px; font-weight: 800; transition: 0.3s;">LOGIN</a>
-            <?php endif; ?>
-        </div>
+                <?php else: ?>
+                    <a href="login.php" style="background: var(--primary); padding: 8px 22px; border-radius: 30px; text-decoration: none; color: white; font-size: 11px; font-weight: 800; transition: 0.3s;">LOGIN</a>
+                <?php endif; ?>
+            </div>
         </div>
     </header>
 
@@ -1125,4 +1271,3 @@ if (isset($_SESSION['email']) && isset($conn)) {
 </body>
 
 </html>
-
