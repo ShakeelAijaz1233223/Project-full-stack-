@@ -316,10 +316,9 @@ header {
     background: var(--primary);
     border-color: var(--primary);
 }
-
 /* --- HAMBURGER FOR USER DROPDOWN --- */
 .user-hamburger {
-    display: none; /* hidden on desktop */
+    display: none; /* desktop hidden */
     flex-direction: column;
     justify-content: space-between;
     width: 25px;
@@ -349,22 +348,30 @@ header {
     transform: rotate(-45deg) translate(5px, -5px);
 }
 
-/* Show hamburger only on mobile */
+/* Show hamburger only on mobile and hide desktop trigger text */
 @media (max-width: 992px) {
     .user-hamburger {
         display: flex;
     }
-    
-    /* Hide user name on mobile for compact view */
-    .user-trigger span {
+
+    .user-trigger span,
+    .user-trigger i {
         display: none;
     }
-    
+
     .user-dropdown .dropdown-content {
         top: 45px;
         right: 0;
+        display: none; /* hidden by default */
+        position: absolute;
+        width: 150px;
+    }
+
+    .user-dropdown .dropdown-content.show {
+        display: block;
     }
 }
+
 
 /* --- HERO SECTION --- */
 .hero {
