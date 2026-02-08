@@ -1312,21 +1312,26 @@ function deleteText() {
 
 // Start text animation
 type();
-
-// ================= USER DROPDOWN =================
-document.addEventListener("DOMContentLoaded", function() {
-    const userDropdown = document.querySelector(".user-dropdown");
-
-    // Toggle dropdown on click
-    userDropdown.addEventListener("click", function(e) {
-        e.stopPropagation();
-        userDropdown.classList.toggle("active");
+  // Desktop dropdown toggle
+document.querySelectorAll('.user-dropdown').forEach(drop => {
+    drop.querySelector('.user-btn').addEventListener('click', () => {
+        drop.classList.toggle('active');
     });
+});
 
-    // Close dropdown if clicked outside
-    document.addEventListener("click", function() {
-        userDropdown.classList.remove("active");
-    });
+// Hamburger menu toggle
+const menuBtn = document.getElementById('menu-btn');
+const mobileMenu = document.getElementById('mobile-menu');
+menuBtn.addEventListener('click', () => {
+    menuBtn.classList.toggle('open');  // Animate hamburger
+    mobileMenu.classList.toggle('active'); // Slide menu
+});
+
+// Mobile user dropdown toggle
+const mobileUserDropdown = document.getElementById('mobile-user-dropdown');
+const mobileUserBtn = mobileUserDropdown.querySelector('.mobile-user-btn');
+mobileUserBtn.addEventListener('click', () => {
+    mobileUserDropdown.classList.toggle('active');
 });
 </script>
 
