@@ -67,16 +67,23 @@ if (isset($_SESSION['email']) && isset($conn)) {
     <style>
         :root {
             --primary: #ff0055;
+            /* Neon Pink */
+            --primary-hover: #d90049;
+            --secondary: #00d4ff;
+            /* Cyan */
             --bg-dark: #050505;
-            --border-glass: rgba(255, 255, 255, 0.1);
+            /* Deep Black */
+            --bg-card: #0f0f0f;
+            /* Dark Grey */
+            --text-main: #ffffff;
+            --text-muted: #888888;
             --glass: rgba(255, 255, 255, 0.05);
-            --text-main: #fff;
+            --border-glass: rgba(255, 255, 255, 0.1);
             --font-head: 'Syncopate', sans-serif;
             --font-body: 'Plus Jakarta Sans', sans-serif;
-            --transition: 0.3s ease;
         }
 
-        /* GENERAL */
+        /* --- GLOBAL RESET --- */
         * {
             margin: 0;
             padding: 0;
@@ -85,10 +92,24 @@ if (isset($_SESSION['email']) && isset($conn)) {
         }
 
         body {
-            font-family: var(--font-body);
+            background-color: var(--bg-dark);
             color: var(--text-main);
-            background: var(--bg-dark);
+            font-family: var(--font-body);
             overflow-x: hidden;
+        }
+
+        /* Scrollbar Styling */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--bg-dark);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--primary);
+            border-radius: 4px;
         }
 
         a {
@@ -97,171 +118,70 @@ if (isset($_SESSION['email']) && isset($conn)) {
             transition: 0.3s;
         }
 
-        /* HEADER */
-        header {
-            position: fixed;
-            top: 0;
-            width: 100%;
-            z-index: 1000;
-            background: rgba(5, 5, 5, 0.85);
-            backdrop-filter: blur(20px);
-            border-bottom: 1px solid var(--border-glass);
-            padding: 20px 0;
-            transition: var(--transition);
+        ul {
+            list-style: none;
         }
 
-        .nav-wrapper {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+        /* --- UTILITIES --- */
+        .container {
             max-width: 1400px;
             margin: 0 auto;
             padding: 0 5%;
         }
 
-        .logo {
-            font-family: var(--font-head);
-            font-size: 24px;
-            font-weight: 700;
+        .section-padding {
+            padding: 100px 0;
         }
 
-        .logo span {
+        .text-center {
+            text-align: center;
+        }
+
+        .gradient-text {
+            background: linear-gradient(to right, #fff, #888);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .highlight {
             color: var(--primary);
         }
 
-        /* NAV LINKS */
-        .nav-links {
-            display: flex;
-            gap: 30px;
-            transition: var(--transition);
+        /* --- MOBILE MENU BUTTON --- */
+        .menu-btn {
+            display: none;
+            color: #fff;
+            font-size: 20px;
+            cursor: pointer;
         }
 
-        .nav-links a {
-            font-size: 12px;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            color: rgba(255, 255, 255, 0.7);
-        }
-
-        .nav-links a:hover,
-        .nav-links a.active {
-            color: var(--primary);
-        }
-
-        /* HAMBURGER */
-       /* HAMBURGER */
-.hamburger {
-    display: none; /* hidden on desktop */
-    flex-direction: column;
-    justify-content: space-between;
-    width: 25px;
-    height: 20px;
-    cursor: pointer;
-    z-index: 1002;
-}
-.hamburger span {
-    display: block;
-    width: 100%;
-    height: 3px;
-    background: white;
-    border-radius: 2px;
-    transition: 0.3s;
-}
-/* Animate hamburger into X */
-.hamburger.active span:nth-child(1) {
-    transform: rotate(45deg) translate(5px, 5px);
-}
-.hamburger.active span:nth-child(2) {
-    opacity: 0;
-}
-.hamburger.active span:nth-child(3) {
-    transform: rotate(-45deg) translate(5px, -5px);
-}
-
-/* Show hamburger on mobile */
-@media (max-width: 992px) {
-    .hamburger { display: flex; }
-    .nav-links {
-        position: fixed;
-        top: 70px;
-        right: -100%;
-        width: 220px;
-        height: calc(100vh - 70px);
-        flex-direction: column;
-        background: var(--bg-dark);
-        padding-top: 20px;
-        gap: 0;
-        transition: 0.3s;
-        z-index: 999;
-    }
-    .nav-links.show {
-        right: 0;
-    }
-    .nav-links a {
-        padding: 12px 20px;
-    }
-}
-
-
-        /* USER DROPDOWN */
-        .user-actions {
+        /* --- USER DROPDOWN --- */
+        .user-trigger {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 8px 16px;
+            border-radius: 50px;
+            cursor: pointer;
+            border: 1px solid var(--border-glass);
             display: flex;
             align-items: center;
             gap: 10px;
+            transition: var(--transition);
         }
 
         .user-dropdown {
             position: relative;
         }
 
-        .user-trigger {
-            background: var(--glass);
-            padding: 8px 16px;
-            border-radius: 50px;
-            border: 1px solid var(--border-glass);
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            cursor: pointer;
-            transition: var(--transition);
-        }
-
-        .user-initial {
-            width: 25px;
-            height: 25px;
-            background: var(--primary);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 10px;
-            font-weight: 800;
-        }
-
-        .user-trigger span {
-            font-size: 12px;
-            font-weight: 700;
-        }
-
-        .user-trigger i {
-            font-size: 9px;
-            opacity: 0.5;
-        }
-
-        /* DROPDOWN CONTENT */
         .dropdown-content {
             position: absolute;
-            top: 55px;
             right: 0;
+            top: 55px;
             background: rgba(15, 15, 17, 0.98);
             backdrop-filter: blur(25px);
             min-width: 200px;
             border-radius: 18px;
             padding: 10px;
             border: 1px solid var(--border-glass);
-            display: flex;
-            flex-direction: column;
             opacity: 0;
             visibility: hidden;
             transform: translateY(10px);
@@ -269,7 +189,7 @@ if (isset($_SESSION['email']) && isset($conn)) {
             z-index: 1001;
         }
 
-        .user-dropdown.active .dropdown-content {
+        .user-dropdown:hover .dropdown-content {
             opacity: 1;
             visibility: visible;
             transform: translateY(0);
@@ -278,6 +198,7 @@ if (isset($_SESSION['email']) && isset($conn)) {
         .dropdown-content a {
             color: #fff;
             padding: 10px 15px;
+            text-decoration: none;
             display: flex;
             align-items: center;
             gap: 12px;
@@ -297,91 +218,116 @@ if (isset($_SESSION['email']) && isset($conn)) {
             transform: translateX(5px);
         }
 
-        .logout {
-            color: #ff4d4d;
+
+        /* Flashing Animation for New Items (Requirement) */
+        @keyframes flash {
+            0% {
+                opacity: 1;
+                transform: scale(1);
+            }
+
+            50% {
+                opacity: 0.5;
+                transform: scale(1.1);
+            }
+
+            100% {
+                opacity: 1;
+                transform: scale(1);
+            }
         }
 
-        .login-btn {
+        .flash-badge {
+            position: absolute;
+            top: 10px;
+            right: 10px;
             background: var(--primary);
-            padding: 8px 22px;
-            border-radius: 30px;
-            font-size: 11px;
+            color: white;
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 10px;
             font-weight: 800;
-            color: #fff;
+            z-index: 10;
+            animation: flash 2s infinite;
+            box-shadow: 0 0 10px var(--primary);
+        }
+
+        /* Scroll Reveal Animation */
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s ease-out;
+        }
+
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* --- HEADER --- */
+        header {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+            background: rgba(5, 5, 5, 0.85);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border-glass);
+            padding: 20px 0;
             transition: 0.3s;
         }
 
-        .login-btn:hover {
-            opacity: 0.8;
+        .nav-wrapper {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
 
-        /* RESPONSIVE */
-        @media (max-width:992px) {
-            .nav-links {
-                position: fixed;
-                top: 70px;
-                right: -100%;
-                height: calc(100vh - 70px);
-                width: 220px;
-                background: var(--bg-dark);
-                flex-direction: column;
-                padding-top: 20px;
-                gap: 0;
-                transition: 0.3s;
-                z-index: 999;
-            }
-
-            .nav-links.show {
-                right: 0;
-            }
-
-            .nav-links a {
-                padding: 12px 20px;
-            }
-
-            .hamburger {
-                display: flex;
-            }
+        .logo {
+            font-family: var(--font-head);
+            font-size: 24px;
+            font-weight: 700;
+            letter-spacing: 2px;
         }
-        /* MOBILE NAV LINKS FIX */
-@media (max-width: 992px) {
-    .nav-links {
-        position: fixed;
-        top: 70px;
-        right: -100%;
-        width: 220px;
-        height: calc(100vh - 70px);
-        flex-direction: column;
-        background: var(--bg-dark);
-        padding-top: 20px;
-        gap: 0;
-        transition: 0.3s;
-        z-index: 999;
-    }
 
-    .nav-links.show {
-        right: 0;
-    }
+        .logo span {
+            color: var(--primary);
+        }
 
-    .nav-links a {
-        padding: 12px 20px;
-        font-size: 14px;
-        color: #fff; /* make links visible */
-        border-bottom: 1px solid rgba(255,255,255,0.1);
-    }
+        .nav-links {
+            display: flex;
+            gap: 30px;
+        }
 
-    .nav-links a:hover,
-    .nav-links a.active {
-        color: var(--primary);
-    }
+        .nav-links a {
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: rgba(255, 255, 255, 0.7);
+        }
 
-    /* Hamburger visible */
-    .hamburger {
-        display: flex;
-    }
-}
+        .nav-links a:hover,
+        .nav-links a.active {
+            color: var(--primary);
+        }
 
+        .user-btn {
+            padding: 8px 20px;
+            background: var(--glass);
+            border: 1px solid var(--border-glass);
+            border-radius: 50px;
+            font-size: 12px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
 
+        .user-btn:hover {
+            background: var(--primary);
+            border-color: var(--primary);
+        }
 
         /* --- HERO SECTION --- */
         .hero {
@@ -604,7 +550,7 @@ if (isset($_SESSION['email']) && isset($conn)) {
             overflow: hidden;
             transition: 0.4s;
             position: relative;
-
+            
         }
 
         .media-card:hover {
@@ -792,19 +738,13 @@ if (isset($_SESSION['email']) && isset($conn)) {
 </head>
 
 <body>
-    <!-- HEADER -->
+
+    <!-- Header -->
     <header id="header">
         <div class="container nav-wrapper">
             <a href="index.php" class="logo">SOU<span>N</span>D</a>
 
-            <!-- Hamburger for mobile -->
-            <div class="hamburger" id="hamburger">
-                <span></span>
-                <span></span>
-                <span></span>
-            </div>
-
-            <nav class="nav-links" id="nav-links">
+            <nav class="nav-links">
                 <a href="#home" class="active">Home</a>
                 <a href="about.php">About</a>
                 <a href="user_music_view.php">Music</a>
@@ -818,26 +758,24 @@ if (isset($_SESSION['email']) && isset($conn)) {
                 <?php if ($user): ?>
                     <div class="user-dropdown">
                         <div class="user-trigger">
-                            <div class="user-initial">
+                            <div style="width: 25px; height: 25px; background: var(--primary); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 800;">
                                 <?= strtoupper(substr($user['name'], 0, 1)); ?>
                             </div>
-                            <span><?= htmlspecialchars($user['name']); ?></span>
-                            <i class="fas fa-chevron-down"></i>
+                            <span style="font-size: 12px; font-weight: 700;"><?= htmlspecialchars($user['name']); ?></span>
+                            <i class="fas fa-chevron-down" style="font-size: 9px; opacity: 0.5;"></i>
                         </div>
                         <div class="dropdown-content">
                             <a href="user_setting.php"><i class="fas fa-cog"></i> Settings</a>
-                            <div class="divider"></div>
-                            <a href="user_logout.php" class="logout"><i class="fas fa-power-off"></i> Logout</a>
+                            <div style="height: 1px; background: var(--border-glass); margin: 5px 0;"></div>
+                            <a href="user_logout.php" style="color: #ff4d4d;"><i class="fas fa-power-off"></i> Logout</a>
                         </div>
                     </div>
                 <?php else: ?>
-                    <a href="login.php" class="login-btn">LOGIN</a>
+                    <a href="login.php" style="background: var(--primary); padding: 8px 22px; border-radius: 30px; text-decoration: none; color: white; font-size: 11px; font-weight: 800; transition: 0.3s;">LOGIN</a>
                 <?php endif; ?>
             </div>
         </div>
     </header>
-
-
 
     <!-- 1. HERO SECTION -->
     <section class="hero" id="home">
@@ -1136,7 +1074,7 @@ if (isset($_SESSION['email']) && isset($conn)) {
 
         // Animation Text
 
-        const texts = ["MUSIC'S & SOUND'S", "VIDIO'S & ALBUMS"];
+        const texts = ["MUSIC'S & SOUND'S", "VIDIO'S & ALBUMS" ];
         const animatedText = document.getElementById("animated-text");
         let textIndex = 0;
         let charIndex = 0;
@@ -1173,46 +1111,6 @@ if (isset($_SESSION['email']) && isset($conn)) {
 
         // Start the animation
         type();
-
-        // 
-
-        // --- Hamburger Menu Toggle ---
-      const hamburger = document.getElementById('hamburger');
-const navLinks = document.getElementById('nav-links');
-
-hamburger.addEventListener('click', () => {
-    hamburger.classList.toggle('active'); // animate hamburger into X
-    navLinks.classList.toggle('show');    // slide menu in/out
-});
-
-// Close mobile menu when a link is clicked
-navLinks.querySelectorAll('a').forEach(link => {
-    link.addEventListener('click', () => {
-        if(window.innerWidth <= 992){
-            hamburger.classList.remove('active');
-            navLinks.classList.remove('show');
-        }
-    });
-});
-
-
-        // --- User Dropdown Toggle ---
-        const userDropdown = document.querySelector('.user-dropdown');
-        if (userDropdown) {
-            const userTrigger = userDropdown.querySelector('.user-trigger');
-            userTrigger.addEventListener('click', (e) => {
-                e.stopPropagation(); // prevent document click
-                userDropdown.classList.toggle('active');
-            });
-        }
-
-        // Close dropdown when clicking outside
-        document.addEventListener('click', () => {
-            if (userDropdown) {
-                userDropdown.classList.remove('active');
-            }
-        });
-        
     </script>
 </body>
 
