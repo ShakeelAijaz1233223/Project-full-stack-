@@ -378,7 +378,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     <div class="login-container">
         <div class="login-card animate__animated animate__fadeIn">
-            <div class="logo">SOU<span>N</span>D</div>
+            <div class="logo">L<span>og</span>IN</div>
             <p class="subtitle">Enter your credentials to access your account</p>
 
             <?php if ($error_msg != ""): ?>
