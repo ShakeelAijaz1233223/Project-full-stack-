@@ -337,10 +337,12 @@ if (isset($_SESSION['email'])) {
 
             nav {
                 display: none;
+               
             }
 
             .menu-btn {
                 display: block;
+                 text-decoration: none;
             }
         }
 
