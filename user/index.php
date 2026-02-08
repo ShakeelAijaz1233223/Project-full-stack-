@@ -347,29 +347,35 @@ if (isset($_SESSION['email']) && isset($conn)) {
             background: url('https://images.unsplash.com/photo-1514525253440-b393452e23f9?q=80&w=1920&auto=format&fit=crop') no-repeat center / cover;
         }
 
+.hero-container {
+    display: flex;
+    justify-content: center; /* horizontal center */
+    align-items: center;     /* vertical center */
+    height: 100vh;           /* full viewport height */
+    background-color: #050505;
+}
 
-        .hero-title {
-            font-size: 3rem;
-            font-weight: 700;
-            color: #fff;
-            font-family: sans-serif;
-        }
+.hero-title {
+    font-size: 3rem;
+    font-weight: 700;
+    color: #fff;
+    font-family: sans-serif;
+    text-align: center;
+}
 
-        #animated-text {
-            display: inline-block;
-            white-space: nowrap;
-            overflow: hidden;
-            border-right: 3px solid #fff;
-            /* Cursor effect */
-            padding-right: 5px;
-            animation: blink-cursor 0.7s steps(1) infinite;
-        }
+#animated-text {
+    display: inline-block;
+    white-space: nowrap;
+    overflow: hidden;
+    border-right: 3px solid #fff; /* cursor effect */
+    padding-right: 5px;
+    animation: blink-cursor 0.7s steps(1) infinite;
+}
 
-        @keyframes blink-cursor {
-
-              0%, 50%, 100% { border-color: #fff; }
+@keyframes blink-cursor {
+    0%, 50%, 100% { border-color: #fff; }
     25%, 75% { border-color: transparent; }
-        }
+}
 
         .hero-overlay {
             position: absolute;
