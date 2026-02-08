@@ -169,8 +169,32 @@ if (isset($_SESSION['email']) && isset($conn)) {
         }
 
       
+/* USER DROPDOWN */
+        .user-btn {
+            padding: 8px 20px;
+            background: var(--glass);
+            border: 1px solid var(--border-glass);
+            border-radius: 50px;
+            font-size: 12px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            transition: var(--transition);
+        }
 
-        .dropdown-content {
+        .user-btn:hover {
+            background: var(--primary);
+            border-color: var(--primary);
+        }
+
+        .user-dropdown {
+            position: relative;
+            cursor: pointer;
+        }
+
+        .user-dropdown .dropdown-content {
             position: absolute;
             right: 0;
             top: 55px;
@@ -187,7 +211,7 @@ if (isset($_SESSION['email']) && isset($conn)) {
             z-index: 1001;
         }
 
-        .user-dropdown:hover .dropdown-content {
+        .user-dropdown.active .dropdown-content {
             opacity: 1;
             visibility: visible;
             transform: translateY(0);
@@ -196,7 +220,6 @@ if (isset($_SESSION['email']) && isset($conn)) {
         .dropdown-content a {
             color: #fff;
             padding: 10px 15px;
-            text-decoration: none;
             display: flex;
             align-items: center;
             gap: 12px;
