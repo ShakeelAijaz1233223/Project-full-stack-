@@ -546,7 +546,7 @@ if (isset($_SESSION['email']) && isset($conn)) {
         /* --- MUSIC & VIDEO CARDS --- */
         .media-scroller {
             display: grid;
-            /* grid-template-columns: repeat(auto-fill, minmax(22px, fr)); */
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
             gap: 30px;
         }
 
