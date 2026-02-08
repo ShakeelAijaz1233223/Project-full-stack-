@@ -1173,24 +1173,7 @@ if (isset($_SESSION['email']) && isset($conn)) {
                 userDropdown.classList.remove('active');
             }
         });
-        const hamburger = document.getElementById('hamburger');
-const navLinks = document.getElementById('nav-links');
-
-hamburger.addEventListener('click', () => {
-    hamburger.classList.toggle('active'); // animate hamburger into X
-    navLinks.classList.toggle('show');    // slide menu in/out
-});
-
-// Close mobile menu when a link is clicked
-navLinks.querySelectorAll('a').forEach(link => {
-    link.addEventListener('click', () => {
-        if(window.innerWidth <= 992){
-            hamburger.classList.remove('active');
-            navLinks.classList.remove('show');
-        }
-    });
-});
-
+        
     </script>
 </body>
 
