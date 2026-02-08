@@ -1151,6 +1151,21 @@ if (isset($_SESSION['email']) && isset($conn)) {
 
         // Start the animation
         type();
+// Dropdown
+        document.addEventListener("DOMContentLoaded", function() {
+    const userDropdown = document.querySelector(".user-dropdown");
+
+    // Toggle dropdown on click
+    userDropdown.addEventListener("click", function(e) {
+        e.stopPropagation(); // Prevent bubbling
+        userDropdown.classList.toggle("active");
+    });
+
+    // Close dropdown if clicked outside
+    document.addEventListener("click", function() {
+        userDropdown.classList.remove("active");
+    });
+});
     </script>
 </body>
 
