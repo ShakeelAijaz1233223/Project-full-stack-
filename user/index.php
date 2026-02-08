@@ -1099,7 +1099,10 @@ if (isset($_SESSION['email']) && isset($conn)) {
         <div class="hero-content animate__animated animate__fadeInUp">
             <span class="hero-subtitle">Welcome to the SOUND </span>
                 <div class="here-title">
-                    <span id="animated-text"></span>
+                   <h1 class="here-title">
+
+                       <span id="animated-text"></span>
+                   </h1> 
                 </div>
             
             <p class="hero-desc">
