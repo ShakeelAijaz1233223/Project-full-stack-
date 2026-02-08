@@ -192,11 +192,7 @@ header { position:fixed; top:0; width:100%; z-index:1000; background: rgba(5,5,5
     transition: var(--transition);
     z-index: 1001;
 }
-.user-dropdown.active .dropdown-content {
-    opacity: 1;
-    visibility: visible;
-    transform: translateY(0);
-}
+.user-dropdown:hover .dropdown-content { opacity:1; visibility:visible; transform:translateY(0); }
 .dropdown-content a { color:#fff; padding:10px 15px; display:flex; align-items:center; gap:12px; font-size:12px; font-weight:600; border-radius:10px; transition:0.3s; }
 .dropdown-content a i { color:var(--primary); width:15px; }
 .dropdown-content a:hover { background: rgba(255,0,85,0.1); transform:translateX(5px); }
