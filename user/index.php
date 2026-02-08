@@ -347,35 +347,48 @@ if (isset($_SESSION['email']) && isset($conn)) {
             background: url('https://images.unsplash.com/photo-1514525253440-b393452e23f9?q=80&w=1920&auto=format&fit=crop') no-repeat center / cover;
         }
 
-.hero-container {
-    display: flex;
-    justify-content: center; /* horizontal center */
-    align-items: center;     /* vertical center */
-    height: 100vh;           /* full viewport height */
-    background-color: #050505;
-}
+        .hero-container {
+            display: flex;
+            justify-content: center;
+            /* horizontal center */
+            align-items: center;
+            /* vertical center */
+            height: 100vh;
+            /* full viewport height */
+            background-color: #050505;
+        }
 
-.hero-title {
-    font-size: 3rem;
-    font-weight: 700;
-    color: #fff;
-    font-family: sans-serif;
-    text-align: center;
-}
+        .hero-title {
+            font-size: 3rem;
+            font-weight: 700;
+            color: #fff;
+            font-family: sans-serif;
+            text-align: center;
+        }
 
-#animated-text {
-    display: inline-block;
-    white-space: nowrap;
-    overflow: hidden;
-    border-right: 3px solid #fff; /* cursor effect */
-    padding-right: 5px;
-    animation: blink-cursor 0.7s steps(1) infinite;
-}
+        #animated-text {
+            display: inline-block;
+            white-space: nowrap;
+            overflow: hidden;
+            border-right: 3px solid #fff;
+            /* cursor effect */
+            padding-right: 5px;
+            animation: blink-cursor 0.7s steps(1) infinite;
+        }
 
-@keyframes blink-cursor {
-    0%, 50%, 100% { border-color: #fff; }
-    25%, 75% { border-color: transparent; }
-}
+        @keyframes blink-cursor {
+
+            0%,
+            50%,
+            100% {
+                border-color: #fff;
+            }
+
+            25%,
+            75% {
+                border-color: transparent;
+            }
+        }
 
         .hero-overlay {
             position: absolute;
@@ -1104,13 +1117,12 @@ if (isset($_SESSION['email']) && isset($conn)) {
         <div class="hero-overlay"></div>
         <div class="hero-content animate__animated animate__fadeInUp">
             <span class="hero-subtitle">Welcome to the SOUND </span>
-                <div class="here-title">
-                   <h1 class="here-title">
+            <div class="hero-container">
+                <h1 class="hero-title">
+                    <span id="animated-text"></span>
+                </h1>
+            </div>
 
-                       <span id="animated-text"></span>
-                   </h1> 
-                </div>
-            
             <p class="hero-desc">
                 The thirst for learning meeting the rhythm of life. <br>
                 Stream. Review. Rate. Experience entertainment like never before.
