@@ -1081,23 +1081,7 @@ if (isset($_SESSION['email']) && isset($conn)) {
             <a href="#features">Features</a>
             <a href="contact.php">Contact</a>
         </div>
-        <div class="mobile-menu-user">
-            <?php if ($user): ?>
-                <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 15px; padding-bottom: 15px; border-bottom: 1px solid var(--border-glass);">
-                    <div style="width: 40px; height: 40px; background: var(--primary); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 800;">
-                        <?= strtoupper(substr($user['name'], 0, 1)); ?>
-                    </div>
-                    <div>
-                        <div style="font-size: 14px; font-weight: 700;"><?= htmlspecialchars($user['name']); ?></div>
-                        <div style="font-size: 12px; color: var(--text-muted);"><?= htmlspecialchars($user['email']); ?></div>
-                    </div>
-                </div>
-                <a href="user_setting.php"><i class="fas fa-cog"></i> Settings</a>
-                <a href="user_logout.php" style="color: #ff4d4d;"><i class="fas fa-power-off"></i> Logout</a>
-            <?php else: ?>
-                <a href="login.php" style="background: var(--primary); padding: 10px 20px; border-radius: 30px; text-align: center; margin-top: 10px;">LOGIN</a>
-            <?php endif; ?>
-        </div>
+        
     </div>
 
     <!-- 1. HERO SECTION -->
