@@ -371,7 +371,7 @@ if (isset($_SESSION['email']) && isset($conn)) {
             white-space: nowrap;
             overflow: hidden;
             border-right: 3px solid #fff;
-
+            cursor effect
             padding-right: 5px;
             animation: blink-cursor 0.7s steps(1) infinite;
         }
@@ -739,7 +739,7 @@ if (isset($_SESSION['email']) && isset($conn)) {
             right: -300px;
             width: 300px;
             height: 100vh;
-
+            
             backdrop-filter: blur(20px);
             z-index: 1002;
             padding: 80px 20px 20px;
@@ -847,13 +847,13 @@ if (isset($_SESSION['email']) && isset($conn)) {
                 display: none;
             }
 
-            .menu-btn {
-                position: absolute;
-                left: 50%;
-                top: 50%;
-                transform: translate(-50%, -50%);
-                display: block;
-            }
+     .menu-btn {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    display: block;
+}
 
 
 
@@ -1453,12 +1453,11 @@ if (isset($_SESSION['email']) && isset($conn)) {
         let charIndex = 0;
 
         function type() {
-
-            // 🎨 Color control
-            if (texts[textIndex] === "VIDIO'S & ALBUMS") {
-                animatedText.style.color = "#ff0055"; // pink
+            // Set color based on word
+            if (texts[textIndex] === "REVOLUTION") {
+                animatedText.style.color = "#ff0055"; // Primary color
             } else {
-                animatedText.style.color = "#ffffff"; // white
+                animatedText.style.color = "#fff"; // Default color
             }
 
             if (charIndex < texts[textIndex].length) {
@@ -1466,6 +1465,7 @@ if (isset($_SESSION['email']) && isset($conn)) {
                 charIndex++;
                 setTimeout(type, 150);
             } else {
+                // Wait 1 second then delete
                 setTimeout(deleteText, 1000);
             }
         }
@@ -1476,12 +1476,13 @@ if (isset($_SESSION['email']) && isset($conn)) {
                 charIndex--;
                 setTimeout(deleteText, 100);
             } else {
+                // Move to next text
                 textIndex = (textIndex + 1) % texts.length;
-                setTimeout(type, 500);
+                setTimeout(type, 500); // small delay before typing next word
             }
         }
 
-        // 🚀 Start animation
+        // Start the animation
         type();
     </script>
 </body>
