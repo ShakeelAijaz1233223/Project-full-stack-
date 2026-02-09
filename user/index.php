@@ -733,33 +733,24 @@ if (isset($_SESSION['email']) && isset($conn)) {
         }
 
         /* Mobile Menu Styles */
-       .mobile-menu {
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    width: 300px;
-    height: auto;
-    max-height: 80vh;
-    background: rgba(5, 5, 5, 0.98);
-    backdrop-filter: blur(20px);
-    z-index: 1002;
-    padding: 30px 20px;
-    border-radius: 20px;
-    transform: translate(-50%, -50%) scale(0.9);
-    opacity: 0;
-    visibility: hidden;
-    transition: all 0.3s ease;
-    overflow-y: auto;
-    border: 1px solid var(--border-glass);
-}
-
+        .mobile-menu {
+            position: fixed;
+            top: 0;
+            right: -300px;
+            width: 300px;
+            height: 100vh;
+            background: rgba(5, 5, 5, 0.98);
+            backdrop-filter: blur(20px);
+            z-index: 1002;
+            padding: 80px 20px 20px;
+            transition: right 0.3s ease;
+            overflow-y: auto;
+            border-left: 1px solid var(--border-glass);
+        }
 
         .mobile-menu.active {
-    opacity: 1;
-    visibility: visible;
-    transform: translate(-50%, -50%) scale(1);
-}
-
+            right: 0;
+        }
 
         .mobile-menu-close {
             position: absolute;
