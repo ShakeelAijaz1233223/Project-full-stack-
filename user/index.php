@@ -371,7 +371,7 @@ if (isset($_SESSION['email']) && isset($conn)) {
             white-space: nowrap;
             overflow: hidden;
             border-right: 3px solid #fff;
-            cursor :effect;
+            /* cursor effect */
             padding-right: 5px;
             animation: blink-cursor 0.7s steps(1) infinite;
         }
@@ -1417,10 +1417,10 @@ if (isset($_SESSION['email']) && isset($conn)) {
         const header = document.getElementById('header');
         window.addEventListener('scroll', () => {
             if (window.scrollY > 50) {
-             
+                header.style.background = 'rgba(5, 5, 5, 0.98)';
                 header.style.padding = '15px 0';
             } else {
-               
+                header.style.background = 'rgba(5, 5, 5, 0.85)';
                 header.style.padding = '20px 0';
             }
         });
