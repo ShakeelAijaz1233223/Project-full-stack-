@@ -848,11 +848,13 @@ if (isset($_SESSION['email']) && isset($conn)) {
             }
 
             .menu-btn {
-                display: block;
-                display: flex;
-                justify-content: center;
-                align-items: center;
-            } 
+    display: block;
+    position: absolute;
+    left: 50%;
+    right:50%;
+    transform: translateX(-50%);
+}
+
 
             .stats-grid {
                 grid-template-columns: repeat(2, 1fr);
