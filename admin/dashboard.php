@@ -42,7 +42,7 @@ $userName = !empty($userData['name']) ? $userData['name'] : 'Admin';
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Music Sound Admin Dashboard</title>
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -64,6 +64,7 @@ $userName = !empty($userData['name']) ? $userData['name'] : 'Admin';
             background: var(--body-bg);
             color: #2d3748;
             overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
         }
 
         /* Premium Loader */
@@ -91,13 +92,8 @@ $userName = !empty($userData['name']) ? $userData['name'] : 'Admin';
         }
 
         @keyframes spin {
-            0% {
-                transform: rotate(0deg);
-            }
-
-            100% {
-                transform: rotate(360deg);
-            }
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
         }
 
         /* Sidebar Responsive */
@@ -110,9 +106,9 @@ $userName = !empty($userData['name']) ? $userData['name'] : 'Admin';
             transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
             z-index: 1050;
             left: 0;
+            overflow-y: auto;
         }
 
-        /* Sidebar Close Button Style (Mobile Only) */
         .btn-sidebar-close {
             color: #fff;
             font-size: 24px;
@@ -140,7 +136,7 @@ $userName = !empty($userData['name']) ? $userData['name'] : 'Admin';
             margin-right: 12px;
         }
 
-        .sidebar a {
+        .sidebar nav a {
             padding: 12px 18px;
             display: flex;
             align-items: center;
@@ -152,14 +148,14 @@ $userName = !empty($userData['name']) ? $userData['name'] : 'Admin';
             font-size: 0.95rem;
         }
 
-        .sidebar a:hover,
-        .sidebar a.active {
+        .sidebar nav a:hover,
+        .sidebar nav a.active {
             background: linear-gradient(45deg, var(--accent-color), var(--secondary-accent));
             color: #fff;
             box-shadow: 0 8px 15px rgba(225, 78, 202, 0.2);
         }
 
-        .sidebar a i {
+        .sidebar nav a i {
             margin-right: 12px;
             width: 20px;
             text-align: center;
@@ -186,6 +182,7 @@ $userName = !empty($userData['name']) ? $userData['name'] : 'Admin';
             margin-left: 280px;
             padding: 100px 30px 40px;
             transition: all 0.4s;
+            min-height: 100vh;
         }
 
         .sidebar-overlay {
@@ -197,6 +194,7 @@ $userName = !empty($userData['name']) ? $userData['name'] : 'Admin';
             background: rgba(0, 0, 0, 0.5);
             z-index: 1040;
             display: none;
+            backdrop-filter: blur(3px);
         }
 
         /* Modern Cards */
@@ -210,6 +208,9 @@ $userName = !empty($userData['name']) ? $userData['name'] : 'Admin';
             position: relative;
             overflow: hidden;
             height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
         }
 
         .card-stats:hover {
@@ -238,6 +239,7 @@ $userName = !empty($userData['name']) ? $userData['name'] : 'Admin';
             height: 240px;
             background: #000;
             border: 3px solid #fff;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
         }
 
         .swiper-slide img {
@@ -246,7 +248,7 @@ $userName = !empty($userData['name']) ? $userData['name'] : 'Admin';
             object-fit: cover;
         }
 
-        /* Tablet & Mobile Adjustments */
+        /* Responsive Breakpoints */
         @media (max-width: 992px) {
             .sidebar {
                 left: -280px;
@@ -256,35 +258,51 @@ $userName = !empty($userData['name']) ? $userData['name'] : 'Admin';
                 left: 0;
             }
 
-            .sidebar.active+.sidebar-overlay {
+            .sidebar.active + .sidebar-overlay {
                 display: block;
             }
 
             .main-content {
                 margin-left: 0;
-                padding: 90px 20px 40px;
+                padding: 90px 15px 40px;
             }
 
             .top-navbar {
                 left: 0;
-                padding: 0 20px;
+                padding: 0 15px;
             }
 
             .mobile-toggle {
                 display: block;
                 cursor: pointer;
-                font-size: 1.5rem;
+                font-size: 1.3rem;
                 margin-right: 15px;
+                color: var(--sidebar-bg);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .card-stats h2 {
+                font-size: 22px;
+            }
+            .card-stats p {
+                font-size: 11px;
+            }
+            .swiper-slide {
+                height: 200px;
             }
         }
 
         @media (max-width: 576px) {
             .card-stats {
-                padding: 20px;
+                padding: 15px;
+                text-align: center;
             }
-
             .swiper-slide {
-                height: 180px;
+                height: 160px;
+            }
+            .main-content h2 {
+                font-size: 1.5rem;
             }
         }
 
@@ -293,15 +311,8 @@ $userName = !empty($userData['name']) ? $userData['name'] : 'Admin';
         }
 
         @keyframes fadeInDown {
-            from {
-                opacity: 0;
-                transform: translateY(-10px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
         }
     </style>
 </head>
@@ -337,7 +348,7 @@ $userName = !empty($userData['name']) ? $userData['name'] : 'Admin';
             <a href="video_review.php"><i class="fa-solid fa-star"></i> Video_Reviews</a>
             <a href="albums_review.php"><i class="fa-solid fa-star"></i> Album_Reviews</a>
             <a href="admin_messages.php"><i class="fa-solid fa-envelope-open-text"></i> Messages</a>
-           
+            
             <a href="logout.php" class="text-danger mt-3"><i class="fa-solid fa-power-off"></i> Sign Out</a>
         </nav>
     </div>
@@ -360,21 +371,10 @@ $userName = !empty($userData['name']) ? $userData['name'] : 'Admin';
             <ul class="dropdown-menu dropdown-menu-end shadow border-0 p-2 mt-2" style="border-radius: 15px; min-width: 220px;">
                 <li class="d-flex justify-content-between align-items-center px-3 py-2 mb-1 border-bottom d-md-none">
                     <span class="fw-bold small text-muted">Account Menu</span>
-                    <button type="button" class="btn-close" style="font-size: 0.7rem;" data-bs-toggle="dropdown" aria-label="Close"></button>
                 </li>
                 <li><a class="dropdown-item rounded-3 py-2" href="profile.php"><i class="fa-regular fa-user me-2"></i> Account</a></li>
                 <li><a class="dropdown-item rounded-3 py-2" href="settings.php"><i class="fa-solid fa-gear me-2"></i> Preferences</a></li>
-                <li class="d-none d-md-block">
-                    <hr class="dropdown-divider">
-                </li>
-                <li class="d-none d-md-block">
-                    <a class="dropdown-item rounded-3 py-2 text-center small text-muted" href="#" data-bs-toggle="dropdown">
-                        <i class="fa-solid fa-chevron-up me-1"></i> Close Menu
-                    </a>
-                </li>
-                <li>
-                    <hr class="dropdown-divider">
-                </li>
+                <li><hr class="dropdown-divider"></li>
                 <li><a class="dropdown-item rounded-3 py-2 text-danger" href="logout.php"><i class="fa-solid fa-arrow-right-from-bracket me-2"></i> Logout</a></li>
             </ul>
         </div>
@@ -389,26 +389,26 @@ $userName = !empty($userData['name']) ? $userData['name'] : 'Admin';
                 </div>
             </div>
 
-            <div class="row g-3 mb-5">
-                <div class="col-6 col-lg-3 gs-anim">
+            <div class="row g-3 g-md-4 mb-5">
+                <div class="col-6 col-md-3 gs-anim">
                     <div class="card-stats">
                         <p>Musics</p>
                         <h2 class="counter"><?php echo $musicCount; ?></h2>
                     </div>
                 </div>
-                <div class="col-6 col-lg-3 gs-anim">
+                <div class="col-6 col-md-3 gs-anim">
                     <div class="card-stats">
                         <p>Videos</p>
                         <h2 class="counter"><?php echo $videoCount; ?></h2>
                     </div>
                 </div>
-                <div class="col-6 col-lg-3 gs-anim">
+                <div class="col-6 col-md-3 gs-anim">
                     <div class="card-stats">
                         <p>Albums</p>
                         <h2 class="counter"><?php echo $albumCount; ?></h2>
                     </div>
                 </div>
-                <div class="col-6 col-lg-3 gs-anim">
+                <div class="col-6 col-md-3 gs-anim">
                     <div class="card-stats">
                         <p>Users</p>
                         <h2 class="counter"><?php echo $userCount; ?></h2>
@@ -428,7 +428,7 @@ $userName = !empty($userData['name']) ? $userData['name'] : 'Admin';
                     <div class="swiper-wrapper">
                         <?php mysqli_data_seek($sec['query'], 0);
                         while ($row = mysqli_fetch_assoc($sec['query'])) { ?>
-                            <div class="swiper-slide"><img src="<?php echo getImagePath($row[$sec['key']], $sec['folder']); ?>" alt="Media"></div>
+                            <div class="swiper-slide"><img src="<?php echo getImagePath($row[$sec['key']], $sec['folder']); ?>" alt="Media" loading="lazy"></div>
                         <?php } ?>
                     </div>
                     <div class="swiper-pagination mt-3"></div>
@@ -442,6 +442,7 @@ $userName = !empty($userData['name']) ? $userData['name'] : 'Admin';
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
 
     <script>
+        // Smooth Loader Exit
         window.addEventListener('load', () => {
             gsap.to("#pageLoader", {
                 opacity: 0,
@@ -452,7 +453,8 @@ $userName = !empty($userData['name']) ? $userData['name'] : 'Admin';
                         y: 30,
                         opacity: 0,
                         duration: 0.6,
-                        stagger: 0.1
+                        stagger: 0.1,
+                        ease: "power2.out"
                     });
                 }
             });
@@ -462,32 +464,27 @@ $userName = !empty($userData['name']) ? $userData['name'] : 'Admin';
             document.getElementById('sidebar').classList.toggle('active');
         }
 
+        // Initialize Swiper with Responsive Breakpoints
         new Swiper(".mySwiper", {
-            slidesPerView: 1.2,
+            slidesPerView: 1.3,
             spaceBetween: 15,
+            grabCursor: true,
             autoplay: {
-                delay: 3000
+                delay: 3000,
+                disableOnInteraction: false,
             },
             pagination: {
                 el: ".swiper-pagination",
                 clickable: true
             },
             breakpoints: {
-                480: {
-                    slidesPerView: 2.2
-                },
-                768: {
-                    slidesPerView: 3.2
-                },
-                1024: {
-                    slidesPerView: 4.5
-                },
-                1400: {
-                    slidesPerView: 5.5
-                }
+                400: { slidesPerView: 1.8 },
+                576: { slidesPerView: 2.5 },
+                768: { slidesPerView: 3.5 },
+                1024: { slidesPerView: 4.5 },
+                1400: { slidesPerView: 5.5 }
             }
         });
     </script>
 </body>
-
 </html>
