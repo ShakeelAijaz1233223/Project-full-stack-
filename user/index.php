@@ -849,7 +849,10 @@ if (isset($_SESSION['email']) && isset($conn)) {
 
             .menu-btn {
                 display: block;
-            }
+                display: flex;
+                justify-content: center;
+                align-items: center;
+            } 
 
             .stats-grid {
                 grid-template-columns: repeat(2, 1fr);
