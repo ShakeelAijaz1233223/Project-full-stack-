@@ -350,9 +350,13 @@ if (isset($_SESSION['email'])) {
                 display: none;
             }
 
-            .menu-btn {
-                display: block;
-            }
+               .menu-btn {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    display: block;
+}
         }
 
         @media (max-width: 768px) {
