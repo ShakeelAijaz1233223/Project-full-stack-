@@ -562,7 +562,7 @@ if (isset($_SESSION['email'])) {
                     </div>
                     <div class="dropdown-content">
                         <a href="user_setting.php"><i class="fas fa-cog"></i> Settings</a>
-                        <div style="  margin: 5px 0;"></div>
+                        <div style="height: 1px; background: var(--border-glass); margin: 5px 0;"></div>
                         <a href="user_logout.php" style="color: #ff4d4d;"><i class="fas fa-power-off"></i> Logout</a>
                     </div>
                 </div>
