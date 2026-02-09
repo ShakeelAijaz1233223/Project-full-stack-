@@ -178,7 +178,7 @@ if (isset($_SESSION['email']) && isset($conn)) {
 
         .dropdown-content {
             position: absolute;
-            right: 0;
+            right: 100px;
             top: 55px;
             background: rgba(15, 15, 17, 0.98);
             backdrop-filter: blur(25px);
@@ -1079,7 +1079,7 @@ if (isset($_SESSION['email']) && isset($conn)) {
     </header>
 
     <!-- Mobile Menu -->
-    <!-- <div class="mobile-menu-overlay" id="mobileMenuOverlay"></div> -->
+    <div class="mobile-menu-overlay" id="mobileMenuOverlay"></div>
     <div class="mobile-menu" id="mobileMenu">
         <div class="mobile-menu-close" id="mobileMenuClose">
             <i class="fas fa-times"></i>
