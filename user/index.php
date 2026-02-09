@@ -1095,8 +1095,8 @@ if (isset($_SESSION['email']) && isset($conn)) {
         </div>
         <div class="mobile-menu-user">
             <?php if ($user): ?>
-                <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 15px; padding-bottom: 15px; border-bottom: 1px solid var(--border-glass);">
-                    <div style="width: 40px; height: 40px; background: var(--primary); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 800;">
+                <!-- <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 15px; padding-bottom: 15px; border-bottom: 1px solid var(--border-glass);"> -->
+                    <!-- <div style="width: 40px; height: 40px; background: var(--primary); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 800;"> -->
                         <?= strtoupper(substr($user['name'], 0, 1)); ?>
                     </div>
                     <div>
