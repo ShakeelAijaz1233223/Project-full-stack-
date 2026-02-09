@@ -60,11 +60,11 @@ if (isset($_SESSION['email'])) {
         header {
             background: rgba(5, 5, 5, 0.9);
             backdrop-filter: blur(20px);
-            padding: 18px 5%;
+            padding: 10px;
             position: fixed;
             width: 100%;
             top: 0;
-            z-index: 1000;
+            /* z-index: 1000; */
             display: flex;
             justify-content: space-between;
             align-items: center;
