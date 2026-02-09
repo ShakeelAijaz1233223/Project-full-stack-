@@ -371,7 +371,7 @@ if (isset($_SESSION['email']) && isset($conn)) {
             white-space: nowrap;
             overflow: hidden;
             border-right: 3px solid #fff;
-            /* cursor effect */
+            cursor :effect;
             padding-right: 5px;
             animation: blink-cursor 0.7s steps(1) infinite;
         }
