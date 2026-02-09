@@ -851,7 +851,7 @@ if (isset($_SESSION['email']) && isset($conn)) {
     display: block;
     position: absolute;
     left: 50%;
-    right:50%;
+    right:100%;
     transform: translateX(-50%);
 }
 
