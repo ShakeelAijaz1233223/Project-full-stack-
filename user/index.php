@@ -365,41 +365,16 @@ if (isset($_SESSION['email']) && isset($conn)) {
             font-family: sans-serif;
             text-align: center;
         }
-#animated-text {
-    /* Main Fix: Block ki jagah inline-flex use karein */
-    display: inline-flex; 
-    white-space: nowrap;
-    overflow: hidden;
-    
-    /* Background ko clear karein */
-    background-color: transparent !important;
-    
-    /* Cursor styling */
-    border-right: 3px solid var(--primary);
-    padding-right: 5px;
-    
-    /* Animation settings */
-    animation: 
-        typing 3.5s steps(30, end) infinite, 
-        blink-cursor 0.7s steps(1) infinite;
-    
-    /* Ensure text is visible and not blocked */
-    margin: 0 auto;
-    width: auto;
-    max-width: fit-content;
-}
 
-/* Typing keyframes update */
-@keyframes typing {
-    from { width: 0; }
-    to { width: 100%; }
-}
-
-/* Cursor blink */
-@keyframes blink-cursor {
-    0%, 100% { border-color: transparent; }
-    50% { border-color: var(--primary); }
-}
+        #animated-text {
+            display: inline-block;
+            white-space: nowrap;
+            overflow: hidden;
+            border-right: 3px solid #fff;
+            cursor :effect;
+            padding-right: 5px;
+            animation: blink-cursor 0.7s steps(1) infinite;
+        }
 
         @keyframes blink-cursor {
 
