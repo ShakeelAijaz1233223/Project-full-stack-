@@ -1443,42 +1443,42 @@ if (isset($_SESSION['email']) && isset($conn)) {
         // Animation Text
 
         const texts = ["MUSIC'S & SOUND'S", "VIDIO'S & ALBUMS"];
-        const animatedText = document.getElementById("animated-text");
-        let textIndex = 0;
-        let charIndex = 0;
+const animatedText = document.getElementById("animated-text");
+let textIndex = 0;
+let charIndex = 0;
 
-        function type() {
-            // Set color based on word
-            if (texts[textIndex] === "REVOLUTION") {
-                animatedText.style.color = "#ff0055"; // Primary color
-            } else {
-                animatedText.style.color = "#fff"; // Default color
-            }
+function type() {
 
-            if (charIndex < texts[textIndex].length) {
-                animatedText.textContent += texts[textIndex].charAt(charIndex);
-                charIndex++;
-                setTimeout(type, 150);
-            } else {
-                // Wait 1 second then delete
-                setTimeout(deleteText, 1000);
-            }
-        }
+    // 🎨 Color control
+    if (texts[textIndex] === "VIDIO'S & ALBUMS") {
+        animatedText.style.color = "#ff0055"; // pink
+    } else {
+        animatedText.style.color = "#ffffff"; // white
+    }
 
-        function deleteText() {
-            if (charIndex > 0) {
-                animatedText.textContent = texts[textIndex].substring(0, charIndex - 1);
-                charIndex--;
-                setTimeout(deleteText, 100);
-            } else {
-                // Move to next text
-                textIndex = (textIndex + 1) % texts.length;
-                setTimeout(type, 500); // small delay before typing next word
-            }
-        }
+    if (charIndex < texts[textIndex].length) {
+        animatedText.textContent += texts[textIndex].charAt(charIndex);
+        charIndex++;
+        setTimeout(type, 150);
+    } else {
+        setTimeout(deleteText, 1000);
+    }
+}
 
-        // Start the animation
-        type();
+function deleteText() {
+    if (charIndex > 0) {
+        animatedText.textContent = texts[textIndex].substring(0, charIndex - 1);
+        charIndex--;
+        setTimeout(deleteText, 100);
+    } else {
+        textIndex = (textIndex + 1) % texts.length;
+        setTimeout(type, 500);
+    }
+}
+
+// 🚀 Start animation
+type();
+
     </script>
 </body>
 
