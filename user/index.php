@@ -351,7 +351,7 @@ if (isset($_SESSION['email']) && isset($conn)) {
             display: flex;
             justify-content: center;
             /* horizontal center */
-            align-items: center;
+            /* align-items: center; */
             /* vertical center */
             /* height: 100vh; */
             /* full viewport height */
