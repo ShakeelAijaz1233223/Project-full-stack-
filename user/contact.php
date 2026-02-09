@@ -72,9 +72,10 @@ if (isset($_SESSION['email'])) {
         }
 
         .logo {
-            font-family: var(--font-head);
-            font-size: 24px;
-            font-weight: 700;
+            font-family: 'Syncopate', sans-serif;
+            font-size: clamp(16px, 4vw, 22px);
+            color: #fff;
+            text-decoration: none;
             letter-spacing: 2px;
         }
 
