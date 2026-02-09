@@ -178,7 +178,7 @@ if (isset($_SESSION['email']) && isset($conn)) {
 
         .dropdown-content {
             position: absolute;
-            right: 100px;
+            right: 0;
             top: 55px;
             background: rgba(15, 15, 17, 0.98);
             backdrop-filter: blur(25px);
@@ -755,7 +755,7 @@ if (isset($_SESSION['email']) && isset($conn)) {
         .mobile-menu-close {
             position: absolute;
             top: 20px;
-            right: 20px;
+            /* right: 20px; */
             color: #fff;
             font-size: 24px;
             cursor: pointer;
