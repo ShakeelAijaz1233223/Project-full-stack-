@@ -201,7 +201,7 @@ body {
                 <tr>
                     <td>
                         <div class="d-flex align-items-center">
-                                                <img src="uploads/albums/<?= $row['cover'] ?>" class="album-img" onerror="this.src='https://via.placeholder.com/48/111/fff?text=No+Img'">
+                                                <img src="uploads/video_thumbnails/<?= $row['cover'] ?>" class="album-img" onerror="this.src='https://via.placeholder.com/48/111/fff?text=No+Img'">
                                                 <div>
                                                    <div class="fw-bold text-white"><?= htmlspecialchars($row['v_title']) ?></div>
                         <code class="text-muted small">REF: #<?= $row['id'] ?></code>
