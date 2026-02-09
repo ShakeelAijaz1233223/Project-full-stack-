@@ -353,9 +353,9 @@ if (isset($_SESSION['email']) && isset($conn)) {
             /* horizontal center */
             align-items: center;
             /* vertical center */
-            height: 100vh;
+            /* height: 100vh; */
             /* full viewport height */
-            background-color: #050505;
+            /* background-color: #050505; */
         }
 
         .hero-title {
