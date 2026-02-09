@@ -381,7 +381,7 @@ if (isset($_SESSION['email'])) {
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.5);
+         
             z-index: 1001;
             opacity: 0;
             visibility: hidden;
@@ -427,9 +427,13 @@ if (isset($_SESSION['email'])) {
                 display: none;
             }
 
-            .menu-btn {
-                display: block;
-            }
+                 .menu-btn {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    display: block;
+}
         }
 
         @media (max-width: 768px) {
