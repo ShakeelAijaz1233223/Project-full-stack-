@@ -739,7 +739,7 @@ if (isset($_SESSION['email']) && isset($conn)) {
             right: -300px;
             width: 300px;
             height: 100vh;
-            background: rgba(5, 5, 5, 0.98);
+            
             backdrop-filter: blur(20px);
             z-index: 1002;
             padding: 80px 20px 20px;
@@ -755,7 +755,7 @@ if (isset($_SESSION['email']) && isset($conn)) {
         .mobile-menu-close {
             position: absolute;
             top: 20px;
-            /* right: 20px; */
+            right: 20px;
             color: #fff;
             font-size: 24px;
             cursor: pointer;
