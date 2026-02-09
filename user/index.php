@@ -1041,7 +1041,7 @@ if (isset($_SESSION['email']) && isset($conn)) {
     <!-- Header -->
     <header id="header">
         <div class="container nav-wrapper">
-            <a href="index.php" class="logo">SOU<span>N</span>D</a>
+            <a href="index.php" class="logo">SO<span>U</span>ND</a>
 
             <nav class="nav-links">
                 <a href="#home" class="active">Home</a>
